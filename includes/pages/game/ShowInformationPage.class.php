@@ -168,7 +168,7 @@ class ShowInformationPage extends AbstractGamePage
 
 		switch($Sort) {
 			case 1:
-				$OrderBy	= "galaxy, system, planet, planet_type ". $Order;
+				$OrderBy	= "galaxy, `system`, planet, planet_type ". $Order;
 				break;
 			case 2:
 				$OrderBy	= "name ". $Order;
@@ -178,7 +178,7 @@ class ShowInformationPage extends AbstractGamePage
 				break;
 		}
 
-		$sql = "SELECT id, name, galaxy, system, planet, last_jump_time, ".$resource[43]." FROM %%PLANETS%% WHERE id != :planetID AND id_owner = :userID AND planet_type = '3' AND ".$resource[43]." > 0 ORDER BY :order;";
+		$sql = "SELECT id, name, galaxy, `system`, planet, last_jump_time, ".$resource[43]." FROM %%PLANETS%% WHERE id != :planetID AND id_owner = :userID AND planet_type = '3' AND ".$resource[43]." > 0 ORDER BY :order;";
 		$moonResult = $db->select($sql, array(
 			':planetID'         => $PLANET['id'],
 			':userID'           => $USER['id'],

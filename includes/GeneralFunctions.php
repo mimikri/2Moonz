@@ -61,7 +61,7 @@ function getPlanets($USER)
 
 	$order = $USER['planet_sort_order'] == 1 ? "DESC" : "ASC" ;
 
-	$sql = "SELECT id, name, galaxy, system, planet, planet_type, image, b_building, b_building_id
+	$sql = "SELECT `id`, `name`, galaxy, `system`, planet, planet_type, `image`, b_building, b_building_id
 			FROM %%PLANETS%% WHERE id_owner = :userId AND destruyed = :destruyed ORDER BY ";
 
 	switch($USER['planet_sort'])
@@ -70,7 +70,7 @@ function getPlanets($USER)
 			$sql	.= 'id '.$order;
 			break;
 		case 1:
-			$sql	.= 'galaxy, system, planet, planet_type '.$order;
+			$sql	.= 'galaxy, `system`, planet, planet_type '.$order;
 			break;
 		case 2:
 			$sql	.= 'name '.$order;
@@ -193,8 +193,8 @@ function pretty_time($seconds)
 	global $LNG;
 	
 	$day	= floor($seconds / 86400);
-	$hour	= floor($seconds / 3600 % 24);
-	$minute	= floor($seconds / 60 % 60);
+	$hour	= floor((int)($seconds / 3600) % 24);
+	$minute	= floor((int)($seconds / 60) % 60);
 	$second	= floor($seconds % 60);
 
 	$time  = '';
@@ -493,7 +493,7 @@ function exceptionHandler($exception)
 		}
 	}
 	
-	
+	$errorType[$errno] = empty($errorType[$errno]) ? 'ErrorType: '.$errno : $errorType[$errno];
 	$DIR		= MODE == 'INSTALL' ? '..' : '.';
 	ob_start();
 	echo '<!DOCTYPE html>
@@ -589,9 +589,11 @@ function exceptionHandler($exception)
  */
 function errorHandler($errno, $errstr, $errfile, $errline)
 {
-    if (!($errno & error_reporting())) {
-        return false;
-    }
+	echo  $errstr;
+/*	$currentErrorLevel = error_reporting();
+if (!in_array($errno, error_reporting())) {
+    return false;
+}*/
 	
 	throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 }

@@ -65,5 +65,5 @@
 	});
 	</script>
 </head>
-<body id="{$smarty.get.page|htmlspecialchars|default:'overview'}" class="{$bodyclass}">
+	<body id="{if empty($smarty.get.page)}overview{else}{$smarty.get.page|htmlspecialchars}{/if}" class="{$bodyclass}">
 	<div id="tooltip" class="tip"></div>

@@ -37,7 +37,7 @@ class ShowImperiumPage extends AbstractGamePage
 				$orderBy = 'name';
 				break;
 			case 1:
-				$orderBy = 'galaxy, system, planet, planet_type';
+				$orderBy = 'galaxy, `system`, planet, planet_type';
 				break;
 			default:
 				$orderBy = 'id';

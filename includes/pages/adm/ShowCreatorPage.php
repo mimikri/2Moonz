@@ -23,8 +23,8 @@ function ShowCreatorPage()
 	global $LNG, $USER;
 
 	$template	= new template();
-
-	switch ($_GET['mode'])
+	$get_mode = empty($_GET['mode']) ? '' : $_GET['mode'];
+	switch ($get_mode)
 	{
 		case 'user':
 			$LNG->includeData(array('PUBLIC'));

@@ -31,7 +31,7 @@ class template extends Smarty
 
 	private function smartySettings()
 	{
-		$this->php_handling = Smarty::PHP_REMOVE;
+		$this->php_handling = 2;//Smarty::PHP_REMOVE;
 
 		$this->setForceCompile(false);
 		$this->setMergeCompiledIncludes(true);

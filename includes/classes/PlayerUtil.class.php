@@ -37,7 +37,7 @@ class PlayerUtil
 		FROM %%PLANETS%%
 		WHERE universe = :universe
 		AND galaxy = :galaxy
-		AND system = :system
+		AND `system` = :system
 		AND planet = :position
 		AND planet_type = :type;";
 
@@ -179,7 +179,7 @@ class PlayerUtil
 
 		$sql = "UPDATE %%USERS%% SET
 		galaxy = :galaxy,
-		system = :system,
+		`system` = :system,
 		planet = :position,
 		id_planet = :planetId
 		WHERE id = :userId;";
@@ -192,7 +192,7 @@ class PlayerUtil
 			':userId'	=> $userId,
 		));
 
-		$sql 	= "SELECT MAX(total_rank) as rank FROM %%STATPOINTS%% WHERE universe = :universe AND stat_type = :type;";
+		$sql 	= "SELECT MAX(total_rank) as `rank` FROM %%STATPOINTS%% WHERE universe = :universe AND stat_type = :type;";
 		$rank	= $db->selectSingle($sql, array(
 			':universe'	=> $universe,
 			':type'		=> 1,
@@ -283,16 +283,16 @@ class PlayerUtil
 		);
 
 		$sql = 'INSERT INTO %%PLANETS%% SET
-		name		= :name,
+		`name`		= :name,
 		universe	= :universe,
 		id_owner	= :userId,
 		galaxy		= :galaxy,
-		system		= :system,
+		`system`		= :system,
 		planet		= :position,
 		last_update	= :updateTimestamp,
 		planet_type	= :type,
-		image		= :imageName,
-		diameter	= :diameter,
+		`image`		= :imageName,
+		`diameter`	= :diameter,
 		field_max	= :maxFields,
 		temp_min 	= :minTemperature,
 		temp_max 	= :maxTemperature,
@@ -316,7 +316,7 @@ class PlayerUtil
 				FROM %%PLANETS%%
 				WHERE universe = :universe
 				AND galaxy = :galaxy
-				AND system = :system
+				AND `system` = :system
 				AND planet = :position
 				AND planet_type = :type;";
 

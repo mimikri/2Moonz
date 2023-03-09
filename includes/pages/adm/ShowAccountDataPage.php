@@ -242,7 +242,7 @@ function ShowAccountDataPage()
 			$names	= "<tr><th class=\"center\" width=\"150\">&nbsp;</th>";
 			
 			// COMIENZA EL SAQUEO DE DATOS DE LOS PLANETAS
-			$SpecifyItemsP	= "planet_type,id,name,galaxy,system,planet,destruyed,diameter,field_current,field_max,temp_min,temp_max,metal,crystal,deuterium,energy,".$SpecifyItemsPQ."energy_used";
+			$SpecifyItemsP	= "planet_type,id,name,galaxy,`system`,planet,destruyed,diameter,field_current,field_max,temp_min,temp_max,metal,crystal,deuterium,energy,".$SpecifyItemsPQ."energy_used";
 				
 			$PlanetsQuery	= $GLOBALS['DATABASE']->query("SELECT ".$SpecifyItemsP." FROM ".PLANETS." WHERE `id_owner` = '".$id_u."';");
 			

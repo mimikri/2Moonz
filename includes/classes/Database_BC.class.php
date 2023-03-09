@@ -58,7 +58,7 @@ class Database_BC extends mysqli
 	 *
 	 * @return resource	Results of the query
 	 */
-	public function query($resource, $resultmode = NULL)
+	public function query($resource, $resultmode = NULL): mysqli_result|bool
 	{
 		if($result = parent::query($resource))
 		{
@@ -215,7 +215,7 @@ class Database_BC extends mysqli
 	 */
 	public function getVersion()
 	{
-		return parent::get_client_info();
+		return mysqli_get_client_info();
 	}
 	
 	/**
@@ -241,7 +241,7 @@ class Database_BC extends mysqli
         return;
 	}
 	
-	public function multi_query($resource)
+	public function multi_query($resource): bool
 	{
 		if(parent::multi_query($resource))
 		{

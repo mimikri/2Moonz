@@ -44,7 +44,7 @@
 	});
 	</script>
 </head>
-<body id="step{$smarty.get.step|htmlspecialchars|default:'intro'}">
+	<body id="step{literal}{{/literal}{if empty($smarty.get.step)}intro{else}{$smarty.get.step|htmlspecialchars}{/if}{literal}}{/literal}">
 <div id="tooltip" class="tip"></div>
 <div><p>&nbsp;</p></div>
 <table width="960">

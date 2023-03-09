@@ -306,8 +306,8 @@ class ResourceUpdate
 	private function ShipyardQueue()
 	{
 		global $resource;
-
-		$BuildQueue 	= unserialize($this->PLANET['b_hangar_id']);
+		
+		$BuildQueue 	= unserialize(empty($this->PLANET['b_hangar_id']) ? '' : $this->PLANET['b_hangar_id']);
 		if (!$BuildQueue) {
 			$this->PLANET['b_hangar'] = 0;
 			$this->PLANET['b_hangar_id'] = '';

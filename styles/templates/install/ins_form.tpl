@@ -7,16 +7,16 @@
 		<input type="hidden" name="post" value="1">
 		<table class="req">
 			<tr>
-				<td class="transparent left"><p>{$LNG.step1_mysql_server}</p></td>
-				<td class="transparent"><input type="text" name="host" value="{$smarty.get.host|escape:'htmlall'|default:$host}" size="30"></td>
+<td class="transparent left"><p>{$LNG.step1_mysql_server}</p></td>
+				<td class="transparent"><input type="text" name="host" value="{if empty($smarty.get.host)}{$host}{else}{$smarty.get.host|escape:'htmlall'}{/if}" size="30"></td>
 			</tr>
 			<tr>
 				<td class="transparent left"><p>{$LNG.step1_mysql_port}</p></td>
-				<td class="transparent"><input type="text" name="port" value="{$smarty.get.port|escape:'htmlall'|default:'3306'}" size="30"></td>
+				<td class="transparent"><input type="text" name="port" value="{if empty($smarty.get.port)}3306{else}{$smarty.get.port|escape:'htmlall'}{/if}" size="30"></td>
 			</tr>
 			<tr>
 				<td class="transparent left"><p>{$LNG.step1_mysql_dbuser}</p></td>
-				<td class="transparent"><input type="text" name="user" value="{$smarty.get.user|escape:'htmlall'|default:$user}" size="30"></td>
+				<td class="transparent"><input type="text" name="user" value="{if empty($smarty.get.user)}{$user}{else}{$smarty.get.user|escape:'htmlall'}{/if}" size="30"></td>
 			</tr>
 			<tr>
 				<td class="transparent left"><p>{$LNG.step1_mysql_dbpass}</p></td>
@@ -24,11 +24,11 @@
 			</tr>
 			<tr>
 				<td class="transparent left"><p>{$LNG.step1_mysql_dbname}</p></td>
-				<td class="transparent"><input type="text" name="dbname" value="{$smarty.get.dbname|escape:'htmlall'|default:$dbname}" size="30"></td>
+				<td class="transparent"><input type="text" name="dbname" value="{if empty($smarty.get.dbname)}{$dbname}{else}{$smarty.get.dbname|escape:'htmlall'}{/if}" size="30"></td>
 			</tr>
 			<tr>
 				<td class="transparent left"><p>{$LNG.step1_mysql_prefix}</p></td>
-				<td class="transparent"><input type="text" name="prefix" value="{$smarty.get.prefix|escape:'htmlall'|default:'uni1_'}" size="30"></td>
+				<td class="transparent"><input type="text" name="prefix" value="{if empty($smarty.get.prefix)}uni1_{else}{$smarty.get.prefix|escape:'htmlall'}{/if}" size="30"></td>
 			</tr>
 			<tr class="noborder">
 				<td colspan="2" class="transparent"><input type="submit" name="next" value="{$LNG.continue}"></td>
