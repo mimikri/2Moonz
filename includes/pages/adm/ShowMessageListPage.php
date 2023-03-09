@@ -130,6 +130,7 @@ function ShowMessageListPage()
 		'dateEnd'		=> $dateEnd,
 		'sender'		=> $sender,
 		'receiver'		=> $receiver,
+		'Selected'		=> $type,
 	));
 				
 	$template->show('MessageList.tpl');

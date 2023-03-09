@@ -60,7 +60,7 @@
 	{$UserSelect.List}
 	</select>
 	<br>
-	<a href="?page=bans">{$LNG.bo_order_username}</a> &nbsp; <a href="?page=bans&amp;order=id">{$bo_order_id}</a> &nbsp; 
+	<a href="?page=bans">{$LNG.bo_order_username}</a> &nbsp; <a href="?page=bans&amp;order=id">{$LNG.bo_order_id}</a> &nbsp; 
 	<a href="?page=bans&amp;view=bana">{$LNG.bo_order_banned}</a>
 	<script TYPE="text/javascript">
 		var UserList = new filterlist(document.getElementsByName('ban_name')[0]);

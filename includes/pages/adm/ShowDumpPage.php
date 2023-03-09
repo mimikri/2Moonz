@@ -23,7 +23,7 @@ if ($USER['authlevel'] == AUTH_USR)
 function ShowDumpPage()
 {
 	global $LNG;
-	switch($_REQUEST['action'])
+	switch(empty($_REQUEST['action']) ? '' : $_REQUEST['action'])
 	{
 		case 'dump':
 			$dbTables	= HTTP::_GP('dbtables', array());

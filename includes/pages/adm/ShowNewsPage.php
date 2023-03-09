@@ -19,20 +19,20 @@ if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FI
 
 function ShowNewsPage(){
 	global $LNG, $USER;
-
-	if($_GET['action'] == 'send') {
+	$get_action = empty($_GET['action']) ? '' : $_GET['action'];
+	if($get_action == 'send') {
 		$edit_id 	= HTTP::_GP('id', 0);
 		$title 		= $GLOBALS['DATABASE']->sql_escape(HTTP::_GP('title', '', true));
 		$text 		= $GLOBALS['DATABASE']->sql_escape(HTTP::_GP('text', '', true));
 		$query		= ($_GET['mode'] == 2) ? "INSERT INTO ".NEWS." (`id` ,`user` ,`date` ,`title` ,`text`) VALUES ( NULL , '".$USER['username']."', '".TIMESTAMP."', '".$title."', '".$text."');" : "UPDATE ".NEWS." SET `title` = '".$title."', `text` = '".$text."', `date` = '".TIMESTAMP."' WHERE `id` = '".$edit_id."' LIMIT 1;";
 		
 		$GLOBALS['DATABASE']->query($query);
-	} elseif($_GET['action'] == 'delete' && isset($_GET['id'])) {
+	} elseif($get_action == 'delete' && isset($_GET['id'])) {
 		$GLOBALS['DATABASE']->query("DELETE FROM ".NEWS." WHERE `id` = '".HTTP::_GP('id', 0)."';");
 	}
 
 	$query = $GLOBALS['DATABASE']->query("SELECT * FROM ".NEWS." ORDER BY id ASC");
-
+	$NewsList = array();
 	while ($u = $GLOBALS['DATABASE']->fetch_array($query)) {
 		$NewsList[]	= array(
 			'id'		=> $u['id'],
@@ -46,7 +46,7 @@ function ShowNewsPage(){
 	$template	= new template();
 
 
-	if($_GET['action'] == 'edit' && isset($_GET['id'])) {
+	if($get_action== 'edit' && isset($_GET['id'])) {
 		$News = $GLOBALS['DATABASE']->getFirstRow("SELECT id, title, text FROM ".NEWS." WHERE id = '".$GLOBALS['DATABASE']->sql_escape($_GET['id'])."';");
 		$template->assign_vars(array(	
 			'mode'			=> 1,
@@ -55,7 +55,7 @@ function ShowNewsPage(){
 			'news_title'	=> $News['title'],
 			'news_text'		=> $News['text'],
 		));
-	} elseif($_GET['action'] == 'create') {
+	} elseif($get_action == 'create') {
 		$template->assign_vars(array(	
 			'mode'			=> 2,
 			'nws_head'		=> $LNG['nws_head_create'],

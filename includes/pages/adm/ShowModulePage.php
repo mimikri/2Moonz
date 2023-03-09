@@ -24,7 +24,7 @@ function ShowModulePage()
 	$config	= Config::get(Universe::getEmulated());
 	$module	= explode(';', $config->moduls);
 	
-	if($_GET['mode']) {
+	if(!empty($_GET['mode'])) {
 		$module[HTTP::_GP('id', 0)]	= ($_GET['mode'] == 'aktiv') ? 1 : 0;
 		$config->moduls = implode(";", $module);
 		$config->save();

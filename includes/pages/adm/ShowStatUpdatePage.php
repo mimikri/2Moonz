@@ -25,7 +25,7 @@ function ShowStatUpdatePage() {
 	$memory_p		= str_replace(array("%p", "%m"), $result['memory_peak'], $LNG['sb_top_memory']);
 	$memory_e		= str_replace(array("%e", "%m"), $result['end_memory'], $LNG['sb_final_memory']);
 	$memory_i		= str_replace(array("%i", "%m"), $result['initial_memory'], $LNG['sb_start_memory']);
-	$stats_end_time	= sprintf($LNG['sb_stats_update'], $result['totaltime']);
+	$stats_end_time	= 'Updated in: '. $result['totaltime'] .'s<br>';
 	$stats_sql		= sprintf($LNG['sb_sql_counts'], $result['sql_count']);
 
 	$template = new template();

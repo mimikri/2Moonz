@@ -133,7 +133,7 @@ class ShowBuildingsPage extends AbstractGamePage
 		)
 			return;
 		
-		$CurrentQueue  		= unserialize($PLANET['b_building_id']);
+		$CurrentQueue  		= unserialize(empty($PLANET['b_building_id']) ? '' : $PLANET['b_building_id']);
 
 				
 		if (!empty($CurrentQueue)) {

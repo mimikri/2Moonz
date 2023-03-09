@@ -466,7 +466,8 @@ function ShowConfigUniPage()
 		'ref_max_referals'				=> $config->ref_max_referals,
 		'silo_factor'					=> $config->silo_factor,
 		'max_dm_missions'				=> $config->max_dm_missions,
-		'alliance_create_min_points' 	=> $config->alliance_create_min_points
+		'alliance_create_min_points' 	=> $config->alliance_create_min_points,
+		'max_player_planets'=> 0
 	));
 	
 	$template->show('ConfigBodyUni.tpl');

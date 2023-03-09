@@ -21,7 +21,7 @@ function ShowMultiIPPage()
 {
 	global $LNG;
 	
-	switch($_GET['action'])
+	switch(empty($_GET['action']) ? '' : $_GET['action'])
 	{
 		case 'known':
 			$GLOBALS['DATABASE']->query("INSERT INTO ".MULTI." SET userID = ".((int) $_GET['id']).";");

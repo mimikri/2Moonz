@@ -21,9 +21,9 @@ function ShowBanPage()
 {
 	global $LNG, $USER;
 	
-	$ORDER = $_GET['order'] == 'id' ? "id" : "username";
-
-	if ($_GET['view'] == 'bana')
+	$ORDER = !empty($_GET['order']) && $_GET['order'] == 'id' ? "id" : "username";
+	$WHEREBANA = '';
+	if (!empty($_GET['view']) && $_GET['view'] == 'bana')
 		$WHEREBANA	= "AND `bana` = '1'";
 
 	$UserList		= $GLOBALS['DATABASE']->query("SELECT `username`, `id`, `bana` FROM ".USERS." WHERE `id` != 1 AND `authlevel` <= '".$USER['authlevel']."' AND `universe` = '".Universe::getEmulated()."' ".$WHEREBANA." ORDER BY ".$ORDER." ASC;");
@@ -39,7 +39,7 @@ function ShowBanPage()
 
 	$GLOBALS['DATABASE']->free_result($UserList);
 	
-	$ORDER2 = $_GET['order2'] == 'id' ? "id" : "username";
+	$ORDER2 = !empty($_GET['order2']) && $_GET['order2'] == 'id' ? "id" : "username";
 		
 	$Banneds		=0;
 	$UserListBan	= $GLOBALS['DATABASE']->query("SELECT `username`, `id` FROM ".USERS." WHERE `bana` = '1' AND `universe` = '".Universe::getEmulated()."' ORDER BY ".$ORDER2." ASC;");
@@ -159,6 +159,7 @@ function ShowBanPage()
 		'UserSelect'		=> $UserSelect,
 		'usercount'			=> $Users,
 		'bancount'			=> $Banneds,
+		'bo_select_title'			=> $LNG['bo_select_title'], 
 	));
 	
 	$template->show('BanPage.tpl');

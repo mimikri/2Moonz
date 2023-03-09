@@ -20,7 +20,8 @@ if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FI
 function ShowSearchPage()
 {
 	global $LNG, $USER;
-	
+	$_GET['delete'] = isset($_GET['delete']) ? $_GET['delete'] : '';
+
 	if ($_GET['delete'] == 'user') {
         PlayerUtil::deletePlayer((int) $_GET['user']);
         message($LNG['se_delete_succes_p'], '?page=search&search=users&minimize=on', 2);
@@ -37,7 +38,7 @@ function ShowSearchPage()
 	$Order			= HTTP::_GP('key_order', '');
 	$OrderBY		= HTTP::_GP('key_acc', '');
 	$limit			= HTTP::_GP('limit', 25);
-
+	$OrderBYParse = array();
 	$Selector	= array(
 		'list'	=> array(
 			'users'		=> $LNG['se_users'],	
@@ -89,6 +90,12 @@ function ShowSearchPage()
 		$template->assign_vars(array(	
 			'minimize'	=> 'checked = "checked"',
 			'diisplaay'	=> 'style="display:none;"',
+		));
+	}else{
+		$Minimize			= "&amp;minimize=on";
+		$template->assign_vars(array(	
+			'minimize'	=> '',
+			'diisplaay'	=> '',
 		));
 	}
 
@@ -256,7 +263,7 @@ function ShowSearchPage()
 				
 		$RESULT	= MyCrazyLittleSearch($SpecifyItems, $WhereItem, $SpecifyWhere, $SpecialSpecify, $Order, $OrderBY, $limit, $Table, $Page, $NameLang, $ArrayOSec, $Minimize, $SName, $SearchFile);
 	}
-	
+	echo 'Searchmethod:' . $SearchMethod;
 	$template->assign_vars(array(	
 		'Selector'				=> $Selector,
 		'limit'					=> $limit,
@@ -278,8 +285,8 @@ function ShowSearchPage()
 		'se_contrac'			=> $LNG['se_contrac'],
 		'se_search_order'		=> $LNG['se_search_order'],
 		'ac_minimize_maximize'	=> $LNG['ac_minimize_maximize'],
-		'LIST'					=> $RESULT['LIST'],
-		'PAGES'					=> $RESULT['PAGES'],
+		'LIST'					=> empty($RESULT['LIST']) ? 0 : $RESULT['LIST'],
+		'PAGES'					=> empty($RESULT['PAGES']) ? 0 : $RESULT['PAGES'],
 	));
 	
 	$template->show('SearchPage.tpl');
@@ -288,7 +295,9 @@ function ShowSearchPage()
 function MyCrazyLittleSearch($SpecifyItems, $WhereItem, $SpecifyWhere, $SpecialSpecify, $Order, $OrderBY, $Limit, $Table, $Page, $NameLang, $ArrayOSec, $Minimize, $SName, $SearchFile)
 {
 	global $USER, $LNG;
-	
+	$SearchFor		= HTTP::_GP('search_in', '');
+	$SearchMethod	= HTTP::_GP('fuki', '');
+	$SearchKey		= HTTP::_GP('key_user', '', UTF8_SUPPORT);
 	$parse	= $LNG;
 	
 	if (!$Page) 
@@ -325,11 +334,11 @@ function MyCrazyLittleSearch($SpecifyItems, $WhereItem, $SpecifyWhere, $SpecialS
 	
 		$UrlForPage	= "?page=search
 						&search=".$SearchFile."
-						&search_in=".$_GET['search_in']."
-						&fuki=".$_GET['fuki']."
-						&key_user=".$_GET['key_user']."
-						&key_order=".$_GET['key_order']."
-						&key_acc=".$_GET['key_acc']."
+						&search_in=".$SearchFor."
+						&fuki=".$SearchMethod."
+						&key_user=".$SearchKey."
+						&key_order=".$Order."
+						&key_acc=".$OrderBY."
 						&limit=".$Limit;
 						 
 		if($NumberOfPages > 1)
@@ -391,7 +400,7 @@ function MyCrazyLittleSearch($SpecifyItems, $WhereItem, $SpecifyWhere, $SpecialS
 		{
 			$Search['LIST']	 .= "<tr>";
 			if ($Table == "users"){				
-				$WhileResult[3] = $_GET['search'] == "online" ? pretty_time( TIMESTAMP - $WhileResult[3] ) : _date($LNG['php_tdformat'], $WhileResult[3] , $USER['timezone']);
+				$WhileResult[3] = $SearchFile == "online" ? pretty_time( TIMESTAMP - $WhileResult[3] ) : _date($LNG['php_tdformat'], $WhileResult[3] , $USER['timezone']);
 				$WhileResult[4]	= _date($LNG['php_tdformat'], $WhileResult[4], $USER['timezone']);
 				
 				$WhileResult[6]	= $LNG['rank_'.$WhileResult[6]];

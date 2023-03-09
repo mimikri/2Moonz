@@ -83,15 +83,15 @@ class AJAXChat {
 		// Initialize custom request variables:
 		$this->initCustomRequestVars();
 		
-		// Remove slashes which have been added to user input strings if magic_quotes_gpc is On:
-		if(get_magic_quotes_gpc()) {
+		if(ini_get('magic_quotes_gpc')) {
 			// It is safe to remove the slashes as we escape user data ourself
 			array_walk(
 				$this->_requestVars,
-				create_function(
-					'&$value, $key',
-					'if(is_string($value)) $value = stripslashes($value);'
-				)
+				function (&$value, $key) {
+					if (is_string($value)) {
+						$value = stripslashes($value);
+					}
+				}
 			);
 		}
 	}
@@ -2777,11 +2777,13 @@ class AJAXChat {
 		setcookie(
 			$this->getConfig('sessionName').'_lang',
 			$this->getLangCode(),
-			time()+60*60*24*$this->getConfig('sessionCookieLifeTime'),
+			time() + (60 * 60 * 24 * $this->getConfig('sessionCookieLifeTime')),
 			$this->getConfig('sessionCookiePath'),
-			$this->getConfig('sessionCookieDomain'),
-			$this->getConfig('sessionCookieSecure')
+			$this->getConfig('sessionCookieDomain') ?? $_SERVER['HTTP_HOST'],
+			isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+			true
 		);
+		
 	}
 
 	function removeUnsafeCharacters($str) {
