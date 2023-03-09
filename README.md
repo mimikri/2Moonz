@@ -6,9 +6,10 @@
 
 roadmap
 
-updating code for php version 8.1
-updating smarty and jquery
-build a javascript based client
+* updating code for php version 8.1
+* updating smarty and jquery
+* build a javascript based client
+
 
 # Credits
 
