@@ -1,12 +1,14 @@
 # 2Moons Browsergame Engine
 
-2Moons is a free Space Browsergame
+2Moonz is a free Space Browsergame
 
 ## Status of this project
 
-This project is not under active development.
+roadmap
 
-Steemnova is an active fork: https://github.com/steemnova/steemnova
+updating code for php version 8.1
+updating smarty and jquery
+build a javascript based client
 
 # Credits
 
