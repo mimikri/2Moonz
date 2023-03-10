@@ -116,8 +116,11 @@ class Session
 		{
 			self::$obj	= new self;
 			register_shutdown_function(array(self::$obj, 'save'));
-
-			@session_start();
+            try {
+                @session_start();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
 		}
 
 		return self::$obj;
@@ -208,6 +211,7 @@ class Session
 	    // sessions require an valid user.
 	    if(empty($this->data['userId'])) {
 	        $this->delete();
+			return;
 	    }
 
         $userIpAddress = self::getClientIp();
@@ -263,7 +267,7 @@ class Session
 
 	public function isValidSession()
 	{
-		if($this->compareIpAddress($this->data['userIpAddress'], self::getClientIp(), COMPARE_IP_BLOCKS) === false)
+		if(empty($this->data['userIpAddress']) || $this->compareIpAddress($this->data['userIpAddress'], self::getClientIp(), COMPARE_IP_BLOCKS) === false)
 		{
 			return false;
 		}
