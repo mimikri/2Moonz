@@ -1,4 +1,4 @@
-# 2Moons Browsergame Engine
+# 2Moonz Browsergame Engine
 
 2Moonz is a free Space Browsergame
 
@@ -8,8 +8,7 @@ roadmap
 
 * updating code for php version 8.1
 * updating smarty and jquery
-* build a javascript based client
-
+* fix bugs
 
 # Credits
 
