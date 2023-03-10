@@ -198,6 +198,10 @@ switch($page)
 		include_once('includes/pages/adm/ShowDumpPage.php');
 		ShowDumpPage();
 	break;
+	case 'errorlogs':
+		include_once('includes/pages/adm/ShowErrorlogsPage.php');
+		ShowErrorlogsPage();
+	break;
 	default:
 		include_once('includes/pages/adm/ShowIndexPage.php');
 		ShowIndexPage();

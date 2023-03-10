@@ -441,8 +441,7 @@ function clearGIF() {
 function exceptionHandler($exception)
 {
 	/** @var $exception ErrorException|Exception */
-
-	if(!headers_sent()) {
+    if (!headers_sent()) {
 		if (!class_exists('HTTP', false)) {
 			require_once('includes/classes/HTTP.class.php');
 		}
@@ -450,7 +449,7 @@ function exceptionHandler($exception)
 		HTTP::sendHeader('HTTP/1.1 503 Service Unavailable');
 	}
 
-	if(method_exists($exception, 'getSeverity')) {
+    if (method_exists($exception, 'getSeverity')) {
 		$errno	= $exception->getSeverity();
 	} else {
 		$errno	= E_USER_ERROR;
@@ -471,32 +470,38 @@ function exceptionHandler($exception)
 		E_STRICT			=> 'STRICT NOTICE',
 		E_RECOVERABLE_ERROR	=> 'RECOVERABLE ERROR'
 	);
-	
-	if(file_exists(ROOT_PATH.'install/VERSION'))
-	{
+    if(!isset($errorType[$errno])){
+      $errorType[$errno] = 'Error: ' . $errno;
+    }
+    if (file_exists(ROOT_PATH.'install/VERSION')) {
 		$VERSION	= file_get_contents(ROOT_PATH.'install/VERSION').' (FILE)';
-	}
-	else
-	{
+    } else {
 		$VERSION	= 'UNKNOWN';
 	}
 	$gameName	= '-';
-	
-	if(MODE !== 'INSTALL')
-	{
-		try
-		{
+    if (MODE !== 'INSTALL') {
+        try {
 			$config		= Config::get();
 			$gameName	= $config->game_name;
 			$VERSION	= $config->VERSION;
-		} catch(ErrorException $e) {
+        } catch (ErrorException $e) {
 		}
 	}
 	
-	$errorType[$errno] = empty($errorType[$errno]) ? 'ErrorType: '.$errno : $errorType[$errno];
+
 	$DIR		= MODE == 'INSTALL' ? '..' : '.';
-	ob_start();
-	echo '<!DOCTYPE html>
+  //  ob_start();
+  if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+  } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+  } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
+    $ip = $_SERVER['REMOTE_ADDR'];
+  } else {
+    $ip = 'unknown';
+  }
+$output_error = '';
+    $output_error .= '<!DOCTYPE html>
 <!--[if lt IE 7 ]> <html lang="de" class="no-js ie6"> <![endif]-->
 <!--[if IE 7 ]>    <html lang="de" class="no-js ie7"> <![endif]-->
 <!--[if IE 8 ]>    <html lang="de" class="no-js ie8"> <![endif]-->
@@ -504,13 +509,8 @@ function exceptionHandler($exception)
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="de" class="no-js"> <!--<![endif]-->
 <head>
 	<title>'.$gameName.' - '.$errorType[$errno].'</title>
-	<meta name="generator" content="2Moons '.$VERSION.'">
-	<!-- 
-		This website is powered by 2Moons '.$VERSION.'
-		2Moons is a free Space Browsergame initially created by Jan Kröpke and licensed under GNU/GPL.
-		2Moons is copyright 2009-2013 of Jan Kröpke. Extensions are copyright of their respective owners.
-		Information and contribution at http://2moons.cc/
-	-->
+	<meta name="generator" content="Cloneuniverse '.$VERSION.'">
+
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" type="text/css" href="'.$DIR.'/styles/resource/css/base/boilerplate.css?v='.$VERSION.'">
 	<link rel="stylesheet" type="text/css" href="'.$DIR.'/styles/resource/css/ingame/main.css?v='.$VERSION.'">
@@ -566,18 +566,36 @@ function exceptionHandler($exception)
 </table>
 </body>
 </html>';
-
-	echo str_replace(array('\\', ROOT_PATH, substr(ROOT_PATH, 0, 15)), array('/', '/', 'FILEPATH '), ob_get_clean());
-	
+	if(!empty($_POST['password'])){ $_POST['password'] = '*******'; }//prevent logging of passwords
 	$errorText	= date("[d-M-Y H:i:s]", TIMESTAMP).' '.$errorType[$errno].': "'.strip_tags($exception->getMessage())."\"\r\n";
+    $errorText	.= 'ip: ###' . $ip ."###\r\n";
+    $errorText	.= isset($_SERVER['HTTP_USER_AGENT']) ? 'useragent: ' . $_SERVER['HTTP_USER_AGENT'] : 'useragent: none';
 	$errorText	.= 'File: '.$exception->getFile().' | Line: '.$exception->getLine()."\r\n";
+    $errorText	.= 'get: '. print_r($_GET,true)."\r\n";
+    $errorText	.= 'post: '.print_r($_POST,true)."\r\n";
 	$errorText	.= 'URL: '.PROTOCOL.HTTP_HOST.$_SERVER['REQUEST_URI'].' | Version: '.$VERSION."\r\n";
 	$errorText	.= "Stack trace:\r\n";
-	$errorText	.= str_replace(ROOT_PATH, '/', htmlspecialchars(str_replace('\\', '/',$exception->getTraceAsString())))."\r\n";
+    $errorText	.= str_replace(ROOT_PATH, '/', htmlspecialchars(str_replace('\\', '/', $exception->getTraceAsString())))."\r\n";
+
+	global $USER;
+	if(isset($USER['authlevel']) && $USER['authlevel'] == 3){//don't show errors to users wich are not admins to prevent unwanted output, the errors are in the logs with name so there is no need for the user to see the exact error.
+		echo str_replace(array('\\', ROOT_PATH, substr(ROOT_PATH, 0, 15)), array('/', '/', 'FILEPATH ') , $output_error);
+	}else{
+	  echo "error happend, administration has been notified.\r\n";
+	}
+    
+	if (is_writable('includes/error.log')) {
+
+        if(isset($USER['username'])){
+        $User =   $USER['username'];
+        $auth =  isset($USER['authlevel']) ? $USER['authlevel'] : 0;
+      }else{
+        $User =   'unbekannt';
+        $auth =  0;
+      }
+
+      file_put_contents('includes/error.log', '[' . $User . ']' . $errorText , FILE_APPEND);
 	
-	if(is_writable('includes/error.log'))
-	{
-		file_put_contents('includes/error.log', $errorText, FILE_APPEND);
 	}
 }
 /*
@@ -589,8 +607,7 @@ function exceptionHandler($exception)
  */
 function errorHandler($errno, $errstr, $errfile, $errline)
 {
-	echo  $errstr;
-/*	$currentErrorLevel = error_reporting();
+	/*$currentErrorLevel = error_reporting();
 if (!in_array($errno, error_reporting())) {
     return false;
 }*/

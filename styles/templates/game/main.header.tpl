@@ -26,6 +26,29 @@
 	<link rel="stylesheet" type="text/css" href="{$dpath}formate.css?v={$REV}">
 	<link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
 	<script type="text/javascript">
+		var errorscript = 'start';
+	var errorquery = 'start';
+	var queryString	= "page=pla";
+	var queryString1	= "page=pla";
+	window.onerror = function(msg, url, lineNo, columnNo, error) {
+	try{
+		var errorobj = error['stack'];
+	}catch(e){
+		var errorobj = 'obj stringify error' + e;
+	}
+	var xmlHttp = new XMLHttpRequest();
+	xmlHttp.open("POST", 'game.php?page=Jserror&linenumber=' + lineNo + '&conum=' + columnNo + '&message=' + encodeURI(msg) + '&qstring' + encodeURI(queryString1) + '&adresse=' + encodeURIComponent(url) + '&errorquery=' +  encodeURI(errorquery) + '&errorscript=' + errorscript, true);
+	xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xmlHttp.send(encodeURI(errorobj));
+	return true;
+	};
+	if({$authlevel|default:'0'} < 3){
+	if(!window.console) window.console = {};
+		var methods = ["log", "debug", "warn", "info"];
+		for(var i=0;i<methods.length;i++){
+			console[methods[i]] = function(){};
+		}
+	}
 	var ServerTimezoneOffset = {$Offset};
 	var serverTime 	= new Date({$date.0}, {$date.1 - 1}, {$date.2}, {$date.3}, {$date.4}, {$date.5});
 	var startTime	= serverTime.getTime();
