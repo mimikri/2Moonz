@@ -258,9 +258,11 @@ function ShowAccountEditorPage()
 				if(!isset($PlanetData))
 				{
 					$template->message($LNG['ad_add_not_exist'], '?page=accounteditor&edit=buildings');
+					exit;
 				}
 				$before = array();
 				$after = array();
+
 				foreach($reslist['allow'][$PlanetData['planet_type']] as $ID)
 				{
 					$before[$ID] = $PlanetData[$resource[$ID]];

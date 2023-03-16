@@ -214,7 +214,7 @@ class ShowResearchPage extends AbstractGamePage
 			return false;
 		}
 
-		$CurrentQueue  		= unserialize($USER['b_tech_queue']);
+		$CurrentQueue  		= empty($USER['b_tech_queue']) ? null :  unserialize($USER['b_tech_queue']);
 		
 		if (!empty($CurrentQueue)) {
 			$ActualCount   	= count($CurrentQueue);
