@@ -21,7 +21,7 @@ require 'includes/classes/class.FlyingFleetsTable.php';
 
 function ShowFlyingFleetPage()
 {
-	global $LNG;
+	global $LNG,$USER;
 	
 	$id	= HTTP::_GP('id', 0);
 	if(!empty($id)){

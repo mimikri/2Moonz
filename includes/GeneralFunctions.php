@@ -118,8 +118,8 @@ function locale_date_format($format, $time, $LNG = NULL)
 		global $LNG;
 	}
 	
-	$weekDay	= date('w', $time);
-	$months		= date('n', $time) - 1;
+	$weekDay	= date('w',(int) $time);
+	$months		= date('n',(int) $time) - 1;
 	
 	$format     = str_replace(array('D', 'M'), array('$D$', '$M$'), $format);
 	$format		= str_replace('$D$', addcslashes($LNG['week_day'][$weekDay], 'A..z'), $format);
@@ -140,7 +140,7 @@ function _date($format, $time = null, $toTimeZone = null, $LNG = NULL)
 		$date = new DateTime();
 		if(method_exists($date, 'setTimestamp'))
 		{	// PHP > 5.3			
-			$date->setTimestamp($time);
+			$date->setTimestamp((int) $time);
 		} else {
 			// PHP < 5.3
 			$tempDate = getdate((int) $time);
@@ -158,7 +158,7 @@ function _date($format, $time = null, $toTimeZone = null, $LNG = NULL)
 	}
 	
 	$format	= locale_date_format($format, $time, $LNG);
-	return date($format, $time);
+	return date($format,(int) $time);
 }
 
 function ValidateAddress($address) {
@@ -213,7 +213,7 @@ function pretty_time($seconds)
 function pretty_fly_time($seconds)
 {
 	$hour	= floor($seconds / 3600);
-	$minute	= floor($seconds / 60 % 60);
+	$minute	= floor((int)($seconds / 60) % 60);
 	$second	= floor($seconds % 60);
 
 	return sprintf('%02d:%02d:%02d', $hour, $minute, $second);
