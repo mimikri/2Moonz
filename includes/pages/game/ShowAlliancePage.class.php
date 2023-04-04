@@ -203,7 +203,7 @@ class ShowAlliancePage extends AbstractGamePage
 		));
 
 		$this->assign(array(
-			'request_text'	=> sprintf($LNG['al_request_wait_message'], $allianceResult['ally_tag']),
+			'request_text'	=> sprintf($LNG['al_request_wait_message'], $allianceResult['ally_tag'] ?? '[no tag available]'),
 		));
 
 		$this->display('page.alliance.applyWait.tpl');
