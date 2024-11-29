@@ -13,38 +13,38 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-$(document).ready(function () {
-	$(".tooltip").live({
-		mouseenter : function (e) {
+function tiptool() {
+
+	$(".tooltip").off('mouseenter').on('mouseenter', function (e) {
 			var tip = $('#tooltip');
 			tip.html($(this).attr('data-tooltip-content'));
 			tip.show();
-		},
-		mouseleave : function () {
+		});
+	$(".tooltip").off('mouseleave').on('mouseleave', function () {
 			var tip = $('#tooltip');
 			tip.hide();
-		},
-		mousemove : function (e) {
+		});
+		$(".tooltip").off('mousemove').on('mousemove', function (e) {
 			var tip = $('#tooltip');
-			var mousex = e.pageX + 20;
-			var mousey = e.pageY + 20;
+			var mousex = e.pageX + 30;
+			var mousey = e.pageY + 30;
 			var tipWidth = tip.width();
 			var tipHeight = tip.height();
 			var tipVisX = $(window).width() - (mousex + tipWidth);
 			var tipVisY = $(window).height() - (mousey + tipHeight);
-			if (tipVisX < 20) {
-				mousex = e.pageX - tipWidth - 20;
+			if (tipVisX < 30) {
+				mousex = e.pageX - tipWidth - 30;
 			};
-			if (tipVisY < 20) {
-				mousey = e.pageY - tipHeight - 20;
+			if (tipVisY < 30) {
+				mousey = e.pageY - tipHeight - 30;
 			};
 			tip.css({
 				top : mousey,
 				left : mousex
 			});
-		}
-	});
-	$(".tooltip_sticky").live('mouseenter', function (e) {
+		});
+
+	$(".tooltip_sticky").off('mouseenter').on('mouseenter', function (e) {
 		var tip = $('#tooltip');
 		tip.html($(this).attr('data-tooltip-content'));
 		tip.addClass('tooltip_sticky_div');
@@ -53,10 +53,11 @@ $(document).ready(function () {
 			left : e.pageX - tip.outerWidth() / 2
 		});
 		tip.show();
+		nuscript('tooltip');
 	});
-	$(".tooltip_sticky_div").live('mouseleave', function () {
+	$(".tooltip_sticky_div").off('mouseleave').on('mouseleave', function () {
 		var tip = $('#tooltip');
 		tip.removeClass('tooltip_sticky_div');
 		tip.hide();
 	});
-});
+}
