@@ -25,7 +25,7 @@ class ShowLoginPage extends AbstractLoginPage
 		parent::__construct();
 	}
 	
-	function show() 
+	function show(): void 
 	{
 		if (empty($_POST)) {
 			HTTP::redirectTo('index.php');	
@@ -37,10 +37,7 @@ class ShowLoginPage extends AbstractLoginPage
 		$password = HTTP::_GP('password', '', true);
 
 		$sql = "SELECT id, password FROM %%USERS%% WHERE universe = :universe AND username = :username;";
-		$loginData = $db->selectSingle($sql, array(
-			':universe'	=> Universe::current(),
-			':username'	=> $username
-		));
+		$loginData = $db->selectSingle($sql, [':universe'	=> Universe::current(), ':username'	=> $username]);
 
 		if (!empty($loginData))
 		{
@@ -48,12 +45,9 @@ class ShowLoginPage extends AbstractLoginPage
 			if($loginData['password'] != $hashedPassword)
 			{
 				// Fallback pre 1.7
-				if($loginData['password'] == md5($password)) {
+				if($loginData['password'] == md5((string) $password)) {
 					$sql = "UPDATE %%USERS%% SET password = :hashedPassword WHERE id = :loginID;";
-					$db->update($sql, array(
-						':hashedPassword'	=> $hashedPassword,
-						':loginID'			=> $loginData['id']
-					));
+					$db->update($sql, [':hashedPassword'	=> $hashedPassword, ':loginID'			=> $loginData['id']]);
 				} else {
 					HTTP::redirectTo('index.php?code=1');	
 				}

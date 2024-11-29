@@ -17,11 +17,14 @@
 
 class LanguageBuildCache implements BuildCache
 {
-	public function buildCache()
+	/**
+  * @return mixed[]
+  */
+ public function buildCache(): array
 	{
 		$languagePath	= ROOT_PATH.'language/';
 		
-		$languages	= array();
+		$languages	= [];
 		
 		/** @var $fileInfo SplFileObject */
 		foreach (new DirectoryIterator($languagePath) as $fileInfo)

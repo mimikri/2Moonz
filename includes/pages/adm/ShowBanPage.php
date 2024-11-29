@@ -15,9 +15,9 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FILE__))) throw new Exception("Permission error!");
+if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__))) throw new Exception("Permission error!");
 
-function ShowBanPage() 
+function ShowBanPage(): void 
 {
 	global $LNG, $USER;
 	
@@ -28,7 +28,7 @@ function ShowBanPage()
 
 	$UserList		= $GLOBALS['DATABASE']->query("SELECT `username`, `id`, `bana` FROM ".USERS." WHERE `id` != 1 AND `authlevel` <= '".$USER['authlevel']."' AND `universe` = '".Universe::getEmulated()."' ".$WHEREBANA." ORDER BY ".$ORDER." ASC;");
 
-	$UserSelect	= array('List' => '', 'ListBan' => '');
+	$UserSelect	= ['List' => '', 'ListBan' => ''];
 	
 	$Users	=	0;
 	while ($a = $GLOBALS['DATABASE']->fetch_array($UserList))
@@ -85,15 +85,7 @@ function ShowBanPage()
 		
 		$vacation	= ($BANUSER['urlaubs_modus'] == 1) ? true : false;
 		
-		$template->assign_vars(array(	
-			'name'				=> $Name,
-			'bantitle'			=> $title,
-			'changedate'		=> $changedate,
-			'reas'				=> $reas,
-			'changedate_advert'	=> $changedate_advert,
-			'timesus'			=> $timesus,
-			'vacation'			=> $vacation,
-		));
+		$template->assign_vars(['name'				=> $Name, 'bantitle'			=> $title, 'changedate'		=> $changedate, 'reas'				=> $reas, 'changedate_advert'	=> $changedate_advert, 'timesus'			=> $timesus, 'vacation'			=> $vacation]);
 	} elseif (isset($_POST['bannow']) && $BANUSER['id'] != 1) {
 		$Name              = HTTP::_GP('ban_name', '' ,true);
 		$reas              = HTTP::_GP('why', '' ,true);
@@ -155,12 +147,7 @@ function ShowBanPage()
 		exit;
 	}
 
-	$template->assign_vars(array(	
-		'UserSelect'		=> $UserSelect,
-		'usercount'			=> $Users,
-		'bancount'			=> $Banneds,
-		'bo_select_title'			=> $LNG['bo_select_title'], 
-	));
+	$template->assign_vars(['UserSelect'		=> $UserSelect, 'usercount'			=> $Users, 'bancount'			=> $Banneds, 'bo_select_title'			=> $LNG['bo_select_title']]);
 	
 	$template->show('BanPage.tpl');
 }

@@ -25,7 +25,7 @@ class ShowFleetTablePage extends AbstractGamePage
 		parent::__construct();
 	}
 	
-	public function createACS($fleetID, $fleetData) {
+	public function createACS($fleetID, array $fleetData): array {
 		global $USER;
 		
 		$rand 			= mt_rand(100000, 999999999);
@@ -34,61 +34,46 @@ class ShowFleetTablePage extends AbstractGamePage
 
         $db = Database::get();
         $sql = "INSERT INTO %%AKS%% SET name = :acsName, ankunft = :time, target = :target;";
-        $db->insert($sql, array(
-            ':acsName'	=> $acsName,
-            ':time'		=> $fleetData['fleet_start_time'],
-			':target'	=> $fleetData['fleet_end_id']
-        ));
+        $db->insert($sql, [':acsName'	=> $acsName, ':time'		=> $fleetData['fleet_start_time'], ':target'	=> $fleetData['fleet_end_id']]);
 
         $acsID	= $db->lastInsertId();
 
         $sql = "INSERT INTO %%USERS_ACS%% SET acsID = :acsID, userID = :userID;";
-        $db->insert($sql, array(
-            ':acsID'	=> $acsID,
-            ':userID'	=> $acsCreator
-        ));
+        $db->insert($sql, [':acsID'	=> $acsID, ':userID'	=> $acsCreator]);
 
         $sql = "UPDATE %%FLEETS%% SET fleet_group = :acsID WHERE fleet_id = :fleetID;";
-        $db->update($sql, array(
-            ':acsID'	=> $acsID,
-            ':fleetID'	=> $fleetID
-        ));
+        $db->update($sql, [':acsID'	=> $acsID, ':fleetID'	=> $fleetID]);
 
-		return array(
-			'name' 			=> $acsName,
-			'id' 			=> $acsID,
-		);
+		return ['name' 			=> $acsName, 'id' 			=> $acsID];
 	}
 	
-	public function loadACS($fleetData) {
+	public function loadACS(array $fleetData) {
 		global $USER;
 		
 		$db = Database::get();
         $sql = "SELECT id, name FROM %%USERS_ACS%% INNER JOIN %%AKS%% ON acsID = id WHERE userID = :userID AND acsID = :acsID;";
-        $acsResult = $db->selectSingle($sql, array(
-            ':userID'   => $USER['id'],
-            ':acsID'    => $fleetData['fleet_group']
-        ));
+        $acsResult = $db->selectSingle($sql, [':userID'   => $USER['id'], ':acsID'    => $fleetData['fleet_group']]);
 
 		return $acsResult;
 	}
 	
-	public function getACSPageData($fleetID)
+	/**
+  * @return mixed[]
+  */
+ public function getACSPageData($fleetID): array
 	{
 		global $USER, $LNG;
 		
 		$db = Database::get();
 
         $sql = "SELECT fleet_start_time, fleet_end_id, fleet_group, fleet_mess FROM %%FLEETS%% WHERE fleet_id = :fleetID;";
-        $fleetData = $db->selectSingle($sql, array(
-            ':fleetID'  => $fleetID
-        ));
+        $fleetData = $db->selectSingle($sql, [':fleetID'  => $fleetID]);
 
         if ($db->rowCount() != 1)
-			return array();
+			return [];
 
 		if ($fleetData['fleet_mess'] == 1 || $fleetData['fleet_start_time'] <= TIMESTAMP)
-			return array();
+			return [];
 				
 		if ($fleetData['fleet_group'] == 0)
 			$acsData	= $this->createACS($fleetID, $fleetData);
@@ -96,7 +81,7 @@ class ShowFleetTablePage extends AbstractGamePage
 			$acsData	= $this->loadACS($fleetData);
 	
 		if (empty($acsData))
-			return array();
+			return [];
 			
 		$acsName	= HTTP::_GP('acsName', '', UTF8_SUPPORT);
 		if(!empty($acsName)) {
@@ -106,19 +91,14 @@ class ShowFleetTablePage extends AbstractGamePage
 			}
 			
 			$sql = "UPDATE %%AKS%% SET name = acsName WHERE id = :acsID;";
-            $db->update($sql, array(
-                ':acsName'  => $acsName,
-                ':acsID'    => $acsData['id']
-            ));
+            $db->update($sql, [':acsName'  => $acsName, ':acsID'    => $acsData['id']]);
             $this->sendJSON(false);
 		}
 		
-		$invitedUsers	= array();
+		$invitedUsers	= [];
 
         $sql = "SELECT id, username FROM %%USERS_ACS%% INNER JOIN %%USERS%% ON userID = id WHERE acsID = :acsID;";
-        $userResult = $db->select($sql, array(
-            ':acsID'    => $acsData['id']
-        ));
+        $userResult = $db->select($sql, [':acsID'    => $acsData['id']]);
 
         foreach($userResult as $userRow)
 		{
@@ -130,10 +110,7 @@ class ShowFleetTablePage extends AbstractGamePage
 		if(!empty($newUser))
 		{
 			$sql = "SELECT id FROM %%USERS%% WHERE universe = :universe AND username = :username;";
-            $newUserID = $db->selectSingle($sql, array(
-                ':universe' => Universe::current(),
-                ':username' => $newUser
-            ), 'id');
+            $newUserID = $db->selectSingle($sql, [':universe' => Universe::current(), ':username' => $newUser], 'id');
 
             if(empty($newUserID)) {
 				$statusMessage			= $LNG['fl_player']." ".$newUser." ".$LNG['fl_dont_exist'];
@@ -143,10 +120,7 @@ class ShowFleetTablePage extends AbstractGamePage
 				$statusMessage			= $LNG['fl_player']." ".$newUser." ".$LNG['fl_add_to_attack'];
 				
 				$sql = "INSERT INTO %%USERS_ACS%% SET acsID = :acsID, userID = :newUserID;";
-                $db->insert($sql, array(
-                    ':acsID'        => $acsData['id'],
-                    ':newUserID'    => $newUserID
-                ));
+                $db->insert($sql, [':acsID'        => $acsData['id'], ':newUserID'    => $newUserID]);
 
                 $invitedUsers[$newUserID]	= $newUser;
 				
@@ -156,19 +130,14 @@ class ShowFleetTablePage extends AbstractGamePage
 			}
 		}
 		
-		return array(
-			'invitedUsers'	=> $invitedUsers,
-			'acsName'		=> $acsData['name'],
-			'mainFleetID'	=> $fleetID,
-			'statusMessage'	=> $statusMessage,
-		);
+		return ['invitedUsers'	=> $invitedUsers, 'acsName'		=> $acsData['name'], 'mainFleetID'	=> $fleetID, 'statusMessage'	=> $statusMessage];
 	}
 	
-	public function show()
+	public function show(): void
 	{
 		global $USER, $PLANET, $reslist, $resource, $LNG;
 		
-		$acsData			= array();
+		$acsData			= [];
 		$FleetID			= HTTP::_GP('fleetID', 0);
 		$GetAction			= HTTP::_GP('action', "");
 
@@ -210,13 +179,11 @@ class ShowFleetTablePage extends AbstractGamePage
 		$targetMission	= HTTP::_GP('target_mission', 0);
 
         $sql = "SELECT * FROM %%FLEETS%% WHERE fleet_owner = :userID AND fleet_mission <> 10 ORDER BY fleet_end_time ASC;";
-        $fleetResult = $db->select($sql, array(
-            ':userID'   => $USER['id']
-        ));
+        $fleetResult = $db->select($sql, [':userID'   => $USER['id']]);
 
         $activeFleetSlots	= $db->rowCount();
 
-		$FlyingFleetList	= array();
+		$FlyingFleetList	= [];
 		
 		foreach ($fleetResult as $fleetsRow)
 		{
@@ -231,60 +198,20 @@ class ShowFleetTablePage extends AbstractGamePage
 				$returnTime	= $fleetsRow['fleet_end_time'];
 			}
 			
-			$FlyingFleetList[]	= array(
-				'id'			=> $fleetsRow['fleet_id'],
-				'mission'		=> $fleetsRow['fleet_mission'],
-				'state'			=> $fleetsRow['fleet_mess'],
-				'startGalaxy'	=> $fleetsRow['fleet_start_galaxy'],
-				'startSystem'	=> $fleetsRow['fleet_start_system'],
-				'startPlanet'	=> $fleetsRow['fleet_start_planet'],
-				'startTime'		=> _date($LNG['php_tdformat'], $fleetsRow['fleet_start_time'], $USER['timezone']),
-				'endGalaxy'		=> $fleetsRow['fleet_end_galaxy'],
-				'endSystem'		=> $fleetsRow['fleet_end_system'],
-				'endPlanet'		=> $fleetsRow['fleet_end_planet'],
-				'endTime'		=> _date($LNG['php_tdformat'], $fleetsRow['fleet_end_time'], $USER['timezone']),
-				'amount'		=> pretty_number($fleetsRow['fleet_amount']),
-				'returntime'	=> $returnTime,
-				'resttime'		=> $returnTime - TIMESTAMP,
-				'FleetList'		=> $FleetList[$fleetsRow['fleet_id']],
-			);
+			$FlyingFleetList[]	= ['id'			=> $fleetsRow['fleet_id'], 'mission'		=> $fleetsRow['fleet_mission'], 'state'			=> $fleetsRow['fleet_mess'], 'startGalaxy'	=> $fleetsRow['fleet_start_galaxy'], 'startSystem'	=> $fleetsRow['fleet_start_system'], 'startPlanet'	=> $fleetsRow['fleet_start_planet'], 'startTime'		=> _date($LNG['php_tdformat'], $fleetsRow['fleet_start_time'], $USER['timezone']), 'endGalaxy'		=> $fleetsRow['fleet_end_galaxy'], 'endSystem'		=> $fleetsRow['fleet_end_system'], 'endPlanet'		=> $fleetsRow['fleet_end_planet'], 'endTime'		=> _date($LNG['php_tdformat'], $fleetsRow['fleet_end_time'], $USER['timezone']), 'amount'		=> pretty_number($fleetsRow['fleet_amount']), 'returntime'	=> $returnTime, 'resttime'		=> $returnTime - TIMESTAMP, 'FleetList'		=> $FleetList[$fleetsRow['fleet_id']]];
 		}
 		
-		$FleetsOnPlanet	= array();
+		$FleetsOnPlanet	= [];
 		
 		foreach($reslist['fleet'] as $FleetID)
 		{
 			if ($PLANET[$resource[$FleetID]] == 0)
 				continue;
 				
-			$FleetsOnPlanet[]	= array(
-				'id'	=> $FleetID,
-				'speed'	=> FleetFunctions::GetFleetMaxSpeed($FleetID, $USER),
-				'count'	=> $PLANET[$resource[$FleetID]],
-			);
+			$FleetsOnPlanet[]	= ['id'	=> $FleetID, 'speed'	=> FleetFunctions::GetFleetMaxSpeed($FleetID, $USER), 'count'	=> $PLANET[$resource[$FleetID]]];
 		}
 		
-		$this->assign(array(
-			'FleetsOnPlanet'		=> $FleetsOnPlanet,
-			'FlyingFleetList'		=> $FlyingFleetList,
-			'activeExpedition'		=> $activeExpedition,
-			'maxExpedition'			=> $maxExpedition,
-			'activeFleetSlots'		=> $activeFleetSlots,
-			'maxFleetSlots'			=> $maxFleetSlots,
-			'targetGalaxy'			=> $targetGalaxy,
-			'targetSystem'			=> $targetSystem,
-			'targetPlanet'			=> $targetPlanet,
-			'targetType'			=> $targetType,
-			'targetMission'			=> $targetMission,
-			'acsData'				=> $acsData,
-			'isVacation'			=> IsVacationMode($USER),
-			'bonusAttack'			=> $USER[$resource[109]] * 10 + $USER['factor']['Attack'] * 100,
-			'bonusDefensive'		=> $USER[$resource[110]] * 10 + $USER['factor']['Defensive'] * 100,
-			'bonusShield'			=> $USER[$resource[111]] * 10 + $USER['factor']['Shield'] * 100,
-			'bonusCombustion'		=> $USER[$resource[115]] * 10,
-			'bonusImpulse'			=> $USER[$resource[117]] * 20,
-			'bonusHyperspace'		=> $USER[$resource[118]] * 30,
-		));
+		$this->assign(['FleetsOnPlanet'		=> $FleetsOnPlanet, 'FlyingFleetList'		=> $FlyingFleetList, 'activeExpedition'		=> $activeExpedition, 'maxExpedition'			=> $maxExpedition, 'activeFleetSlots'		=> $activeFleetSlots, 'maxFleetSlots'			=> $maxFleetSlots, 'targetGalaxy'			=> $targetGalaxy, 'targetSystem'			=> $targetSystem, 'targetPlanet'			=> $targetPlanet, 'targetType'			=> $targetType, 'targetMission'			=> $targetMission, 'acsData'				=> $acsData, 'isVacation'			=> IsVacationMode($USER), 'bonusAttack'			=> $USER[$resource[109]] * 10 + $USER['factor']['Attack'] * 100, 'bonusDefensive'		=> $USER[$resource[110]] * 10 + $USER['factor']['Defensive'] * 100, 'bonusShield'			=> $USER[$resource[111]] * 10 + $USER['factor']['Shield'] * 100, 'bonusCombustion'		=> $USER[$resource[115]] * 10, 'bonusImpulse'			=> $USER[$resource[117]] * 20, 'bonusHyperspace'		=> $USER[$resource[118]] * 30]);
 		
 		$this->display('page.fleetTable.default.tpl');
 	}

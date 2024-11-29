@@ -17,7 +17,7 @@
 
 class Mail
 {	
-	static public function send($mailTarget, $mailTargetName, $mailSubject, $mailContent)
+	static public function send($mailTarget, $mailTargetName, $mailSubject, $mailContent): void
 	{		
 		$mail	= self::getMailObject();
 			 
@@ -28,7 +28,7 @@ class Mail
         $mail->Send(); 
 	}
 
-	static public function multiSend($mailTargets, $mailSubject, $mailContent = NULL)
+	static public function multiSend($mailTargets, $mailSubject, $mailContent = NULL): void
 	{
 		$mail	= self::getMailObject();
 
@@ -36,7 +36,7 @@ class Mail
 
 		foreach($mailTargets as $address => $data)
 		{
-			$content = isset($data['body']) ? $data['body'] : $mailContent;
+			$content = $data['body'] ?? $mailContent;
 			
 			$mail->AddAddress($address, $data['username']);
 			$mail->MsgHTML($content);
@@ -45,7 +45,7 @@ class Mail
 		}
 	}
 
-	static private function getMailObject()
+	static private function getMailObject(): \PHPMailer
 	{
         require_once 'includes/libs/phpmailer/class.phpmailer.php';
 

@@ -20,8 +20,8 @@ require('includes/libs/Smarty/Smarty.class.php');
 class template extends Smarty
 {
 	protected $window	= 'full';
-	public $jsscript	= array();
-	public $script		= array();
+	public $jsscript	= [];
+	public $script		= [];
 	
 	function __construct()
 	{	
@@ -29,7 +29,7 @@ class template extends Smarty
 		$this->smartySettings();
 	}
 
-	private function smartySettings()
+	private function smartySettings(): void
 	{
 		$this->php_handling = 2;//Smarty::PHP_REMOVE;
 
@@ -52,22 +52,22 @@ class template extends Smarty
 		return BasicFileUtil::getTempFolder();
 	}
 		
-	public function assign_vars($var, $nocache = true) 
+	public function assign_vars($var, $nocache = true): void 
 	{		
 		parent::assign($var, NULL, $nocache);
 	}
 
-	public function loadscript($script)
+	public function loadscript($script): void
 	{
-		$this->jsscript[]			= substr($script, 0, -3);
+		$this->jsscript[]			= substr((string) $script, 0, -3);
 	}
 
-	public function execscript($script)
+	public function execscript($script): void
 	{
 		$this->script[]				= $script;
 	}
 	
-	private function adm_main()
+	private function adm_main(): void
 	{
 		global $LNG, $USER;
 		
@@ -75,7 +75,7 @@ class template extends Smarty
 		if(isset($USER['timezone'])) {
 			try {
 				$dateTimeUser	= new DateTime("now", new DateTimeZone($USER['timezone']));
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$dateTimeUser	= $dateTimeServer;
 			}
 		} else {
@@ -84,21 +84,10 @@ class template extends Smarty
 
 		$config	= Config::get();
 
-		$this->assign_vars(array(
-			'scripts'			=> $this->script,
-			'title'				=> $config->game_name.' - '.$LNG['adm_cp_title'],
-			'fcm_info'			=> $LNG['fcm_info'],
-            'lang'    			=> $LNG->getLanguage(),
-			'REV'				=> substr($config->VERSION, -4),
-			'date'				=> explode("|", date('Y\|n\|j\|G\|i\|s\|Z', TIMESTAMP)),
-			'Offset'			=> $dateTimeUser->getOffset() - $dateTimeServer->getOffset(),
-			'VERSION'			=> $config->VERSION,
-			'dpath'				=> 'styles/theme/gow/',
-			'bodyclass'			=> 'full'
-		));
+		$this->assign_vars(['scripts'			=> $this->script, 'title'				=> $config->game_name.' - '.$LNG['adm_cp_title'], 'fcm_info'			=> $LNG['fcm_info'], 'lang'    			=> $LNG->getLanguage(), 'REV'				=> substr($config->VERSION, -4), 'date'				=> explode("|", date('Y\|n\|j\|G\|i\|s\|Z', TIMESTAMP)), 'Offset'			=> $dateTimeUser->getOffset() - $dateTimeServer->getOffset(), 'VERSION'			=> $config->VERSION, 'dpath'				=> 'styles/theme/gow/', 'bodyclass'			=> 'full']);
 	}
 	
-	public function show($file)
+	public function show($file): void
 	{		
 		global $LNG, $THEME;
 
@@ -116,54 +105,41 @@ class template extends Smarty
 			$this->adm_main();
 		}
 
-		$this->assign_vars(array(
-			'scripts'		=> $this->jsscript,
-			'execscript'	=> implode("\n", $this->script),
-		));
+		$this->assign_vars(['scripts'		=> $this->jsscript, 'execscript'	=> implode("\n", $this->script)]);
 
-		$this->assign_vars(array(
-			'LNG'			=> $LNG,
-		), false);
+		$this->assign_vars(['LNG'			=> $LNG], false);
 		
 		$this->compile_id	= $LNG->getLanguage();
 		
 		parent::display($file);
 	}
 	
-	public function display($file = NULL, $cache_id = NULL, $compile_id = NULL, $parent = NULL)
+	public function display($file = NULL, $cache_id = NULL, $compile_id = NULL, $parent = NULL): void
 	{
 		global $LNG;
 		$this->compile_id	= $LNG->getLanguage();
 		parent::display($file);
 	}
 	
-	public function gotoside($dest, $time = 3)
+	public function gotoside($dest, $time = 3): void
 	{
-		$this->assign_vars(array(
-			'gotoinsec'	=> $time,
-			'goto'		=> $dest,
-		));
+		$this->assign_vars(['gotoinsec'	=> $time, 'goto'		=> $dest]);
 	}
 	
-	public function message($mes, $dest = false, $time = 3, $Fatal = false)
+	public function message($mes, $dest = false, $time = 3, $Fatal = false): void
 	{
 		global $LNG, $THEME;
 	
-		$this->assign_vars(array(
-			'mes'		=> $mes,
-			'fcm_info'	=> $LNG['fcm_info'],
-			'Fatal'		=> $Fatal,
-            'dpath'		=> $THEME->getTheme(),
-		));
+		$this->assign_vars(['mes'		=> $mes, 'fcm_info'	=> $LNG['fcm_info'], 'Fatal'		=> $Fatal, 'dpath'		=> $THEME->getTheme()]);
 		
 		$this->gotoside($dest, $time);
 		$this->show('error_message_body.tpl');
 	}
 	
-	public static function printMessage($Message, $fullSide = true, $redirect = NULL) {
+	public static function printMessage($Message, $fullSide = true, $redirect = NULL): void {
 		$template	= new self;
 		if(!isset($redirect)) {
-			$redirect	= array(false, 0);
+			$redirect	= [false, 0];
 		}
 		
 		$template->message($Message, $redirect[0], $redirect[1], !$fullSide);
@@ -176,13 +152,7 @@ class template extends Smarty
 
     public function __get($name)
     {
-        $allowed = array(
-			'template_dir' => 'getTemplateDir',
-			'config_dir' => 'getConfigDir',
-			'plugins_dir' => 'getPluginsDir',
-			'compile_dir' => 'getCompileDir',
-			'cache_dir' => 'getCacheDir',
-        );
+        $allowed = ['template_dir' => 'getTemplateDir', 'config_dir' => 'getConfigDir', 'plugins_dir' => 'getPluginsDir', 'compile_dir' => 'getCompileDir', 'cache_dir' => 'getCacheDir'];
 
         if (isset($allowed[$name])) {
             return $this->{$allowed[$name]}();
@@ -193,13 +163,7 @@ class template extends Smarty
 	
     public function __set($name, $value)
     {
-        $allowed = array(
-			'template_dir' => 'setTemplateDir',
-			'config_dir' => 'setConfigDir',
-			'plugins_dir' => 'setPluginsDir',
-			'compile_dir' => 'setCompileDir',
-			'cache_dir' => 'setCacheDir',
-        );
+        $allowed = ['template_dir' => 'setTemplateDir', 'config_dir' => 'setConfigDir', 'plugins_dir' => 'setPluginsDir', 'compile_dir' => 'setCompileDir', 'cache_dir' => 'setCacheDir'];
 
         if (isset($allowed[$name])) {
             $this->{$allowed[$name]}($value);

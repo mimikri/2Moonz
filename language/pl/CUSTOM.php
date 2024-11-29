@@ -13,11 +13,11 @@
  * @version 1.8.0
  * @link https://github.com/jkroepke/2Moons
  */
- 
+
 // If you have custom lang vars, you can include them here. The file ll be not overwrite by updatemanager
 // Also you can overwrite exists var, too. You use the same key.
 
-					
+
 
  ?>
 

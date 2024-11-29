@@ -18,7 +18,7 @@
 define('MODE', 'ADMIN');
 define('DATABASE_VERSION', 'OLD');
 
-define('ROOT_PATH', str_replace('\\', '/',dirname(__FILE__)).'/');
+define('ROOT_PATH', str_replace('\\', '/',__DIR__).'/');
 
 require 'includes/common.php';
 require 'includes/classes/class.Log.php';

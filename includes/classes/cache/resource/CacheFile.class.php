@@ -28,18 +28,18 @@ class CacheFile {
 		return BasicFileUtil::getTempFolder();
 	}
 
-	public function store($Key, $Value) {
+	public function store(string $Key, $Value): int|false {
 		return file_put_contents($this->path.'cache.'.$Key.'.php', $Value);
 	}
 	
-	public function open($Key) {
+	public function open(string $Key): false|string {
 		if(!file_exists($this->path.'cache.'.$Key.'.php'))
 			return false;
 			
 		return file_get_contents($this->path.'cache.'.$Key.'.php');
 	}
 	
-	public function flush($Key) {
+	public function flush(string $Key) {
 		if(!file_exists($this->path.'cache.'.$Key.'.php'))
 			return false;
 		

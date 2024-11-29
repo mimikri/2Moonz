@@ -18,6 +18,6 @@
  *
  * @return string with compiled code
  */
-function smarty_modifiercompiler_nl2br($params) {
+function smarty_modifiercompiler_nl2br($params): string {
     return 'nl2br((string) ' . $params[0] . ', (bool) ' . ($params[1] ?? true) . ')';
 }

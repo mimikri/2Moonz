@@ -914,10 +914,7 @@ $LNG['ma_none'] = 'Genel Duyuru';
 $LNG['ma_message'] = 'Mesaj';
 $LNG['ma_mode'] = 'Iletisim Metodu';
 $LNG['ma_all'] = 'Hepsi';
-$LNG['ma_modes']                = $array = array(
-												"Game" => "Game",
-												"Mail" => "Mail",
-												"Game&Mail" => "Game&Mail");
+$LNG['ma_modes']                = $array = ["Game" => "Game", "Mail" => "Mail", "Game&Mail" => "Game&Mail"];
 //###########################################################//
 //---------------	Moderator Ayarlari	------------------------//
 //	Izinler

@@ -15,11 +15,15 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FILE__))) throw new Exception("Permission error!");
+if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__))) throw new Exception("Permission error!");
 		
 class ShowSupportPage
 {
-	private $ticketObj;
+	/**
+  * @var \template
+  */
+ public $tplObj;
+ private readonly \SupportTickets $ticketObj;
 	
 	function __construct() 
 	{
@@ -28,19 +32,19 @@ class ShowSupportPage
 		$this->tplObj		= new template();
 		// 2Moons 1.7TO1.6 PageClass Wrapper
 		$ACTION = HTTP::_GP('mode', 'show');
-		if(is_callable(array($this, $ACTION))) {
+		if(is_callable([$this, $ACTION])) {
 			$this->{$ACTION}();
 		} else {
 			$this->show();
         }
 	}
 	
-	public function show()
+	public function show(): void
 	{
 		global $USER, $LNG;
 				
 		$ticketResult	= $GLOBALS['DATABASE']->query("SELECT t.*, u.username, COUNT(a.ticketID) as answer FROM ".TICKETS." t INNER JOIN ".TICKETS_ANSWER." a USING (ticketID) INNER JOIN ".USERS." u ON u.id = t.ownerID WHERE t.universe = ".Universe::getEmulated()." GROUP BY a.ticketID ORDER BY t.ticketID DESC;");
-		$ticketList		= array();
+		$ticketList		= [];
 		
 		while($ticketRow = $GLOBALS['DATABASE']->fetch_array($ticketResult)) {
 			$ticketRow['time']	= _date($LNG['php_tdformat'], $ticketRow['time'], $USER['timezone']);
@@ -50,14 +54,12 @@ class ShowSupportPage
 		
 		$GLOBALS['DATABASE']->free_result($ticketResult);
 		
-		$this->tplObj->assign_vars(array(	
-			'ticketList'	=> $ticketList
-		));
+		$this->tplObj->assign_vars(['ticketList'	=> $ticketList]);
 			
 		$this->tplObj->show('page.ticket.default.tpl');
 	}
 	
-	function send() 
+	function send(): void 
 	{
 		global $USER, $LNG;
 				
@@ -100,13 +102,13 @@ class ShowSupportPage
 		HTTP::redirectTo('admin.php?page=support');
 	}
 	
-	function view() 
+	function view(): void 
 	{
 		global $USER, $LNG;
 				
 		$ticketID			= HTTP::_GP('id', 0);
 		$answerResult		= $GLOBALS['DATABASE']->query("SELECT a.*, t.categoryID, t.status FROM ".TICKETS_ANSWER." a INNER JOIN ".TICKETS." t USING(ticketID) WHERE a.ticketID = ".$ticketID." ORDER BY a.answerID;");
-		$answerList			= array();
+		$answerList			= [];
 
 		$ticket_status		= 0;
 
@@ -126,12 +128,7 @@ class ShowSupportPage
 			
 		$categoryList	= $this->ticketObj->getCategoryList();
 		
-		$this->tplObj->assign_vars(array(
-			'ticketID'		=> $ticketID,
-			'ticket_status' => $ticket_status,
-			'categoryList'	=> $categoryList,
-			'answerList'	=> $answerList,
-		));
+		$this->tplObj->assign_vars(['ticketID'		=> $ticketID, 'ticket_status' => $ticket_status, 'categoryList'	=> $categoryList, 'answerList'	=> $answerList]);
 			
 		$this->tplObj->show('page.ticket.view.tpl');		
 	}

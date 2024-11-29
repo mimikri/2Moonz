@@ -15,9 +15,9 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FILE__))) throw new Exception("Permission error!");
+if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__))) throw new Exception("Permission error!");
 
-function ShowActivePage()
+function ShowActivePage(): void
 {
 	global $LNG, $USER;
 	$id = HTTP::_GP('id', 0);
@@ -27,25 +27,14 @@ function ShowActivePage()
 
 	$query = $GLOBALS['DATABASE']->query("SELECT * FROM ".USERS_VALID." WHERE `universe` = '".Universe::getEmulated()."' ORDER BY validationID ASC");
 
-	$Users	= array();
+	$Users	= [];
 	while ($User = $GLOBALS['DATABASE']->fetch_array($query)) {
-		$Users[]	= array(
-			'id'			=> $User['validationID'],
-			'name'			=> $User['userName'],
-			'date'			=> _date($LNG['php_tdformat'], $User['date'], $USER['timezone']),
-			'email'			=> $User['email'],
-			'ip'			=> $User['ip'],
-			'password'		=> $User['password'],
-			'validationKey'	=> $User['validationKey'],
-		);
+		$Users[]	= ['id'			=> $User['validationID'], 'name'			=> $User['userName'], 'date'			=> _date($LNG['php_tdformat'], $User['date'], $USER['timezone']), 'email'			=> $User['email'], 'ip'			=> $User['ip'], 'password'		=> $User['password'], 'validationKey'	=> $User['validationKey']];
 	}
 
 	$template	= new template();
 
-	$template->assign_vars(array(	
-		'Users'				=> $Users,
-		'uni'				=> Universe::getEmulated(),
-	));
+	$template->assign_vars(['Users'				=> $Users, 'uni'				=> Universe::getEmulated()]);
 	
 	$template->show('ActivePage.tpl');
 }

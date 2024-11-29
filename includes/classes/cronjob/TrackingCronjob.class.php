@@ -19,16 +19,14 @@ require_once 'includes/classes/cronjob/CronjobTask.interface.php';
 
 class TrackingCronjob implements CronjobTask
 {
-	function run()
+	function run(): void
 	{
 		$serverData['php']			= PHP_VERSION;
 		
 		try
 		{
 			$sql	= 'SELECT register_time FROM %%USERS%% WHERE id = :userId';
-			$serverData['installSince']	= Database::get()->selectSingle($sql, array(
-				':userId'	=> ROOT_USER
-			), 'register_time');
+			$serverData['installSince']	= Database::get()->selectSingle($sql, [':userId'	=> ROOT_USER], 'register_time');
 		}
 		catch (Exception $e)
 		{
@@ -38,17 +36,17 @@ class TrackingCronjob implements CronjobTask
 		try
 		{
 			$sql	= 'SELECT COUNT(*) as state FROM %%USERS%%;';
-			$serverData['users']		= Database::get()->selectSingle($sql, array(), 'state');
+			$serverData['users']		= Database::get()->selectSingle($sql, [], 'state');
 		}
-		catch (Exception $e)
+		catch (Exception)
 		{
 			$serverData['users']		= NULL;
 		}
 		
 		try {
 			$sql	= 'SELECT COUNT(*) as state FROM %%CONFIG%%;';
-			$serverData['unis']			= Database::get()->selectSingle($sql, array(), 'state');
-		} catch (Exception $e) {
+			$serverData['unis']			= Database::get()->selectSingle($sql, [], 'state');
+		} catch (Exception) {
 			$serverData['unis']			= NULL;
 		}
 

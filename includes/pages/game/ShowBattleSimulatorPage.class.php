@@ -24,7 +24,7 @@ class ShowBattleSimulatorPage extends AbstractGamePage
 		parent::__construct();
 	}
 
-	function send()
+	function send(): void
 	{
 		global $reslist, $pricelist, $LNG;
 		
@@ -33,35 +33,15 @@ class ShowBattleSimulatorPage extends AbstractGamePage
 		}
 		
 		$BattleArray	= $_REQUEST['battleinput'];
-		$elements	= array(0, 0);
+		$elements	= [0, 0];
 		foreach($BattleArray as $BattleSlotID => $BattleSlot)
 		{
 			if(isset($BattleSlot[0]) && (array_sum($BattleSlot[0]) > 0 || $BattleSlotID == 0))
 			{
-				$attacker	= array();
-				$attacker['fleetDetail'] 		= array(
-					'fleet_start_galaxy' => 1,
-					'fleet_start_system' => 33,
-					'fleet_start_planet' => 7, 
-					'fleet_start_type' => 1, 
-					'fleet_end_galaxy' => 1, 
-					'fleet_end_system' => 33, 
-					'fleet_end_planet' => 7, 
-					'fleet_end_type' => 1, 
-					'fleet_resource_metal' => 0,
-					'fleet_resource_crystal' => 0,
-					'fleet_resource_deuterium' => 0
-				);
+				$attacker	= [];
+				$attacker['fleetDetail'] 		= ['fleet_start_galaxy' => 1, 'fleet_start_system' => 33, 'fleet_start_planet' => 7, 'fleet_start_type' => 1, 'fleet_end_galaxy' => 1, 'fleet_end_system' => 33, 'fleet_end_planet' => 7, 'fleet_end_type' => 1, 'fleet_resource_metal' => 0, 'fleet_resource_crystal' => 0, 'fleet_resource_deuterium' => 0];
 				
-				$attacker['player']				= array(
-					'id' => (1000 + $BattleSlotID + 1),
-					'username'	=> $LNG['bs_atter'].' Nr.'.($BattleSlotID + 1),
-					'military_tech' => $BattleSlot[0][109],
-					'defence_tech' => $BattleSlot[0][110],
-					'shield_tech' => $BattleSlot[0][111],
-					'dm_defensive' => 0,
-					'dm_attack' => 0
-				); 
+				$attacker['player']				= ['id' => (1000 + $BattleSlotID + 1), 'username'	=> $LNG['bs_atter'].' Nr.'.($BattleSlotID + 1), 'military_tech' => $BattleSlot[0][109], 'defence_tech' => $BattleSlot[0][110], 'shield_tech' => $BattleSlot[0][111], 'dm_defensive' => 0, 'dm_attack' => 0]; 
 				
 				$attacker['player']['factor']	= getFactors($attacker['player'], 'attack');
 				
@@ -80,30 +60,10 @@ class ShowBattleSimulatorPage extends AbstractGamePage
 				
 			if(isset($BattleSlot[1]) && (array_sum($BattleSlot[1]) > 0 || $BattleSlotID == 0))
 			{
-				$defender	= array();
-				$defender['fleetDetail'] 		= array(
-					'fleet_start_galaxy' => 1,
-					'fleet_start_system' => 33,
-					'fleet_start_planet' => 7, 
-					'fleet_start_type' => 1, 
-					'fleet_end_galaxy' => 1, 
-					'fleet_end_system' => 33, 
-					'fleet_end_planet' => 7, 
-					'fleet_end_type' => 1, 
-					'fleet_resource_metal' => 0,
-					'fleet_resource_crystal' => 0,
-					'fleet_resource_deuterium' => 0
-				);
+				$defender	= [];
+				$defender['fleetDetail'] 		= ['fleet_start_galaxy' => 1, 'fleet_start_system' => 33, 'fleet_start_planet' => 7, 'fleet_start_type' => 1, 'fleet_end_galaxy' => 1, 'fleet_end_system' => 33, 'fleet_end_planet' => 7, 'fleet_end_type' => 1, 'fleet_resource_metal' => 0, 'fleet_resource_crystal' => 0, 'fleet_resource_deuterium' => 0];
 				
-				$defender['player']				= array(
-					'id' => (2000 + $BattleSlotID + 1),
-					'username'	=> $LNG['bs_deffer'].' Nr.'.($BattleSlotID + 1),
-					'military_tech' => $BattleSlot[1][109],
-					'defence_tech' => $BattleSlot[1][110],
-					'shield_tech' => $BattleSlot[1][111],
-					'dm_attack' => 0,
-					'dm_defensive' => 0,
-				); 
+				$defender['player']				= ['id' => (2000 + $BattleSlotID + 1), 'username'	=> $LNG['bs_deffer'].' Nr.'.($BattleSlotID + 1), 'military_tech' => $BattleSlot[1][109], 'defence_tech' => $BattleSlot[1][110], 'shield_tech' => $BattleSlot[1][111], 'dm_attack' => 0, 'dm_defensive' => 0]; 
 				
 				$defender['player']['factor']	= getFactors($defender['player'], 'attack');
 				
@@ -120,7 +80,7 @@ class ShowBattleSimulatorPage extends AbstractGamePage
 			}
 		}
 		
-		$LNG->includeData(array('FLEET'));
+		$LNG->includeData(['FLEET']);
 		
 		require_once 'includes/classes/missions/functions/calculateAttack.php';
 		require_once 'includes/classes/missions/functions/calculateSteal.php';
@@ -130,24 +90,16 @@ class ShowBattleSimulatorPage extends AbstractGamePage
 		
 		if($combatResult['won'] == "a")
 		{
-			$stealResource = calculateSteal($attackers, array(
-			'metal' => $BattleArray[0][1][901],
-			'crystal' => $BattleArray[0][1][902],
-			'deuterium' => $BattleArray[0][1][903]
-			), true);
+			$stealResource = calculateSteal($attackers, ['metal' => $BattleArray[0][1][901], 'crystal' => $BattleArray[0][1][902], 'deuterium' => $BattleArray[0][1][903]], true);
 		}
 		else
 		{
-			$stealResource = array(
-				901 => 0,
-				902 => 0,
-				903 => 0
-			);
+			$stealResource = [901 => 0, 902 => 0, 903 => 0];
 		}
 		
-		$debris	= array();
+		$debris	= [];
 		
-		foreach(array(901, 902) as $elementID)
+		foreach([901, 902] as $elementID)
 		{
 			$debris[$elementID]			= $combatResult['debris']['attacker'][$elementID] + $combatResult['debris']['defender'][$elementID];
 		}
@@ -175,29 +127,7 @@ class ShowBattleSimulatorPage extends AbstractGamePage
 			pretty_number(ceil($sumSteal / $pricelist[217]['capacity'])), $LNG['tech'][217]
 		);
 
-		$reportInfo	= array(
-			'thisFleet'				=> array(
-				'fleet_start_galaxy'	=> 1,
-				'fleet_start_system'	=> 33,
-				'fleet_start_planet'	=> 7,
-				'fleet_start_type'		=> 1,
-				'fleet_end_galaxy'		=> 1,
-				'fleet_end_system'		=> 33,
-				'fleet_end_planet'		=> 7,
-				'fleet_end_type'		=> 1,
-				'fleet_start_time'		=> TIMESTAMP,
-			),
-			'debris'				=> $debris,
-			'stealResource'			=> $stealResource,
-			'moonChance'			=> $chanceCreateMoon,
-			'moonDestroy'			=> false,
-			'moonName'				=> NULL,
-			'moonDestroyChance'		=> NULL,
-			'moonDestroySuccess'	=> NULL,
-			'fleetDestroyChance'	=> NULL,
-			'fleetDestroySuccess'	=> NULL,
-			'additionalInfo'		=> $stealResourceInformation,
-		);
+		$reportInfo	= ['thisFleet'				=> ['fleet_start_galaxy'	=> 1, 'fleet_start_system'	=> 33, 'fleet_start_planet'	=> 7, 'fleet_start_type'		=> 1, 'fleet_end_galaxy'		=> 1, 'fleet_end_system'		=> 33, 'fleet_end_planet'		=> 7, 'fleet_end_type'		=> 1, 'fleet_start_time'		=> TIMESTAMP], 'debris'				=> $debris, 'stealResource'			=> $stealResource, 'moonChance'			=> $chanceCreateMoon, 'moonDestroy'			=> false, 'moonName'				=> NULL, 'moonDestroyChance'		=> NULL, 'moonDestroySuccess'	=> NULL, 'fleetDestroyChance'	=> NULL, 'fleetDestroySuccess'	=> NULL, 'additionalInfo'		=> $stealResourceInformation];
 		
 		$reportData	= GenerateReport($combatResult, $reportInfo);
 		$reportID	= md5(uniqid('', true).TIMESTAMP);
@@ -205,16 +135,12 @@ class ShowBattleSimulatorPage extends AbstractGamePage
         $db = Database::get();
 
         $sql = "INSERT INTO %%RW%% SET rid = :reportID, raport = :reportData, time = :time;";
-        $db->insert($sql,array(
-            ':reportID'     => $reportID,
-            ':reportData'   => serialize($reportData),
-            ':time'         => TIMESTAMP
-        ));
+        $db->insert($sql,[':reportID'     => $reportID, ':reportData'   => serialize($reportData), ':time'         => TIMESTAMP]);
 
         $this->sendJSON($reportID);
 	}
 	
-	function show()
+	function show(): void
 	{
 		global $USER, $PLANET, $reslist, $resource;
 
@@ -238,7 +164,7 @@ class ShowBattleSimulatorPage extends AbstractGamePage
 		}
 		else
 		{
-			$BattleArray	= HTTP::_GP('battleinput', array());
+			$BattleArray	= HTTP::_GP('battleinput', []);
 		}
 		
 		if(isset($_REQUEST['im']))
@@ -251,12 +177,7 @@ class ShowBattleSimulatorPage extends AbstractGamePage
 		
 		$this->tplObj->loadscript('battlesim.js');
 		
-		$this->assign(array(
-			'Slots'			=> $Slots,
-			'battleinput'	=> $BattleArray,
-			'fleetList'		=> $reslist['fleet'],
-			'defensiveList'	=> $reslist['defense'],
-		));
+		$this->assign(['Slots'			=> $Slots, 'battleinput'	=> $BattleArray, 'fleetList'		=> $reslist['fleet'], 'defensiveList'	=> $reslist['defense']]);
 		
 		$this->display('page.battleSimulator.default.tpl');   
 	}

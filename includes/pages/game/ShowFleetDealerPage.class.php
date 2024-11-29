@@ -25,7 +25,7 @@ class ShowFleetDealerPage extends AbstractGamePage
 		parent::__construct();
 	}
 	
-	public function send()
+	public function send(): void
 	{
 		global $USER, $PLANET, $LNG, $pricelist, $resource;
 		
@@ -44,54 +44,38 @@ class ShowFleetDealerPage extends AbstractGamePage
 			$PLANET[$resource[$shipID]]		-= $Count;
 
             $sql = 'UPDATE %%PLANETS%% SET '.$resource[$shipID].' = '.$resource[$shipID].' - :count WHERE id = :planetID;';
-			Database::get()->update($sql, array(
-                ':count'        => $Count,
-                ':planetID'     => $PLANET['id']
-            ));
+			Database::get()->update($sql, [':count'        => $Count, ':planetID'     => $PLANET['id']]);
 
-            $this->printMessage($LNG['tr_exchange_done'], array(array(
-				'label'	=> $LNG['sys_forward'],
-				'url'	=> 'game.php?page=fleetDealer'
-			)));
+            $this->printMessage($LNG['tr_exchange_done'], [['label'	=> $LNG['sys_forward'], 'url'	=> 'game.php?page=fleetDealer']]);
 		}
 		else
 		{
-			$this->printMessage($LNG['tr_exchange_error'], array(array(
-				'label'	=> $LNG['sys_back'],
-				'url'	=> 'game.php?page=fleetDealer'
-			)));
+			$this->printMessage($LNG['tr_exchange_error'], [['label'	=> $LNG['sys_back'], 'url'	=> 'game.php?page=fleetDealer']]);
 		}
 		
 	}
 	
-	function show()
+	function show(): void
 	{
 		global $PLANET, $LNG, $pricelist, $resource, $reslist;
 		
-		$Cost		= array();
+		$Cost		= [];
 		
 		$allowedShipIDs	= explode(',', Config::get()->trade_allowed_ships);
 		
 		foreach($allowedShipIDs as $shipID)
 		{
 			if(in_array($shipID, $reslist['fleet']) || in_array($shipID, $reslist['defense'])) {
-				$Cost[$shipID]	= array($PLANET[$resource[$shipID]], $LNG['tech'][$shipID], $pricelist[$shipID]['cost']);
+				$Cost[$shipID]	= [$PLANET[$resource[$shipID]], $LNG['tech'][$shipID], $pricelist[$shipID]['cost']];
 			}
 		}
 		
 		if(empty($Cost))
 		{
-			$this->printMessage($LNG['ft_empty'], array(array(
-				'label'	=> $LNG['sys_back'],
-				'url'	=> 'game.php?page=fleetDealer'
-			)));
+			$this->printMessage($LNG['ft_empty'], [['label'	=> $LNG['sys_back'], 'url'	=> 'game.php?page=fleetDealer']]);
 		}
 
-		$this->assign(array(
-			'shipIDs'	=> $allowedShipIDs,
-			'CostInfos'	=> $Cost,
-			'Charge'	=> Config::get()->trade_charge,
-		));
+		$this->assign(['shipIDs'	=> $allowedShipIDs, 'CostInfos'	=> $Cost, 'Charge'	=> Config::get()->trade_charge]);
 		
 		$this->display('page.fleetDealer.default.tpl');
 	}

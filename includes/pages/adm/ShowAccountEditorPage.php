@@ -17,9 +17,9 @@
 
 # Actions not logged: Planet-Edit, Alliance-Edit 
 
-if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FILE__))) throw new Exception("Permission error!");
+if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__))) throw new Exception("Permission error!");
 
-function ShowAccountEditorPage() 
+function ShowAccountEditorPage(): void 
 {
 	global $LNG, $reslist, $resource;
 	$template 	= new template();
@@ -50,7 +50,7 @@ function ShowAccountEditorPage()
 						$SQL .= "WHERE ";
 						$SQL .= "`id` = '". $id ."' AND `universe` = '".Universe::getEmulated()."';";
 						$GLOBALS['DATABASE']->query($SQL);
-						$after 		= array('metal' => ($before['metal'] + $metal), 'crystal' => ($before['crystal'] + $cristal), 'deuterium' => ($before['deuterium'] + $deut));
+						$after 		= ['metal' => ($before['metal'] + $metal), 'crystal' => ($before['crystal'] + $cristal), 'deuterium' => ($before['deuterium'] + $deut)];
 					}
 					
 					if (!empty($id_dark)) {
@@ -59,7 +59,7 @@ function ShowAccountEditorPage()
 						$SQL .= "WHERE ";
 						$SQL .= "`id` = '". $id_dark ."' AND `universe` = '".Universe::getEmulated()."' ";
 						$GLOBALS['DATABASE']->query($SQL);
-						$after_dm 	= array('darkmatter' => ($before_dm['darkmatter'] + $dark));
+						$after_dm 	= ['darkmatter' => ($before_dm['darkmatter'] + $dark)];
 					}
 				}
 				elseif ($_POST['delete'])
@@ -72,7 +72,7 @@ function ShowAccountEditorPage()
 						$SQL .= "WHERE ";
 						$SQL .= "`id` = '".$id."' AND `universe` = '".Universe::getEmulated()."';";
 						$GLOBALS['DATABASE']->query($SQL);
-						$after 		= array('metal' => ($before['metal'] - $metal), 'crystal' => ($before['crystal'] - $cristal), 'deuterium' => ($before['deuterium'] - $deut));
+						$after 		= ['metal' => ($before['metal'] - $metal), 'crystal' => ($before['crystal'] - $cristal), 'deuterium' => ($before['deuterium'] - $deut)];
 					}
 
 					if (!empty($id_dark)) {
@@ -81,7 +81,7 @@ function ShowAccountEditorPage()
 						$SQL .= "WHERE ";
 						$SQL .= "`id` = '". $id_dark ."';";
 						$GLOBALS['DATABASE']->query($SQL);
-						$after_dm 	= array('darkmatter' => ($before_dm['darkmatter'] - $dark));
+						$after_dm 	= ['darkmatter' => ($before_dm['darkmatter'] - $dark)];
 					}
 				}
 								
@@ -118,8 +118,8 @@ function ShowAccountEditorPage()
 			if($_POST)
 			{
 				$before1 = $GLOBALS['DATABASE']->getFirstRow("SELECT * FROM ".PLANETS." WHERE `id` = '". HTTP::_GP('id', 0) ."';");
-				$before = array();
-				$after = array();
+				$before = [];
+				$after = [];
 				foreach($reslist['fleet'] as $ID)
 				{
 					$before[$ID] = $before1[$resource[$ID]];
@@ -171,14 +171,10 @@ function ShowAccountEditorPage()
 			$parse['ships']	= "";
 			foreach($reslist['fleet'] as $ID)
 			{
-				$INPUT[$ID]	= array(
-					'type'	=> $resource[$ID],
-				);
+				$INPUT[$ID]	= ['type'	=> $resource[$ID]];
 			}
 
-			$template->assign_vars(array(
-				'inputlist'			=> $INPUT,
-			));
+			$template->assign_vars(['inputlist'			=> $INPUT]);
 						
 			$template->show('AccountEditorPageShips.tpl');
 		break;
@@ -187,8 +183,8 @@ function ShowAccountEditorPage()
 			if($_POST)
 			{
 				$before1 = $GLOBALS['DATABASE']->getFirstRow("SELECT * FROM ".PLANETS." WHERE `id` = '". HTTP::_GP('id', 0) ."';");
-				$before = array();
-				$after = array();
+				$before = [];
+				$after = [];
 				foreach($reslist['defense'] as $ID)
 				{
 					$before[$ID] = $before1[$resource[$ID]];
@@ -238,14 +234,10 @@ function ShowAccountEditorPage()
 			
 			foreach($reslist['defense'] as $ID)
 			{
-				$INPUT[$ID]	= array(
-					'type'	=> $resource[$ID],
-				);
+				$INPUT[$ID]	= ['type'	=> $resource[$ID]];
 			}
 
-			$template->assign_vars(array(
-				'inputlist'			=> $INPUT,
-			));
+			$template->assign_vars(['inputlist'			=> $INPUT]);
 						
 			$template->show('AccountEditorPageDefenses.tpl');
 		break;
@@ -260,8 +252,8 @@ function ShowAccountEditorPage()
 					$template->message($LNG['ad_add_not_exist'], '?page=accounteditor&edit=buildings');
 					exit;
 				}
-				$before = array();
-				$after = array();
+				$before = [];
+				$after = [];
 
 				foreach($reslist['allow'][$PlanetData['planet_type']] as $ID)
 				{
@@ -288,7 +280,7 @@ function ShowAccountEditorPage()
 				elseif ($_POST['delete'])
 				{
 					$Fields	= 0;
-					$QryUpdate	= array();
+					$QryUpdate	= [];
 
 					$SQL  = "UPDATE ".PLANETS." SET ";
 					$SQL .= "`eco_hash` = '', ";
@@ -323,14 +315,10 @@ function ShowAccountEditorPage()
 			
 			foreach($reslist['build'] as $ID)
 			{
-				$INPUT[$ID]	= array(
-					'type'	=> $resource[$ID],
-				);
+				$INPUT[$ID]	= ['type'	=> $resource[$ID]];
 			}
 
-			$template->assign_vars(array(
-				'inputlist'			=> $INPUT,
-			));
+			$template->assign_vars(['inputlist'			=> $INPUT]);
 						
 			$template->show('AccountEditorPageBuilds.tpl');
 		break;
@@ -339,8 +327,8 @@ function ShowAccountEditorPage()
 			if($_POST)
 			{
 				$before1 = $GLOBALS['DATABASE']->getFirstRow("SELECT * FROM ".USERS." WHERE `id` = '". HTTP::_GP('id', 0) ."';");
-				$before = array();
-				$after = array();
+				$before = [];
+				$after = [];
 				foreach($reslist['tech'] as $ID)
 				{
 					$before[$ID] = $before1[$resource[$ID]];
@@ -389,14 +377,10 @@ function ShowAccountEditorPage()
 			
 			foreach($reslist['tech'] as $ID)
 			{
-				$INPUT[$ID]	= array(
-					'type'	=> $resource[$ID],
-				);
+				$INPUT[$ID]	= ['type'	=> $resource[$ID]];
 			}
 
-			$template->assign_vars(array(
-				'inputlist'			=> $INPUT,
-			));
+			$template->assign_vars(['inputlist'			=> $INPUT]);
 						
 			$template->show('AccountEditorPageResearch.tpl');
 		break;
@@ -411,7 +395,7 @@ function ShowAccountEditorPage()
 				$vacation	= HTTP::_GP('vacation', '');				
 				
 				$before = $GLOBALS['DATABASE']->getFirstRow("SELECT `username`,`email`,`email_2`,`password`,`urlaubs_modus`,`urlaubs_until` FROM ".USERS." WHERE `id` = '". HTTP::_GP('id', 0) ."';");
-				$after = array();
+				$after = [];
 				
 				$PersonalQuery    =    "UPDATE ".USERS." SET ";
 
@@ -461,9 +445,7 @@ function ShowAccountEditorPage()
 				exit;
 			}
 			
-			$template->assign_vars(array(
-				'Selector'				=> array(''	=> $LNG['select_option'], 'yes' => $LNG['one_is_no_1'], 'no' => $LNG['one_is_no_0']),
-			));
+			$template->assign_vars(['Selector'				=> [''	=> $LNG['select_option'], 'yes' => $LNG['one_is_no_1'], 'no' => $LNG['one_is_no_0']]]);
 						
 			$template->show('AccountEditorPagePersonal.tpl');
 		break;
@@ -472,8 +454,8 @@ function ShowAccountEditorPage()
 			if($_POST)
 			{
 				$before1 = $GLOBALS['DATABASE']->getFirstRow("SELECT * FROM ".USERS." WHERE `id` = '". HTTP::_GP('id', 0) ."';");
-				$before = array();
-				$after = array();
+				$before = [];
+				$after = [];
 				foreach($reslist['officier'] as $ID)
 				{
 					$before[$ID] = $before1[$resource[$ID]];
@@ -522,14 +504,10 @@ function ShowAccountEditorPage()
 			
 			foreach($reslist['officier'] as $ID)
 			{
-				$INPUT[$ID]	= array(
-					'type'	=> $resource[$ID],
-				);
+				$INPUT[$ID]	= ['type'	=> $resource[$ID]];
 			}
 
-			$template->assign_vars(array(
-				'inputlist'			=> $INPUT,
-			));
+			$template->assign_vars(['inputlist'			=> $INPUT]);
 						
 			$template->show('AccountEditorPageOfficiers.tpl');
 		break;
@@ -598,7 +576,7 @@ function ShowAccountEditorPage()
 					$P	=	$GLOBALS['DATABASE']->getFirstRow("SELECT galaxy,`system`,planet,planet_type FROM ".PLANETS." WHERE `id` = '".$id."' AND `universe` = '".Universe::getEmulated()."';");
 					if ($P['planet_type'] == '1')
 					{
-						if (PlayerUtil::checkPosition(Universe::getEmulated(), $galaxy, $system, $planet,$P['planet_type']))
+						if (PlayerUtil::checkPosition(Universe::getEmulated(), $galaxy, $system, $planet))
 						{
 							$template->message($LNG['ad_pla_error_planets3'], '?page=accounteditor&edit=planets');
 							exit;
@@ -607,7 +585,7 @@ function ShowAccountEditorPage()
 						$GLOBALS['DATABASE']->query ("UPDATE ".PLANETS." SET `galaxy` = '".$galaxy."', `system` = '".$system."', `planet` = '".$planet."' WHERE `id` = '".$id."' AND `universe` = '".Universe::getEmulated()."';");
 
 					} else {
-						if(PlayerUtil::checkPosition(Universe::getEmulated(), $galaxy, $system, $planet, $P['planet_type']))
+						if(PlayerUtil::checkPosition(Universe::getEmulated(), $galaxy, $system, $planet))
 						{
 							$template->message($LNG['ad_pla_error_planets5'], '?page=accounteditor&edit=planets');
 							exit;

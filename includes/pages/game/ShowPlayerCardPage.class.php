@@ -27,7 +27,7 @@ class ShowPlayerCardPage extends AbstractGamePage
 		parent::__construct();
 	}
 	
-	function show()
+	function show(): void
 	{
 		global $USER, $LNG;
 		
@@ -48,10 +48,7 @@ class ShowPlayerCardPage extends AbstractGamePage
 				LEFT JOIN %%STATPOINTS%% s ON s.id_owner = u.id AND s.stat_type = 1
 				LEFT JOIN %%ALLIANCE%% a ON a.id = u.ally_id
 				WHERE u.id = :playerID AND u.universe = :universe;";
-		$query = $db->selectSingle($sql, array(
-			':universe'	=> Universe::current(),
-			':playerID'	=> $PlayerID
-		));
+		$query = $db->selectSingle($sql, [':universe'	=> Universe::current(), ':playerID'	=> $PlayerID]);
 
 		$totalfights = $query['wons'] + $query['loos'] + $query['draws'];
 		
@@ -65,39 +62,7 @@ class ShowPlayerCardPage extends AbstractGamePage
 			$drawsprozent               = 100 / $totalfights * $query['draws'];
 		}
 
-		$this->assign(array(
-			'id'			=> $PlayerID,
-			'yourid'		=> $USER['id'],
-			'name'			=> $query['username'],
-			'homeplanet'	=> $query['name'],
-			'galaxy'		=> $query['galaxy'],
-			'system'		=> $query['system'],
-			'planet'		=> $query['planet'],
-			'allyid'		=> $query['ally_id'],
-			'tech_rank'     => pretty_number($query['tech_rank']),
-			'tech_points'   => pretty_number($query['tech_points']),
-			'build_rank'    => pretty_number($query['build_rank']),
-			'build_points'  => pretty_number($query['build_points']),
-			'defs_rank'     => pretty_number($query['defs_rank']),
-			'defs_points'   => pretty_number($query['defs_points']),
-			'fleet_rank'    => pretty_number($query['fleet_rank']),
-			'fleet_points'  => pretty_number($query['fleet_points']),
-			'total_rank'    => pretty_number($query['total_rank']),
-			'total_points'  => pretty_number($query['total_points']),
-			'allyname'		=> $query['ally_name'],
-			'playerdestory' => sprintf($LNG['pl_destroy'], $query['username']),
-			'wons'          => pretty_number($query['wons']),
-			'loos'          => pretty_number($query['loos']),
-			'draws'         => pretty_number($query['draws']),
-			'kbmetal'       => pretty_number($query['kbmetal']),
-			'kbcrystal'     => pretty_number($query['kbcrystal']),
-			'lostunits'     => pretty_number($query['lostunits']),
-			'desunits'      => pretty_number($query['desunits']),
-			'totalfights'   => pretty_number($totalfights),
-			'siegprozent'   => round($siegprozent, 2),
-			'loosprozent'   => round($loosprozent, 2),
-			'drawsprozent'  => round($drawsprozent, 2),
-		));
+		$this->assign(['id'			=> $PlayerID, 'yourid'		=> $USER['id'], 'name'			=> $query['username'], 'homeplanet'	=> $query['name'], 'galaxy'		=> $query['galaxy'], 'system'		=> $query['system'], 'planet'		=> $query['planet'], 'allyid'		=> $query['ally_id'], 'tech_rank'     => pretty_number($query['tech_rank']), 'tech_points'   => pretty_number($query['tech_points']), 'build_rank'    => pretty_number($query['build_rank']), 'build_points'  => pretty_number($query['build_points']), 'defs_rank'     => pretty_number($query['defs_rank']), 'defs_points'   => pretty_number($query['defs_points']), 'fleet_rank'    => pretty_number($query['fleet_rank']), 'fleet_points'  => pretty_number($query['fleet_points']), 'total_rank'    => pretty_number($query['total_rank']), 'total_points'  => pretty_number($query['total_points']), 'allyname'		=> $query['ally_name'], 'playerdestory' => sprintf($LNG['pl_destroy'], $query['username']), 'wons'          => pretty_number($query['wons']), 'loos'          => pretty_number($query['loos']), 'draws'         => pretty_number($query['draws']), 'kbmetal'       => pretty_number($query['kbmetal']), 'kbcrystal'     => pretty_number($query['kbcrystal']), 'lostunits'     => pretty_number($query['lostunits']), 'desunits'      => pretty_number($query['desunits']), 'totalfights'   => pretty_number($totalfights), 'siegprozent'   => round($siegprozent, 2), 'loosprozent'   => round($loosprozent, 2), 'drawsprozent'  => round($drawsprozent, 2)]);
 		
 		$this->display('page.playerCard.default.tpl');
 	}

@@ -16,7 +16,7 @@
 
 //### Database access ###//
 
-$database					= array();
+$database					= [];
 $database['host']			= '%s';
 $database['port']			= '%s';
 $database['user']			= '%s';

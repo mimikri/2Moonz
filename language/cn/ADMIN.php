@@ -308,7 +308,7 @@ $LNG['ma_none'] ='公告';
 $LNG['ma_message'] ='消息';
 $LNG['ma_mode'] ='As transport';
 $LNG['ma_all'] ='All';
-$LNG['ma_modes']                = array('Game','Mail','Game & Mail');
+$LNG['ma_modes']                = ['Game', 'Mail', 'Game & Mail'];
 //###########################################################//
 
 //---------------	Pagina Inicial	------------------------//

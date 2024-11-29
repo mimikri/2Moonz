@@ -21,7 +21,7 @@
 		 * Parsed cron-expressions cache.
 		 * @var mixed
 		 */
-		static private $pcron = array();
+		static private array $pcron = [];
 
 		/**
 		 * getNextOccurrence() uses a cron-expression to calculate the time and date at which a cronjob
@@ -109,7 +109,7 @@
 		 * @author	Christian Land
 		 */
 
-		static private function calculateDateTime($expression, $rtime, $next = true) {
+		static private function calculateDateTime($expression, mixed $rtime, bool $next = true): int|false {
 
 			// Initialize vars
 
@@ -329,20 +329,18 @@
 		}
 
 		/**
-		 * findValue() checks if the given value exists in an array. If it does not exist, the next
-		 * higher/lower value is returned (depending on $next). If no higher/lower value exists,
-		 * false is returned.
-		 *
-		 * @access	public
-		 * @param	int		$value
-		 * @param	mixed		$data
-		 * @param	bool		$next
-		 * @return	mixed
-		 * @since	0.0.1	Initial Release
-		 * @author	Christian Land
-		 */
-
-		static private function findValue($value, $data, $next = true) {
+   * findValue() checks if the given value exists in an array. If it does not exist, the next
+   * higher/lower value is returned (depending on $next). If no higher/lower value exists,
+   * false is returned.
+   *
+   * @access	public
+   * @param	int		$value
+   * @param	bool		$next
+   * @return	mixed
+   * @since	0.0.1	Initial Release
+   * @author	Christian Land
+   */
+  static private function findValue($value, mixed $data, bool $next = true): int|false {
 
 			if (in_array($value, $data)) {
 
@@ -382,12 +380,12 @@
 		 * @author	Christian Land
 		 */
 
-		 static private function getExpression($expression, $reverse=false) {
+		 static private function getExpression($expression, bool $reverse=false) {
 
 			// First of all we cleanup the expression and remove all duplicate tabs/spaces/etc.
 			// For example "*              * *    * *" would be converted to "* * * * *", etc.
 
-			$expression	= preg_replace('/(\s+)/', ' ', strtolower(trim($expression)));
+			$expression	= preg_replace('/(\s+)/', ' ', strtolower(trim((string) $expression)));
 
 			// Lets see if we've already parsed that expression
 
@@ -413,17 +411,15 @@
 		}
 
 		/**
-		 * arrayReverse() reverses all sub-arrays of our cron array. The reversed values are used for calculations
-		 * that are run when getLastOccurence() is called.
-		 *
-		 * @access	public
-		 * @param	mixed		$cron
-		 * @return	mixed
-		 * @since	0.0.1	Initial Release
-		 * @author	Christian Land
-		 */
-
- 		static private function arrayReverse($cron) {
+    * arrayReverse() reverses all sub-arrays of our cron array. The reversed values are used for calculations
+    * that are run when getLastOccurence() is called.
+    *
+    * @access	public
+    * @return	mixed
+    * @since	0.0.1	Initial Release
+    * @author	Christian Land
+    */
+   static private function arrayReverse(mixed $cron) {
 
 			foreach ($cron as $key=>$value) {
 

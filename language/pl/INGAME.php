@@ -100,7 +100,7 @@ $LNG['lm_battlesim']						= 'Symulator walki';
 $LNG['lm_playercard']                       = 'Informacje o graczu';
 $LNG['lm_info']                     		= 'Informacje';
 $LNG['lm_disclamer']						= 'Kontakt';
-	
+
 //----------------------------------------------------------------------------//
 //OVERVIEW
 

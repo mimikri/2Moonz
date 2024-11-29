@@ -15,8 +15,8 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FILE__)) || $_GET['sid'] != session_id()) exit;
-function ShowRightsPage()
+if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__)) || $_GET['sid'] != session_id()) exit;
+function ShowRightsPage(): void
 {
 	global $LNG, $USER;
 	$mode	= HTTP::_GP('mode', '');
@@ -37,7 +37,7 @@ function ShowRightsPage()
 				}
 				
 				if(!isset($_POST['rights'])) {
-					$_POST['rights']	= array();
+					$_POST['rights']	= [];
 				}
 				
 				if($_POST['action'] == 'send') {
@@ -46,20 +46,12 @@ function ShowRightsPage()
 				
 				$Rights	= $GLOBALS['DATABASE']->getFirstRow("SELECT rights FROM ".USERS." WHERE `id` = '".$id."';");
 				if(($Rights['rights'] = unserialize($Rights['rights'])) === false) {
-					$Rights['rights']	= array();
+					$Rights['rights']	= [];
 				}
 				
-				$Files	= array_map('prepare', array_diff(scandir('includes/pages/adm/'), array('.', '..', '.svn', 'index.html', '.htaccess', 'ShowIndexPage.php', 'ShowOverviewPage.php', 'ShowMenuPage.php', 'ShowTopnavPage.php')));
+				$Files	= array_map('prepare', array_diff(scandir('includes/pages/adm/'), ['.', '..', '.svn', 'index.html', '.htaccess', 'ShowIndexPage.php', 'ShowOverviewPage.php', 'ShowMenuPage.php', 'ShowTopnavPage.php']));
 				
-				$template->assign_vars(array(	
-					'Files'						=> $Files, 
-					'Rights'					=> $Rights['rights'], 
-					'id'						=> $id, 
-					'yesorno'					=> array(1 => $LNG['one_is_yes_1'], 0 => $LNG['one_is_yes_0']),
-					'ad_authlevel_title'		=> $LNG['ad_authlevel_title'], 
-					'button_submit'				=> $LNG['button_submit'],  
-					'sid'						=> session_id(), 
-				));
+				$template->assign_vars(['Files'						=> $Files, 'Rights'					=> $Rights['rights'], 'id'						=> $id, 'yesorno'					=> [1 => $LNG['one_is_yes_1'], 0 => $LNG['one_is_yes_0']], 'ad_authlevel_title'		=> $LNG['ad_authlevel_title'], 'button_submit'				=> $LNG['button_submit'], 'sid'						=> session_id()]);
 				
 				$template->show('ModerrationRightsPostPage.tpl');		
 				exit;
@@ -82,23 +74,7 @@ function ShowRightsPage()
 				$UserList	.=	'<option value="'.$List['id'].'">'.$List['username'].'&nbsp;&nbsp;('.$LNG['rank_'.$List['authlevel']].')</option>';
 			}	
 
-			$template->assign_vars(array(	
-				'Selector'					=> array(0 => $LNG['rank_0'], 1 => $LNG['rank_1'], 2 => $LNG['rank_2'], 3 => $LNG['rank_3']),
-				'UserList'					=> $UserList, 
-				'ad_authlevel_title'		=> $LNG['ad_authlevel_title'], 
-				'bo_select_title'			=> $LNG['bo_select_title'], 
-				'button_submit'				=> $LNG['button_submit'], 
-				'button_deselect'			=> $LNG['button_deselect'], 
-				'button_filter'				=> $LNG['button_filter'], 
-				'ad_authlevel_insert_id'	=> $LNG['ad_authlevel_insert_id'], 
-				'ad_authlevel_auth'			=> $LNG['ad_authlevel_auth'], 
-				'ad_authlevel_aa'			=> $LNG['ad_authlevel_aa'], 
-				'ad_authlevel_oo'			=> $LNG['ad_authlevel_oo'], 
-				'ad_authlevel_mm'			=> $LNG['ad_authlevel_mm'], 
-				'ad_authlevel_jj'			=> $LNG['ad_authlevel_jj'], 
-				'ad_authlevel_tt'			=> $LNG['ad_authlevel_tt'], 
-				'sid'						=> session_id(), 
-			));
+			$template->assign_vars(['Selector'					=> [0 => $LNG['rank_0'], 1 => $LNG['rank_1'], 2 => $LNG['rank_2'], 3 => $LNG['rank_3']], 'UserList'					=> $UserList, 'ad_authlevel_title'		=> $LNG['ad_authlevel_title'], 'bo_select_title'			=> $LNG['bo_select_title'], 'button_submit'				=> $LNG['button_submit'], 'button_deselect'			=> $LNG['button_deselect'], 'button_filter'				=> $LNG['button_filter'], 'ad_authlevel_insert_id'	=> $LNG['ad_authlevel_insert_id'], 'ad_authlevel_auth'			=> $LNG['ad_authlevel_auth'], 'ad_authlevel_aa'			=> $LNG['ad_authlevel_aa'], 'ad_authlevel_oo'			=> $LNG['ad_authlevel_oo'], 'ad_authlevel_mm'			=> $LNG['ad_authlevel_mm'], 'ad_authlevel_jj'			=> $LNG['ad_authlevel_jj'], 'ad_authlevel_tt'			=> $LNG['ad_authlevel_tt'], 'sid'						=> session_id()]);
 	
 			$template->show('ModerrationRightsPage.tpl');
 		break;
@@ -140,30 +116,14 @@ function ShowRightsPage()
 				$UserList	.=	'<option value="'.$List['id'].'">'.$List['username'].'&nbsp;&nbsp;('.$LNG['rank_'.$List['authlevel']].')</option>';
 			}	
 
-			$template->assign_vars(array(	
-				'Selector'					=> array(0 => $LNG['rank_0'], 1 => $LNG['rank_1'], 2 => $LNG['rank_2'], 3 => $LNG['rank_3']),
-				'UserList'					=> $UserList, 
-				'ad_authlevel_title'		=> $LNG['ad_authlevel_title'], 
-				'bo_select_title'			=> $LNG['bo_select_title'], 
-				'button_submit'				=> $LNG['button_submit'], 
-				'button_deselect'			=> $LNG['button_deselect'], 
-				'button_filter'				=> $LNG['button_filter'], 
-				'ad_authlevel_insert_id'	=> $LNG['ad_authlevel_insert_id'], 
-				'ad_authlevel_auth'			=> $LNG['ad_authlevel_auth'], 
-				'ad_authlevel_aa'			=> $LNG['ad_authlevel_aa'], 
-				'ad_authlevel_oo'			=> $LNG['ad_authlevel_oo'], 
-				'ad_authlevel_mm'			=> $LNG['ad_authlevel_mm'], 
-				'ad_authlevel_jj'			=> $LNG['ad_authlevel_jj'], 
-				'ad_authlevel_tt'			=> $LNG['ad_authlevel_tt'], 
-				'sid'						=> session_id(), 
-			));
+			$template->assign_vars(['Selector'					=> [0 => $LNG['rank_0'], 1 => $LNG['rank_1'], 2 => $LNG['rank_2'], 3 => $LNG['rank_3']], 'UserList'					=> $UserList, 'ad_authlevel_title'		=> $LNG['ad_authlevel_title'], 'bo_select_title'			=> $LNG['bo_select_title'], 'button_submit'				=> $LNG['button_submit'], 'button_deselect'			=> $LNG['button_deselect'], 'button_filter'				=> $LNG['button_filter'], 'ad_authlevel_insert_id'	=> $LNG['ad_authlevel_insert_id'], 'ad_authlevel_auth'			=> $LNG['ad_authlevel_auth'], 'ad_authlevel_aa'			=> $LNG['ad_authlevel_aa'], 'ad_authlevel_oo'			=> $LNG['ad_authlevel_oo'], 'ad_authlevel_mm'			=> $LNG['ad_authlevel_mm'], 'ad_authlevel_jj'			=> $LNG['ad_authlevel_jj'], 'ad_authlevel_tt'			=> $LNG['ad_authlevel_tt'], 'sid'						=> session_id()]);
 	
 			$template->show('ModerrationUsersPage.tpl');
 		break;
 	}
 }
 
-function prepare($val)
+function prepare($val): array|string
 {
 	return str_replace('.php', '', $val);
 }

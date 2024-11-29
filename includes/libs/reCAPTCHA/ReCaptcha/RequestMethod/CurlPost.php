@@ -44,9 +44,8 @@ class CurlPost implements RequestMethod
 
     /**
      * Curl connection to the reCAPTCHA service
-     * @var Curl
      */
-    private $curl;
+    private ?\ReCaptcha\RequestMethod\Curl $curl;
 
     public function __construct(Curl $curl = null)
     {
@@ -67,17 +66,7 @@ class CurlPost implements RequestMethod
     {
         $handle = $this->curl->init(self::SITE_VERIFY_URL);
 
-        $options = array(
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $params->toQueryString(),
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/x-www-form-urlencoded'
-            ),
-            CURLINFO_HEADER_OUT => false,
-            CURLOPT_HEADER => false,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => true
-        );
+        $options = [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $params->toQueryString(), CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'], CURLINFO_HEADER_OUT => false, CURLOPT_HEADER => false, CURLOPT_RETURNTRANSFER => true, CURLOPT_SSL_VERIFYPEER => true];
         $this->curl->setoptArray($handle, $options);
 
         $response = $this->curl->exec($handle);

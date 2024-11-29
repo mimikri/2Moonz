@@ -25,7 +25,7 @@ class ShowRecordsPage extends AbstractGamePage
 		parent::__construct();
 	}
 	
-	function show()
+	function show(): void
 	{
 		global $USER, $LNG, $reslist;
 
@@ -36,14 +36,12 @@ class ShowRecordsPage extends AbstractGamePage
 		INNER JOIN %%RECORDS%% ON userID = id
 		WHERE universe = :universe;";
 
-		$recordResult = $db->select($sql, array(
-			':universe'	=> Universe::current()
-		));
+		$recordResult = $db->select($sql, [':universe'	=> Universe::current()]);
 
-		$defenseList	= array_fill_keys($reslist['defense'], array());
-		$fleetList		= array_fill_keys($reslist['fleet'], array());
-		$researchList	= array_fill_keys($reslist['tech'], array());
-		$buildList		= array_fill_keys($reslist['build'], array());
+		$defenseList	= array_fill_keys($reslist['defense'], []);
+		$fleetList		= array_fill_keys($reslist['fleet'], []);
+		$researchList	= array_fill_keys($reslist['tech'], []);
+		$buildList		= array_fill_keys($reslist['build'], []);
 		
 		foreach($recordResult as $recordRow) {
 			if (in_array($recordRow['elementID'], $reslist['defense'])) {
@@ -59,13 +57,7 @@ class ShowRecordsPage extends AbstractGamePage
 
 		require_once 'includes/classes/Cronjob.class.php';
 		
-		$this->assign(array(
-			'defenseList'	=> $defenseList,
-			'fleetList'		=> $fleetList,
-			'researchList'	=> $researchList,
-			'buildList'		=> $buildList,
-			'update'		=> _date($LNG['php_tdformat'], Cronjob::getLastExecutionTime('statistic'), $USER['timezone']),
-		));
+		$this->assign(['defenseList'	=> $defenseList, 'fleetList'		=> $fleetList, 'researchList'	=> $researchList, 'buildList'		=> $buildList, 'update'		=> _date($LNG['php_tdformat'], Cronjob::getLastExecutionTime('statistic'), $USER['timezone'])]);
 		
 		$this->display('page.records.default.tpl');
 	}

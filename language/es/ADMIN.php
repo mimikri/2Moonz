@@ -304,7 +304,7 @@ $LNG['ma_none']				= 'Mensaje global';
 $LNG['ma_message']				= 'Mensaje';
 $LNG['ma_mode']					= 'Enviar como';
 $LNG['ma_all']					= 'Todos';
-$LNG['ma_modes']				= array('Mensaje Interno', 'Correo Electrónico', 'Mensaje interno e email'); 
+$LNG['ma_modes']				= ['Mensaje Interno', 'Correo Electrónico', 'Mensaje interno e email']; 
 //###########################################################//
 
 //---------------	PÁGINA DE INICIO - OVERVIEW	------------------------//

@@ -15,15 +15,12 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-function ShowIndexPage()
+function ShowIndexPage(): void
 {
 	global $LNG;
 	$template	= new template();
 
-	$template->assign_vars(array(	
-		'game_name'		=> Config::get()->game_name,
-		'adm_cp_title'	=> $LNG['adm_cp_title'],
-	));
+	$template->assign_vars(['game_name'		=> Config::get()->game_name, 'adm_cp_title'	=> $LNG['adm_cp_title']]);
 	
 	$template->display('adm/ShowIndexPage.tpl');
 }

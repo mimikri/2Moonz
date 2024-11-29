@@ -59,9 +59,8 @@ class SocketPost implements RequestMethod
 
     /**
      * Socket to the reCAPTCHA service
-     * @var Socket
      */
-    private $socket;
+    private ?\ReCaptcha\RequestMethod\Socket $socket;
 
     /**
      * Constructor
@@ -83,7 +82,7 @@ class SocketPost implements RequestMethod
      * @param RequestParameters $params Request parameters
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params)
+    public function submit(RequestParameters $params): string
     {
         $errno = 0;
         $errstr = '';
@@ -110,7 +109,7 @@ class SocketPost implements RequestMethod
 
         $this->socket->fclose();
 
-        if (0 !== strpos($response, 'HTTP/1.1 200 OK')) {
+        if (!str_starts_with($response, 'HTTP/1.1 200 OK')) {
             return self::BAD_RESPONSE;
         }
 

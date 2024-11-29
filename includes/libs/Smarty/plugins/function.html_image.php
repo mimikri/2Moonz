@@ -11,8 +11,8 @@
  * Name:     html_image
  * Date:     Feb 24, 2003
  * Purpose:  format HTML tags for the image
- * Examples: {html_image file="/images/masthead.gif"}
- * Output:   <img src="/images/masthead.gif" width=400 height=23>
+ * Examples: {html_image file="/images/masthead.webp"}
+ * Output:   <img src="/images/masthead.webp" width=400 height=23>
  * Params:
  *
  * - file        - (required) - file (and path) of image

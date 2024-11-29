@@ -9,7 +9,7 @@
 
 class CustomAJAXChatShoutBox extends CustomAJAXChat {
 
-	function initialize() {
+	function initialize(): void {
 		// Initialize configuration settings:
 		$this->initConfig();
 	}

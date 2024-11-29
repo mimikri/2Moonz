@@ -15,26 +15,19 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-function GenerateReport($combatResult, $reportInfo)
+function GenerateReport(array $combatResult, $reportInfo): array
 {
-	$Destroy	= array('att' => 0, 'def' => 0);
-	$DATA		= array();
+	$Destroy	= ['att' => 0, 'def' => 0];
+	$DATA		= [];
 	$DATA['mode']	= (int) $reportInfo['moonDestroy'];
 	$DATA['time']	= $reportInfo['thisFleet']['fleet_start_time'];
-	$DATA['start']	= array($reportInfo['thisFleet']['fleet_start_galaxy'], $reportInfo['thisFleet']['fleet_start_system'], $reportInfo['thisFleet']['fleet_start_planet'], $reportInfo['thisFleet']['fleet_start_type']);
-	$DATA['koords']	= array($reportInfo['thisFleet']['fleet_end_galaxy'], $reportInfo['thisFleet']['fleet_end_system'], $reportInfo['thisFleet']['fleet_end_planet'], $reportInfo['thisFleet']['fleet_end_type']);
-	$DATA['units']	= array($combatResult['unitLost']['attacker'], $combatResult['unitLost']['defender']);
+	$DATA['start']	= [$reportInfo['thisFleet']['fleet_start_galaxy'], $reportInfo['thisFleet']['fleet_start_system'], $reportInfo['thisFleet']['fleet_start_planet'], $reportInfo['thisFleet']['fleet_start_type']];
+	$DATA['koords']	= [$reportInfo['thisFleet']['fleet_end_galaxy'], $reportInfo['thisFleet']['fleet_end_system'], $reportInfo['thisFleet']['fleet_end_planet'], $reportInfo['thisFleet']['fleet_end_type']];
+	$DATA['units']	= [$combatResult['unitLost']['attacker'], $combatResult['unitLost']['defender']];
 	$DATA['debris']	= $reportInfo['debris'];
 	$DATA['steal']	= $reportInfo['stealResource'];
 	$DATA['result']	= $combatResult['won'];
-	$DATA['moon']	= array(
-		'moonName'				=> $reportInfo['moonName'],
-		'moonChance'			=> (int) $reportInfo['moonChance'],
-		'moonDestroyChance'		=> (int) $reportInfo['moonDestroyChance'],
-		'moonDestroySuccess'	=> (int) $reportInfo['moonDestroySuccess'],
-		'fleetDestroyChance'	=> (int) $reportInfo['fleetDestroyChance'],
-		'fleetDestroySuccess'	=> (int) $reportInfo['fleetDestroySuccess']
-	);
+	$DATA['moon']	= ['moonName'				=> $reportInfo['moonName'], 'moonChance'			=> (int) $reportInfo['moonChance'], 'moonDestroyChance'		=> (int) $reportInfo['moonDestroyChance'], 'moonDestroySuccess'	=> (int) $reportInfo['moonDestroySuccess'], 'fleetDestroyChance'	=> (int) $reportInfo['fleetDestroyChance'], 'fleetDestroySuccess'	=> (int) $reportInfo['fleetDestroySuccess']];
 	
 	if(isset($reportInfo['additionalInfo']))
 	{
@@ -47,26 +40,18 @@ function GenerateReport($combatResult, $reportInfo)
 	
 	foreach($combatResult['rw'][0]['attackers'] as $player)
 	{
-		$DATA['players'][$player['player']['id']]	= array(
-			'name'		=> $player['player']['username'],
-			'koords'	=> array($player['fleetDetail']['fleet_start_galaxy'], $player['fleetDetail']['fleet_start_system'], $player['fleetDetail']['fleet_start_planet'], $player['fleetDetail']['fleet_start_type']),
-			'tech'		=> array($player['techs'][0] * 100, $player['techs'][1] * 100, $player['techs'][2] * 100),
-		);
+		$DATA['players'][$player['player']['id']]	= ['name'		=> $player['player']['username'], 'koords'	=> [$player['fleetDetail']['fleet_start_galaxy'], $player['fleetDetail']['fleet_start_system'], $player['fleetDetail']['fleet_start_planet'], $player['fleetDetail']['fleet_start_type']], 'tech'		=> [$player['techs'][0] * 100, $player['techs'][1] * 100, $player['techs'][2] * 100]];
 	}
 	foreach($combatResult['rw'][0]['defenders'] as $player)
 	{
-		$DATA['players'][$player['player']['id']]	= array(
-			'name'		=> $player['player']['username'],
-			'koords'	=> array($player['fleetDetail']['fleet_start_galaxy'], $player['fleetDetail']['fleet_start_system'], $player['fleetDetail']['fleet_start_planet'], $player['fleetDetail']['fleet_start_type']),
-			'tech'		=> array($player['techs'][0] * 100, $player['techs'][1] * 100, $player['techs'][2] * 100),
-		);
+		$DATA['players'][$player['player']['id']]	= ['name'		=> $player['player']['username'], 'koords'	=> [$player['fleetDetail']['fleet_start_galaxy'], $player['fleetDetail']['fleet_start_system'], $player['fleetDetail']['fleet_start_planet'], $player['fleetDetail']['fleet_start_type']], 'tech'		=> [$player['techs'][0] * 100, $player['techs'][1] * 100, $player['techs'][2] * 100]];
 	}
 	
 	foreach($combatResult['rw'] as $Round => $RoundInfo)
 	{
 		foreach($RoundInfo['attackers'] as $FleetID => $player)
 		{	
-			$playerData	= array('userID' => $player['player']['id'], 'ships' => array());
+			$playerData	= ['userID' => $player['player']['id'], 'ships' => []];
 			
 			if(array_sum($player['unit']) == 0) {
 				$DATA['rounds'][$Round]['attacker'][] = $playerData;
@@ -80,9 +65,7 @@ function GenerateReport($combatResult, $reportInfo)
 					continue;
 					
 				$ShipInfo	= $RoundInfo['infoA'][$FleetID][$ShipID];
-				$playerData['ships'][$ShipID]	= array(
-					$Amount, $ShipInfo['att'], $ShipInfo['def'], $ShipInfo['shield']
-				);
+				$playerData['ships'][$ShipID]	= [$Amount, $ShipInfo['att'], $ShipInfo['def'], $ShipInfo['shield']];
 			}
 			
 			$DATA['rounds'][$Round]['attacker'][] = $playerData;
@@ -90,7 +73,7 @@ function GenerateReport($combatResult, $reportInfo)
 		
 		foreach($RoundInfo['defenders'] as $FleetID => $player)
 		{	
-			$playerData	= array('userID' => $player['player']['id'], 'ships' => array());
+			$playerData	= ['userID' => $player['player']['id'], 'ships' => []];
 			if(array_sum($player['unit']) == 0) {
 				$DATA['rounds'][$Round]['defender'][] = $playerData;
 				$Destroy['def']++;
@@ -105,9 +88,7 @@ function GenerateReport($combatResult, $reportInfo)
 				}
 					
 				$ShipInfo	= $RoundInfo['infoD'][$FleetID][$ShipID];
-				$playerData['ships'][$ShipID]	= array(
-					$Amount, $ShipInfo['att'], $ShipInfo['def'], $ShipInfo['shield']
-				);
+				$playerData['ships'][$ShipID]	= [$Amount, $ShipInfo['att'], $ShipInfo['def'], $ShipInfo['shield']];
 			}
 			$DATA['rounds'][$Round]['defender'][] = $playerData;
 		}
@@ -116,9 +97,9 @@ function GenerateReport($combatResult, $reportInfo)
 			break;
 		
 		if(isset($RoundInfo['attack'], $RoundInfo['attackShield'], $RoundInfo['defense'], $RoundInfo['defShield']))
-			$DATA['rounds'][$Round]['info']	= array($RoundInfo['attack'], $RoundInfo['attackShield'], $RoundInfo['defense'], $RoundInfo['defShield']);
+			$DATA['rounds'][$Round]['info']	= [$RoundInfo['attack'], $RoundInfo['attackShield'], $RoundInfo['defense'], $RoundInfo['defShield']];
 		else
-			$DATA['rounds'][$Round]['info']	= array(NULL, NULL, NULL, NULL);
+			$DATA['rounds'][$Round]['info']	= [NULL, NULL, NULL, NULL];
 	}
 	return $DATA;
 }

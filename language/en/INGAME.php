@@ -103,7 +103,7 @@ $LNG['lm_battlesim']						= 'Simulator';
 $LNG['lm_playercard']                       = 'Player Profile';
 $LNG['lm_info']                     		= 'Info';
 $LNG['lm_disclamer']						= 'Credits';
-	
+
 //----------------------------------------------------------------------------//
 // Vista Geral
 

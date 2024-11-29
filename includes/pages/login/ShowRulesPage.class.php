@@ -25,12 +25,10 @@ class ShowRulesPage extends AbstractLoginPage
 		parent::__construct();
 	}
 	
-	function show() 
+	function show(): void 
 	{
 		global $LNG;
-		$this->assign(array(
-			'rules'		=> $LNG->getTemplate('rules'),
-		));
+		$this->assign(['rules'		=> $LNG->getTemplate('rules')]);
 		
 		$this->display('page.rules.default.tpl');
 	}

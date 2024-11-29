@@ -20,11 +20,11 @@ require 'includes/classes/cache/resource/CacheFile.class.php';
 
 class Cache
 {
-	private $cacheResource = NULL;
-	private $cacheBuilder = array();
-	private $cacheObj = array();
+	private readonly \CacheFile $cacheResource;
+	private array $cacheBuilder = [];
+	private array $cacheObj = [];
 
-	static private $obj = NULL;
+	static private ?\Cache $obj = NULL;
 
 	static public function get()
 	{
@@ -40,7 +40,7 @@ class Cache
 		$this->cacheResource = new CacheFile();
 	}
 	
-	public function add($Key, $ClassName) {
+	public function add($Key, $ClassName): void {
 		$this->cacheBuilder[$Key]	= $ClassName;
 	}
 
@@ -53,7 +53,7 @@ class Cache
 			}
 			else
 			{
-				return array();
+				return [];
 			}
 		}
 		return $this->cacheObj[$Key];
@@ -67,7 +67,7 @@ class Cache
 		return $this->buildCache($Key);
 	}
 
-	public function load($Key) {
+	public function load($Key): bool {
 		$cacheData	= $this->cacheResource->open($Key);
 		
 		if($cacheData === false)
@@ -81,7 +81,7 @@ class Cache
 		return true;
 	}
 
-	public function buildCache($Key) {
+	public function buildCache($Key): bool {
 		$className		= $this->cacheBuilder[$Key];
 
 		$path			= 'includes/classes/cache/builder/'.$className.'.class.php';

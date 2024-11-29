@@ -10,9 +10,12 @@
 // Class to initialize the DataBase connection:
 class AJAXChatDataBase {
 
-	var $_db;
+	/**
+  * @var \AJAXChatDatabaseMySQLi|\AJAXChatDatabaseMySQL
+  */
+ public $_db;
 
-	function __construct(&$dbConnectionConfig) {
+	function __construct(array &$dbConnectionConfig) {
 		switch($dbConnectionConfig['type']) {
 			case 'mysqli':
 				$this->_db = new AJAXChatDatabaseMySQLi($dbConnectionConfig);

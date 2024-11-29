@@ -51,59 +51,36 @@
 		 * The parsed cron-expression.
 		 * @var mixed
 		 */
-		static private $cron		= array();
+		static private array $cron		= [];
 
 		/**
 		 * Ranges.
 		 * @var mixed
 		 */
-		static private $ranges		= array(IDX_MINUTE		=> array( 'min'	=> 0,
-											  'max'	=> 59	),		// Minutes
-							IDX_HOUR		=> array( 'min'	=> 0,
-											  'max'	=> 23	),		// Hours
-							IDX_DAY			=> array( 'min'	=> 1,
-											  'max'	=> 31	),		// Days
-							IDX_MONTH		=> array( 'min'	=> 1,
-											  'max'	=> 12	),		// Months
-							IDX_WEEKDAY		=> array( 'min'	=> 0,
-											  'max'	=> 7	)	);	// Weekdays
+		static private array $ranges		= [
+      IDX_MINUTE		=> ['min'	=> 0, 'max'	=> 59],
+      // Minutes
+      IDX_HOUR		=> ['min'	=> 0, 'max'	=> 23],
+      // Hours
+      IDX_DAY			=> ['min'	=> 1, 'max'	=> 31],
+      // Days
+      IDX_MONTH		=> ['min'	=> 1, 'max'	=> 12],
+      // Months
+      IDX_WEEKDAY		=> ['min'	=> 0, 'max'	=> 7],
+  ];	// Weekdays
 
 		/**
 		 * Named intervals.
 		 * @var mixed
 		 */
-		static private $intervals	= array('@yearly'	=> '0 0 1 1 *',
-							'@annualy'	=> '0 0 1 1 *',
-							'@monthly'	=> '0 0 1 * *',
-							'@weekly'	=> '0 0 * * 0',
-							'@midnight'	=> '0 0 * * *',
-							'@daily'	=> '0 0 * * *',
-							'@hourly'	=> '0 * * * *'		);
+		static private array $intervals	= ['@yearly'	=> '0 0 1 1 *', '@annualy'	=> '0 0 1 1 *', '@monthly'	=> '0 0 1 * *', '@weekly'	=> '0 0 * * 0', '@midnight'	=> '0 0 * * *', '@daily'	=> '0 0 * * *', '@hourly'	=> '0 * * * *'];
 
 
 		/**
 		 * Possible keywords for months/weekdays.
 		 * @var mixed
 		 */
-		static private $keywords	= array(IDX_MONTH	=> array('/(january|januar|jan)/i'			=> 1,
-										'/(february|februar|feb)/i'			=> 2,
-										'/(march|maerz|m�rz|mar|mae|m�r)/i'		=> 3,
-										'/(april|apr)/i'				=> 4,
-										'/(may|mai)/i'					=> 5,
-										'/(june|juni|jun)/i'				=> 6,
-										'/(july|juli|jul)/i'				=> 7,
-										'/(august|aug)/i'				=> 8,
-										'/(september|sep)/i'				=> 9,
-										'/(october|oktober|okt|oct)/i'			=> 10,
-										'/(november|nov)/i'				=> 11,
-										'/(december|dezember|dec|dez)/i'		=> 12		),
-							IDX_WEEKDAY	=> array('/(sunday|sonntag|sun|son|su|so)/i'		=> 0,
-										'/(monday|montag|mon|mo)/i'			=> 1,
-										'/(tuesday|dienstag|die|tue|tu|di)/i'		=> 2,
-										'/(wednesdays|mittwoch|mit|wed|we|mi)/i'	=> 3,
-										'/(thursday|donnerstag|don|thu|th|do)/i'	=> 4,
-										'/(friday|freitag|fre|fri|fr)/i'		=> 5,
-										'/(saturday|samstag|sam|sat|sa)/i'		=> 6		)	);
+		static private array $keywords	= [IDX_MONTH	=> ['/(january|januar|jan)/i'			=> 1, '/(february|februar|feb)/i'			=> 2, '/(march|maerz|m�rz|mar|mae|m�r)/i'		=> 3, '/(april|apr)/i'				=> 4, '/(may|mai)/i'					=> 5, '/(june|juni|jun)/i'				=> 6, '/(july|juli|jul)/i'				=> 7, '/(august|aug)/i'				=> 8, '/(september|sep)/i'				=> 9, '/(october|oktober|okt|oct)/i'			=> 10, '/(november|nov)/i'				=> 11, '/(december|dezember|dec|dez)/i'		=> 12], IDX_WEEKDAY	=> ['/(sunday|sonntag|sun|son|su|so)/i'		=> 0, '/(monday|montag|mon|mo)/i'			=> 1, '/(tuesday|dienstag|die|tue|tu|di)/i'		=> 2, '/(wednesdays|mittwoch|mit|wed|we|mi)/i'	=> 3, '/(thursday|donnerstag|don|thu|th|do)/i'	=> 4, '/(friday|freitag|fre|fri|fr)/i'		=> 5, '/(saturday|samstag|sam|sat|sa)/i'		=> 6]];
 
 		/**
 		 * parseExpression() analyses crontab-expressions like "* * 1,2,3 * mon,tue" and returns an array
@@ -118,11 +95,11 @@
 
 			// Convert named expressions if neccessary
 
-			if (substr($expression,0,1) == '@') {
+			if (str_starts_with($expression, '@')) {
 
 				$expression	= strtr($expression, self::$intervals);
 
-				if (substr($expression,0,1) == '@') {
+				if (str_starts_with($expression, '@')) {
 
 					// Oops... unknown named interval!?!!
 					throw new Exception('Unknown named interval ['.$expression.']', 10000);
@@ -172,7 +149,7 @@
 		 * @return		void
 		 */
 
-		static private function expandSegment($idx, $segment) {
+		static private function expandSegment(int $idx, string $segment): array {
 
 			// Store original segment for later use
 
@@ -190,17 +167,17 @@
 
 			// Replace wildcards
 
-			if (substr($segment,0,1) == '*') {
+			if (str_starts_with((string) $segment, '*')) {
 
 				$segment	= preg_replace('/^\*(\/\d+)?$/i',
 								self::$ranges[$idx]['min'].'-'.self::$ranges[$idx]['max'].'$1',
-								$segment);
+								(string) $segment);
 
 			}
 
 			// Make sure that nothing unparsed is left :)
 
-			$dummy		= preg_replace('/[0-9\-\/\,]/','',$segment);
+			$dummy		= preg_replace('/[0-9\-\/\,]/','',(string) $segment);
 
 			if (!empty($dummy)) {
 
@@ -211,8 +188,8 @@
 
 			// At this point our string should be OK - lets convert it to an array
 
-			$result		= array();
-			$atoms		= explode(',',$segment);
+			$result		= [];
+			$atoms		= explode(',',(string) $segment);
 
 			foreach ($atoms as $curatom) {
 
@@ -261,9 +238,9 @@
 		 * @return		array
 		 */
 
-		static private function parseAtom($atom) {
+		static private function parseAtom(string $atom): array {
 
-			$expanded	= array();
+			$expanded	= [];
 
 			if (preg_match('/^(\d+)-(\d+)(\/(\d+))?/i', $atom, $matches)) {
 
@@ -271,10 +248,10 @@
 				$high	= $matches[2];
 
 				if ($low > $high) {
-					list($low,$high)	= array($high,$low);
+					[$low, $high]	= [$high, $low];
 				}
 
-				$step	= isset($matches[4]) ? $matches[4] : 1;
+				$step	= $matches[4] ?? 1;
 
 				for($i = $low; $i <= $high; $i += $step) {
 					$expanded[]	= (int)$i;

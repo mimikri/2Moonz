@@ -20,19 +20,19 @@ if ($USER['authlevel'] == AUTH_USR)
 	throw new Exception("Permission error!");
 }
 
-function ShowAutoCompletePage()
+function ShowAutoCompletePage(): void
 {
 	$searchText	= HTTP::_GP('term', '', UTF8_SUPPORT);
-	$searchList	= array();
+	$searchList	= [];
 	
 	if(empty($searchText) || $searchText === '#') {
-		echo json_encode(array());
+		echo json_encode([]);
 		exit;
 	}
 	
-	if(substr($searchText, 0, 1) === '#')
+	if(str_starts_with((string) $searchText, '#'))
 	{
-		$where = 'id = '.((int) substr($searchText, 1));
+		$where = 'id = '.((int) substr((string) $searchText, 1));
 		$orderBy = ' ORDER BY id ASC';
 	}
 	else
@@ -44,10 +44,7 @@ function ShowAutoCompletePage()
 	$userRaw		= $GLOBALS['DATABASE']->query("SELECT id, username FROM ".USERS." WHERE universe = ".Universe::getEmulated()." AND ".$where.$orderBy." LIMIT 20");
 	while($userRow = $GLOBALS['DATABASE']->fetch_array($userRaw))
 	{
-		$searchList[]	= array(
-			'label' => $userRow['username'].' (ID:'.$userRow['id'].')', 
-			'value' => $userRow['username']
-		);
+		$searchList[]	= ['label' => $userRow['username'].' (ID:'.$userRow['id'].')', 'value' => $userRow['username']];
 	}
 	
 	echo json_encode($searchList);

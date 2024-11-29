@@ -19,7 +19,7 @@ require_once 'includes/classes/cronjob/CronjobTask.interface.php';
 
 class InactiveMailCronjob
 {
-	function run()
+	function run(): void
 	{
 		global $LNG;
 
@@ -27,23 +27,21 @@ class InactiveMailCronjob
 		
 		if($config->mail_active == 1) {
 			/** @var $langObjects Language[] */
-			$langObjects	= array();
+			$langObjects	= [];
 		
 			require 'includes/classes/Mail.class.php';
 
 			$sql	= 'SELECT `id`, `username`, `lang`, `email`, `onlinetime`, `timezone`, `universe`
 			FROM %%USERS%% WHERE `inactive_mail` = 0 AND `onlinetime` < :time;';
 
-			$inactiveUsers	= Database::get()->select($sql, array(
-				':time'	=> TIMESTAMP - $config->del_user_sendmail * 24 * 60 * 60
-			));
+			$inactiveUsers	= Database::get()->select($sql, [':time'	=> TIMESTAMP - $config->del_user_sendmail * 24 * 60 * 60]);
 
 			foreach($inactiveUsers as $user)
 			{
 				if(!isset($langObjects[$user['lang']]))
 				{
 					$langObjects[$user['lang']]	= new Language($user['lang']);
-					$langObjects[$user['lang']]->includeData(array('L18N', 'INGAME', 'PUBLIC', 'CUSTOM'));
+					$langObjects[$user['lang']]->includeData(['L18N', 'INGAME', 'PUBLIC', 'CUSTOM']);
 				}
 
 				$userConfig	= Config::get($user['universe']);
@@ -53,24 +51,12 @@ class InactiveMailCronjob
 				$MailSubject	= sprintf($LNG['spec_mail_inactive_title'], $userConfig->game_name.' - '.$userConfig->uni_name);
 				$MailRAW		= $LNG->getTemplate('email_inactive');
 				
-				$MailContent	= str_replace(array(
-					'{USERNAME}',
-					'{GAMENAME}',
-					'{LASTDATE}',
-					'{HTTPPATH}',
-				), array(
-					$user['username'],
-					$userConfig->game_name.' - '.$userConfig->uni_name,
-					_date($LNG['php_tdformat'], $user['onlinetime'], $user['timezone']),
-					HTTP_PATH,
-				), $MailRAW);
+				$MailContent	= str_replace(['{USERNAME}', '{GAMENAME}', '{LASTDATE}', '{HTTPPATH}'], [$user['username'], $userConfig->game_name.' - '.$userConfig->uni_name, _date($LNG['php_tdformat'], $user['onlinetime'], $user['timezone']), HTTP_PATH], $MailRAW);
 						
 				Mail::send($user['email'], $user['username'], $MailSubject, $MailContent);
 
 				$sql	= 'UPDATE %%USERS%% SET `inactive_mail` = 1 WHERE `id` = :userId;';
-				Database::get()->update($sql, array(
-					':userId'	=> $user['id']
-				));
+				Database::get()->update($sql, [':userId'	=> $user['id']]);
 			}
 		}
 	}

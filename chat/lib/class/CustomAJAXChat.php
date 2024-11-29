@@ -35,8 +35,8 @@ class CustomAJAXChat extends AJAXChat
 
 	function regenerateSessionID() { }
 
-	function destroySession() {
-		Session::load()->chat = array();
+	function destroySession(): void {
+		Session::load()->chat = [];
 	}
 
 	function getSessionVar($key, $prefix=null) {
@@ -51,31 +51,31 @@ class CustomAJAXChat extends AJAXChat
 			return null;
 	}
 
-	function setSessionVar($key, $value, $prefix=null) {
+	function setSessionVar($key, $value, $prefix=null): void {
 		if($prefix === null)
 			$prefix = $this->getConfig('sessionKeyPrefix');
 
 		// Set the session value:
 		if(isset(Session::load()->chat))
 		{
-			$sessionData	= array_merge(Session::load()->chat, array($prefix.$key => $value));
+			$sessionData	= array_merge(Session::load()->chat, [$prefix.$key => $value]);
 		}
 		else
 		{
-			$sessionData	= array($prefix.$key => $value);
+			$sessionData	= [$prefix.$key => $value];
 		}
 
 		Session::load()->__set('chat', $sessionData);
 	}
 
-	function initCustomConfig()
+	function initCustomConfig(): void
 	{
 		define('MODE', 'CHAT');
-		define('ROOT_PATH', str_replace('\\', '/',dirname(dirname(dirname(dirname(__FILE__))))).'/');
+		define('ROOT_PATH', str_replace('\\', '/',dirname(__FILE__, 4)).'/');
 		set_include_path(ROOT_PATH);
 		chdir(ROOT_PATH);
 
-		$database		= array();
+		$database		= [];
 		require 'includes/config.php';
 		require 'includes/common.php';
 
@@ -111,10 +111,10 @@ class CustomAJAXChat extends AJAXChat
 		$this->setConfig('allowGuestLogins', false, false);
 		$this->setConfig('showChannelMessages', false, false);
 		$this->setConfig('styleDefault', false, '2Moons');
-		$this->setConfig('styleAvailable', false, array('2Moons'));
+		$this->setConfig('styleAvailable', false, ['2Moons']);
 	}
 	
-	function initCustomSession()
+	function initCustomSession(): void
 	{
 		if(!$this->getRequestVar('ajax'))
 		{
@@ -126,11 +126,11 @@ class CustomAJAXChat extends AJAXChat
 		}
 	}
 	
-	function initCustomRequestVars() {
-		$this->setRequestVar('action', isset($_REQUEST['action']) ? $_REQUEST['action'] : '');
+	function initCustomRequestVars(): void {
+		$this->setRequestVar('action', $_REQUEST['action'] ?? '');
 	}
 
-	function revalidateUserID() {
+	function revalidateUserID(): bool {
 		if($this->getUserID() === Session::load()->userId) {
 			return true;
 		}
@@ -138,7 +138,7 @@ class CustomAJAXChat extends AJAXChat
 		return false;
 	}
 	
-	function getValidLoginUserData()
+	function getValidLoginUserData(): false|array
 	{
 		$session	= Session::load();
 		// Return false if given user is a bot:
@@ -149,11 +149,9 @@ class CustomAJAXChat extends AJAXChat
 
 		$sql	= 'SELECT authlevel, username, ally_id FROM %%USERS%% WHERE id = :userId;';
 
-		$sqlData = Database::get()->selectSingle($sql, array(
-			':userId'	=> Session::load()->userId,
-		));
+		$sqlData = Database::get()->selectSingle($sql, [':userId'	=> Session::load()->userId]);
 		
-		$userData = array();
+		$userData = [];
 		$userData['userID'] = Session::load()->userId;
 
 		$userData['userName'] = $this->trimUserName($sqlData['username']);
@@ -173,20 +171,14 @@ class CustomAJAXChat extends AJAXChat
 	// Make sure channel names don't contain any whitespace
 	function &getAllChannels() {
 		if($this->_allChannels === NULL) {
-			$this->_allChannels = array(
-				$this->trimChannelName($this->getConfig('defaultChannelName')) => $this->getConfig('defaultChannelID')
-			);
+			$this->_allChannels = [$this->trimChannelName($this->getConfig('defaultChannelName')) => $this->getConfig('defaultChannelID')];
 
 			$db		= Database::get();
 			$sql	= 'SELECT ally_id FROM %%USERS%% WHERE id = :userId AND id NOT IN (SELECT userid FROM %%ALLIANCE_REQUEST%%);';
-			$allianceId = $db->selectSingle($sql, array(
-				':userId'	=> Session::load()->userId,
-			), 'ally_id');
+			$allianceId = $db->selectSingle($sql, [':userId'	=> Session::load()->userId], 'ally_id');
 
 			$sql	= 'SELECT id, ally_name FROM %%ALLIANCE%% WHERE id = :allianceId';
-			$channels = $db->select($sql, array(
-				':allianceId'	=> $allianceId,
-			));
+			$channels = $db->select($sql, [':allianceId'	=> $allianceId]);
 
 			$defaultChannelFound = false;
 

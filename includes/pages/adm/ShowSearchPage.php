@@ -15,12 +15,12 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FILE__))) throw new Exception("Permission error!");
+if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__))) throw new Exception("Permission error!");
 
-function ShowSearchPage()
+function ShowSearchPage(): void
 {
 	global $LNG, $USER;
-	$_GET['delete'] = isset($_GET['delete']) ? $_GET['delete'] : '';
+	$_GET['delete'] ??= '';
 
 	if ($_GET['delete'] == 'user') {
         PlayerUtil::deletePlayer((int) $_GET['user']);
@@ -38,47 +38,8 @@ function ShowSearchPage()
 	$Order			= HTTP::_GP('key_order', '');
 	$OrderBY		= HTTP::_GP('key_acc', '');
 	$limit			= HTTP::_GP('limit', 25);
-	$OrderBYParse = array();
-	$Selector	= array(
-		'list'	=> array(
-			'users'		=> $LNG['se_users'],	
-			'planet'	=> $LNG['se_planets'],
-			'moon'		=> $LNG['se_moons'],
-			'alliance'	=> $LNG['se_allys'],
-			'vacation'	=> $LNG['se_vacations'],
-			'banned'	=> $LNG['se_suspended'],
-			'admin'		=> $LNG['se_authlevels'],
-			'inactives'	=> $LNG['se_inactives'],
-			'online'	=> $LNG['online_users'],
-			'p_connect'	=> $LNG['se_planets_act'],
-		),
-		'search'	=> array(
-			'name'	=> $LNG['se_input_name'],
-			'id'	=> $LNG['input_id'],
-		),
-		'filter'	=> array(
-			'normal'	=> $LNG['se_type_all'],
-			'exacto'	=> $LNG['se_type_exact'],
-			'last'		=> $LNG['se_type_last'],
-			'first'		=> $LNG['se_type_first'],
-		),
-		'order'	=> array(
-			'ASC'	=> $LNG['se_input_asc'],
-			'DESC'	=> $LNG['se_input_desc'],
-		),
-		'limit'	=> array(
-			'1'		=> '1',
-			'5'		=> '5',
-			'10'	=> '10',
-			'15'	=> '15',
-			'20'	=> '20',
-			'25'	=> '25',
-			'50'	=> '50',
-			'100'	=> '100',
-			'200'	=> '200',
-			'500'	=> '500',	
-		)
-	);
+	$OrderBYParse = [];
+	$Selector	= ['list'	=> ['users'		=> $LNG['se_users'], 'planet'	=> $LNG['se_planets'], 'moon'		=> $LNG['se_moons'], 'alliance'	=> $LNG['se_allys'], 'vacation'	=> $LNG['se_vacations'], 'banned'	=> $LNG['se_suspended'], 'admin'		=> $LNG['se_authlevels'], 'inactives'	=> $LNG['se_inactives'], 'online'	=> $LNG['online_users'], 'p_connect'	=> $LNG['se_planets_act']], 'search'	=> ['name'	=> $LNG['se_input_name'], 'id'	=> $LNG['input_id']], 'filter'	=> ['normal'	=> $LNG['se_type_all'], 'exacto'	=> $LNG['se_type_exact'], 'last'		=> $LNG['se_type_last'], 'first'		=> $LNG['se_type_first']], 'order'	=> ['ASC'	=> $LNG['se_input_asc'], 'DESC'	=> $LNG['se_input_desc']], 'limit'	=> ['1'		=> '1', '5'		=> '5', '10'	=> '10', '15'	=> '15', '20'	=> '20', '25'	=> '25', '50'	=> '50', '100'	=> '100', '200'	=> '200', '500'	=> '500']];
 	$template	= new template();
 
 	
@@ -87,57 +48,32 @@ function ShowSearchPage()
 	if (HTTP::_GP('minimize', '') == 'on')
 	{
 		$Minimize			= "&amp;minimize=on";
-		$template->assign_vars(array(	
-			'minimize'	=> 'checked = "checked"',
-			'diisplaay'	=> 'style="display:none;"',
-		));
+		$template->assign_vars(['minimize'	=> 'checked = "checked"', 'diisplaay'	=> 'style="display:none;"']);
 	}else{
 		$Minimize			= "&amp;minimize=on";
-		$template->assign_vars(array(	
-			'minimize'	=> '',
-			'diisplaay'	=> '',
-		));
+		$template->assign_vars(['minimize'	=> '', 'diisplaay'	=> '']);
 	}
 
     $SpecialSpecify	= "";
 	
-	switch($SearchMethod)
-	{
-		case 'exacto':
-			$SpecifyWhere	= "= '".$GLOBALS['DATABASE']->sql_escape($SearchKey)."'";
-		break;
-		case 'last':
-			$SpecifyWhere	= "LIKE '".$GLOBALS['DATABASE']->sql_escape($SearchKey, true)."%'";
-		break;
-		case 'first':
-			$SpecifyWhere	= "LIKE '%".$GLOBALS['DATABASE']->sql_escape($SearchKey, true)."'";
-		break;
-		default:
-			$SpecifyWhere	= "LIKE '%".$GLOBALS['DATABASE']->sql_escape($SearchKey, true)."%'";
-		break;
-	};
+	$SpecifyWhere = match ($SearchMethod) {
+     'exacto' => "= '".$GLOBALS['DATABASE']->sql_escape($SearchKey)."'",
+     'last' => "LIKE '".$GLOBALS['DATABASE']->sql_escape($SearchKey, true)."%'",
+     'first' => "LIKE '%".$GLOBALS['DATABASE']->sql_escape($SearchKey, true)."'",
+     default => "LIKE '%".$GLOBALS['DATABASE']->sql_escape($SearchKey, true)."%'",
+ };;
 
 	if (!empty($SearchFile))
 	{
-		$ArrayUsers		= array("users", "vacation", "admin", "inactives", "online");
-		$ArrayPlanets	= array("planet", "moon", "p_connect");
-		$ArrayBanned	= array("banned");
-		$ArrayAlliance	= array("alliance");
+		$ArrayUsers		= ["users", "vacation", "admin", "inactives", "online"];
+		$ArrayPlanets	= ["planet", "moon", "p_connect"];
+		$ArrayBanned	= ["banned"];
+		$ArrayAlliance	= ["alliance"];
 
 		if (in_array($SearchFile, $ArrayUsers))
 		{
 			$Table			= "users";
-			$NameLang		= array(
-			    0 => $LNG['se_search_users_0'],
-			    1 => $LNG['se_search_users_1'],
-			    2 => $LNG['se_search_users_2'],
-			    3 => $LNG['se_search_users_3'],
-			    4 => $LNG['se_search_users_4'],
-			    5 => $LNG['se_search_users_5'],
-			    6 => $LNG['se_search_users_6'],
-			    7 => $LNG['se_search_users_7'],
-			    8 => $LNG['se_search_users_8']
-            );
+			$NameLang		= [0 => $LNG['se_search_users_0'], 1 => $LNG['se_search_users_1'], 2 => $LNG['se_search_users_2'], 3 => $LNG['se_search_users_3'], 4 => $LNG['se_search_users_4'], 5 => $LNG['se_search_users_5'], 6 => $LNG['se_search_users_6'], 7 => $LNG['se_search_users_7'], 8 => $LNG['se_search_users_8']];
 			$SpecifyItems	= "id,username,email_2,onlinetime,register_time,user_lastip,authlevel,bana,urlaubs_modus";
 			$SName			= $LNG['se_input_userss'];
 			if ($SearchFile == "vacation"){
@@ -160,7 +96,7 @@ function ShowSearchPage()
 			$SpecialSpecify	.= " AND universe = '".Universe::getEmulated()."'";
 			
 			(($SearchFor == "name") ? $WhereItem = "WHERE username" : $WhereItem = "WHERE id");
-			$ArrayOSec		= array("id", "username", "email_2", "onlinetime", "register_time", "user_lastip", "authlevel", "bana", "urlaubs_modus");
+			$ArrayOSec		= ["id", "username", "email_2", "onlinetime", "register_time", "user_lastip", "authlevel", "bana", "urlaubs_modus"];
 			$Array0SecCount	= count($ArrayOSec);
 
 			for ($OrderNum = 0; $OrderNum < $Array0SecCount; $OrderNum++)
@@ -171,16 +107,7 @@ function ShowSearchPage()
 		elseif (in_array($SearchFile, $ArrayPlanets))
 		{
 			$Table			= "planets p";
-			$NameLang		= array(
-			    0 => $LNG['se_search_planets_0'],
-			    1 => $LNG['se_search_planets_1'],
-			    2 => $LNG['se_search_planets_2'],
-			    3 => $LNG['se_search_planets_3'],
-			    4 => $LNG['se_search_planets_4'],
-			    5 => $LNG['se_search_planets_5'],
-			    6 => $LNG['se_search_planets_6'],
-			    7 => $LNG['se_search_planets_7'],
-            );
+			$NameLang		= [0 => $LNG['se_search_planets_0'], 1 => $LNG['se_search_planets_1'], 2 => $LNG['se_search_planets_2'], 3 => $LNG['se_search_planets_3'], 4 => $LNG['se_search_planets_4'], 5 => $LNG['se_search_planets_5'], 6 => $LNG['se_search_planets_6'], 7 => $LNG['se_search_planets_7']];
 			$SpecifyItems	= "p.id,p.name,CONCAT(u.username, ' (ID:&nbsp;', p.id_owner, ')'),p.last_update,p.galaxy,p.system,p.planet,p.id_luna";
 			
 			if ($SearchFile == "planet") {
@@ -202,7 +129,7 @@ function ShowSearchPage()
 				$WhereItem .= "WHERE p.id";
 			}
 			
-			$ArrayOSec		= array("id", "name", "id_owner", "id_luna", "last_update", "galaxy", "system", "planet");
+			$ArrayOSec		= ["id", "name", "id_owner", "id_luna", "last_update", "galaxy", "system", "planet"];
 			$Array0SecCount	= count($ArrayOSec);
 			
 			for ($OrderNum = 0; $OrderNum < $Array0SecCount; $OrderNum++)
@@ -213,14 +140,7 @@ function ShowSearchPage()
 		elseif (in_array($SearchFile, $ArrayBanned))
 		{
 			$Table			= "banned";
-			$NameLang		= array(
-			    0 => $LNG['se_search_banned_0'],
-			    1 => $LNG['se_search_banned_1'],
-			    2 => $LNG['se_search_banned_2'],
-			    3 => $LNG['se_search_banned_3'],
-			    4 => $LNG['se_search_banned_4'],
-			    5 => $LNG['se_search_banned_5'],
-            );
+			$NameLang		= [0 => $LNG['se_search_banned_0'], 1 => $LNG['se_search_banned_1'], 2 => $LNG['se_search_banned_2'], 3 => $LNG['se_search_banned_3'], 4 => $LNG['se_search_banned_4'], 5 => $LNG['se_search_banned_5']];
 			$SpecifyItems	= "id,who,time,longer,theme,author";
 			$SName			= $LNG['se_input_susss'];
 			$SpecialSpecify	= " AND universe = '".Universe::getEmulated()."'";
@@ -228,7 +148,7 @@ function ShowSearchPage()
 			(($SearchFor == "name") ? $WhereItem = "WHERE who" : $WhereItem = "WHERE id");
 			
 			
-			$ArrayOSec		= array("id", "who", "time", "longer", "theme", "author");
+			$ArrayOSec		= ["id", "who", "time", "longer", "theme", "author"];
 			$Array0SecCount	= count($ArrayOSec);
 			
 			for ($OrderNum = 0; $OrderNum < $Array0SecCount; $OrderNum++)
@@ -239,14 +159,7 @@ function ShowSearchPage()
 		elseif (in_array($SearchFile, $ArrayAlliance))
 		{
 			$Table			= "alliance";
-			$NameLang		= array(
-			    0 => $LNG['se_search_alliance_0'],
-			    1 => $LNG['se_search_alliance_1'],
-			    2 => $LNG['se_search_alliance_2'],
-			    3 => $LNG['se_search_alliance_3'],
-			    4 => $LNG['se_search_alliance_4'],
-			    5 => $LNG['se_search_alliance_5'],
-            );
+			$NameLang		= [0 => $LNG['se_search_alliance_0'], 1 => $LNG['se_search_alliance_1'], 2 => $LNG['se_search_alliance_2'], 3 => $LNG['se_search_alliance_3'], 4 => $LNG['se_search_alliance_4'], 5 => $LNG['se_search_alliance_5']];
 			$SpecifyItems	= "id,ally_name,ally_tag,ally_owner,ally_register_time,ally_members";
 			$SName			= $LNG['se_input_allyy'];
 			$SpecialSpecify	= " AND ally_universe = '".Universe::getEmulated()."'";
@@ -254,7 +167,7 @@ function ShowSearchPage()
 			(($SearchFor == "name") ? $WhereItem = "WHERE ally_name" : $WhereItem = "WHERE id");
 			
 			
-			$ArrayOSec		= array("id", "ally_name", "ally_tag", "ally_owner", "ally_register_time", "ally_members");
+			$ArrayOSec		= ["id", "ally_name", "ally_tag", "ally_owner", "ally_register_time", "ally_members"];
 			$Array0SecCount	= count($ArrayOSec);
 			
 			for ($OrderNum = 0; $OrderNum < $Array0SecCount; $OrderNum++)
@@ -264,35 +177,15 @@ function ShowSearchPage()
 		$RESULT	= MyCrazyLittleSearch($SpecifyItems, $WhereItem, $SpecifyWhere, $SpecialSpecify, $Order, $OrderBY, $limit, $Table, $Page, $NameLang, $ArrayOSec, $Minimize, $SName, $SearchFile);
 	}
 	echo 'Searchmethod:' . $SearchMethod;
-	$template->assign_vars(array(	
-		'Selector'				=> $Selector,
-		'limit'					=> $limit,
-		'search'				=> $SearchKey,
-		'SearchFile'			=> $SearchFile,
-		'SearchFor'				=> $SearchFor,
-		'SearchMethod'			=> $SearchMethod,
-		'Order'					=> $Order,
-		'OrderBY'				=> $OrderBY,
-		'OrderBYParse'			=> $OrderBYParse,
-		'se_search'				=> $LNG['se_search'],
-		'se_limit'				=> $LNG['se_limit'],
-		'se_asc_desc'			=> $LNG['se_asc_desc'],
-		'se_filter_title'		=> $LNG['se_filter_title'],
-		'se_search_in'			=> $LNG['se_search_in'],
-		'se_type_typee'			=> $LNG['se_type_typee'],
-		'se_intro'				=> $LNG['se_intro'],
-		'se_search_title'		=> $LNG['se_search_title'],
-		'se_contrac'			=> $LNG['se_contrac'],
-		'se_search_order'		=> $LNG['se_search_order'],
-		'ac_minimize_maximize'	=> $LNG['ac_minimize_maximize'],
-		'LIST'					=> empty($RESULT['LIST']) ? 0 : $RESULT['LIST'],
-		'PAGES'					=> empty($RESULT['PAGES']) ? 0 : $RESULT['PAGES'],
-	));
+	$template->assign_vars(['Selector'				=> $Selector, 'limit'					=> $limit, 'search'				=> $SearchKey, 'SearchFile'			=> $SearchFile, 'SearchFor'				=> $SearchFor, 'SearchMethod'			=> $SearchMethod, 'Order'					=> $Order, 'OrderBY'				=> $OrderBY, 'OrderBYParse'			=> $OrderBYParse, 'se_search'				=> $LNG['se_search'], 'se_limit'				=> $LNG['se_limit'], 'se_asc_desc'			=> $LNG['se_asc_desc'], 'se_filter_title'		=> $LNG['se_filter_title'], 'se_search_in'			=> $LNG['se_search_in'], 'se_type_typee'			=> $LNG['se_type_typee'], 'se_intro'				=> $LNG['se_intro'], 'se_search_title'		=> $LNG['se_search_title'], 'se_contrac'			=> $LNG['se_contrac'], 'se_search_order'		=> $LNG['se_search_order'], 'ac_minimize_maximize'	=> $LNG['ac_minimize_maximize'], 'LIST'					=> empty($RESULT['LIST']) ? 0 : $RESULT['LIST'], 'PAGES'					=> empty($RESULT['PAGES']) ? 0 : $RESULT['PAGES']]);
 	
 	$template->show('SearchPage.tpl');
 }
 
-function MyCrazyLittleSearch($SpecifyItems, $WhereItem, $SpecifyWhere, $SpecialSpecify, $Order, $OrderBY, $Limit, $Table, $Page, $NameLang, $ArrayOSec, $Minimize, $SName, $SearchFile)
+/**
+ * @return array<'LIST', non-falsy-string>
+ */
+function MyCrazyLittleSearch(string $SpecifyItems, string $WhereItem, string $SpecifyWhere, string $SpecialSpecify, $Order, string $OrderBY, string $Limit, string $Table, $Page, $NameLang, $ArrayOSec, string $Minimize, string $SName, string $SearchFile): array
 {
 	global $USER, $LNG;
 	$SearchFor		= HTTP::_GP('search_in', '');

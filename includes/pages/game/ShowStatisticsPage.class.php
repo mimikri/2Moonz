@@ -25,7 +25,7 @@ class ShowStatisticsPage extends AbstractGamePage
 		parent::__construct();
 	}
 
-    function show()
+    function show(): void
     {
         global $USER, $LNG;
 
@@ -67,7 +67,7 @@ class ShowStatisticsPage extends AbstractGamePage
             break;
         }
 
-        $RangeList  = array();
+        $RangeList  = [];
 
 		$db 	= Database::get();
 		$config	= Config::get();
@@ -94,46 +94,27 @@ class ShowStatisticsPage extends AbstractGamePage
 					LEFT JOIN %%ALLIANCE%% as a ON a.id = s.id_ally
 					WHERE s.universe = :universe AND s.stat_type = 1 AND u.authlevel < :authLevel
 					ORDER BY ".$Order." ASC LIMIT :offset, :limit;";
-					$query = $db->select($sql, array(
-						':universe'	=> Universe::current(),
-						':authLevel'=> $config->stat_level,
-						':offset'	=> $start,
-						':limit'	=> 100,
-					));
+					$query = $db->select($sql, [':universe'	=> Universe::current(), ':authLevel'=> $config->stat_level, ':offset'	=> $start, ':limit'	=> 100]);
 				} else {
 					$sql = "SELECT DISTINCT s.*, u.id, u.username, u.ally_id, a.ally_name FROM %%STATPOINTS%% as s
 					INNER JOIN %%USERS%% as u ON u.id = s.id_owner
 					LEFT JOIN %%ALLIANCE%% as a ON a.id = s.id_ally
 					WHERE s.universe = :universe AND s.stat_type = 1
 					ORDER BY ".$Order." ASC LIMIT :offset, :limit;";
-					$query = $db->select($sql, array(
-						':universe'	=> Universe::current(),
-						':offset'	=> $start,
-						':limit'	=> 100,
-					));
+					$query = $db->select($sql, [':universe'	=> Universe::current(), ':offset'	=> $start, ':limit'	=> 100]);
 				}
 
-				$RangeList	= array();
+				$RangeList	= [];
 
                 foreach ($query as $StatRow)
                 {
-                    $RangeList[]	= array(
-                        'id'		=> $StatRow['id'],
-                        'name'		=> $StatRow['username'],
-                        'points'	=> pretty_number($StatRow[$Points]),
-                        'allyid'	=> $StatRow['ally_id'],
-                        'rank'		=> $StatRow[$Rank],
-                        'allyname'	=> $StatRow['ally_name'],
-                        'ranking'	=> $StatRow[$OldRank] - $StatRow[$Rank],
-                    );
+                    $RangeList[]	= ['id'		=> $StatRow['id'], 'name'		=> $StatRow['username'], 'points'	=> pretty_number($StatRow[$Points]), 'allyid'	=> $StatRow['ally_id'], 'rank'		=> $StatRow[$Rank], 'allyname'	=> $StatRow['ally_name'], 'ranking'	=> $StatRow[$OldRank] - $StatRow[$Rank]];
                 }
 
             break;
             case 2:
                 $sql = "SELECT COUNT(*) as state FROM %%ALLIANCE%% WHERE `ally_universe` = :universe;";
-				$MaxAllys = $db->selectSingle($sql, array(
-					':universe'	=> Universe::current(),
-				), 'state');
+				$MaxAllys = $db->selectSingle($sql, [':universe'	=> Universe::current()], 'state');
 
 				$range		= min($range, $MaxAllys);
                 $LastPage 	= max(1, ceil($MaxAllys / 100));
@@ -151,44 +132,23 @@ class ShowStatisticsPage extends AbstractGamePage
                 INNER JOIN %%ALLIANCE%% as a ON a.id = s.id_owner
                 WHERE universe = :universe AND stat_type = 2
                 ORDER BY '.$Order.' ASC LIMIT :offset, :limit;';
-				$query = $db->select($sql, array(
-					':universe'	=> Universe::current(),
-					':offset'	=> $start,
-					':limit'	=> 100,
-				));
+				$query = $db->select($sql, [':universe'	=> Universe::current(), ':offset'	=> $start, ':limit'	=> 100]);
 
 				foreach ($query as $StatRow)
                 {
-                    $RangeList[]	= array(
-                        'id'		=> $StatRow['id'],
-                        'name'		=> $StatRow['ally_name'],
-                        'members'	=> $StatRow['ally_members'],
-                        'rank'		=> $StatRow[$Rank],
-                        'mppoints'	=> pretty_number(floor($StatRow[$Points] / $StatRow['ally_members'])),
-                        'points'	=> pretty_number($StatRow[$Points]),
-                        'ranking'	=> $StatRow[$OldRank] - $StatRow[$Rank],
-                    );
+                    $RangeList[]	= ['id'		=> $StatRow['id'], 'name'		=> $StatRow['ally_name'], 'members'	=> $StatRow['ally_members'], 'rank'		=> $StatRow[$Rank], 'mppoints'	=> pretty_number(floor($StatRow[$Points] / $StatRow['ally_members'])), 'points'	=> pretty_number($StatRow[$Points]), 'ranking'	=> $StatRow[$OldRank] - $StatRow[$Rank]];
                 }
 
             break;
         }
 
-        $Selector['who'] 	= array(1 => $LNG['st_player'], 2 => $LNG['st_alliance']);
-        $Selector['type']	= array(1 => $LNG['st_points'], 2 => $LNG['st_fleets'], 3 => $LNG['st_researh'], 4 => $LNG['st_buildings'], 5 => $LNG['st_defenses']);
+        $Selector['who'] 	= [1 => $LNG['st_player'], 2 => $LNG['st_alliance']];
+        $Selector['type']	= [1 => $LNG['st_points'], 2 => $LNG['st_fleets'], 3 => $LNG['st_researh'], 4 => $LNG['st_buildings'], 5 => $LNG['st_defenses']];
 
 
 		require_once 'includes/classes/Cronjob.class.php';
 
-        $this->assign(array(
-            'Selectors'				=> $Selector,
-            'who'					=> $who,
-            'type'					=> $type,
-            'range'					=> floor(($range - 1) / 100) * 100 + 1,
-            'RangeList'				=> $RangeList,
-            'CUser_ally'			=> $USER['ally_id'],
-            'CUser_id'				=> $USER['id'],
-            'stat_date'				=> _date($LNG['php_tdformat'], Cronjob::getLastExecutionTime('statistic'), $USER['timezone']),
-        ));
+        $this->assign(['Selectors'				=> $Selector, 'who'					=> $who, 'type'					=> $type, 'range'					=> floor(($range - 1) / 100) * 100 + 1, 'RangeList'				=> $RangeList, 'CUser_ally'			=> $USER['ally_id'], 'CUser_id'				=> $USER['id'], 'stat_date'				=> _date($LNG['php_tdformat'], Cronjob::getLastExecutionTime('statistic'), $USER['timezone'])]);
 
         $this->display('page.statistics.default.tpl');
     }

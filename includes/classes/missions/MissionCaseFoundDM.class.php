@@ -28,13 +28,13 @@ class MissionCaseFoundDM extends MissionFunctions implements Mission
 		$this->_fleet	= $Fleet;
 	}
 	
-	function TargetEvent()
+	function TargetEvent(): void
 	{
 		$this->setState(FLEET_HOLD);
 		$this->SaveFleet();
 	}
 	
-	function EndStayEvent()
+	function EndStayEvent(): void
 	{
 		$LNG	= $this->getLanguage(NULL, $this->_fleet['fleet_owner']);
 		$chance	= mt_rand(0, 100);
@@ -52,7 +52,7 @@ class MissionCaseFoundDM extends MissionFunctions implements Mission
 			$LNG['sys_expe_report'], $Message, $this->_fleet['fleet_end_stay'], NULL, 1, $this->_fleet['fleet_universe']);
 	}
 	
-	function ReturnEvent()
+	function ReturnEvent(): void
 	{
 		$LNG	= $this->getLanguage(NULL, $this->_fleet['fleet_owner']);
 		if($this->_fleet['fleet_resource_darkmatter'] > 0)

@@ -53,7 +53,7 @@ class ts3admin {
      *
      * @author     Par0noid Solutions
      */
-    private $runtime = array('socket' => '', 'selected' => false, 'host' => '', 'queryport' => '10011', 'timeout' => 2, 'debug' => array(), 'fileSocket' => '');
+    private array $runtime = ['socket' => '', 'selected' => false, 'host' => '', 'queryport' => '10011', 'timeout' => 2, 'debug' => [], 'fileSocket' => ''];
 
 
 //*******************************************************************************************
@@ -79,7 +79,7 @@ class ts3admin {
      * @param		string	$banreason	Banreason [optional]
      * @return     array banId
      */
-    function banAddByIp($ip, $time = 0, $banreason = NULL) {
+    function banAddByIp(string $ip, $time = 0, $banreason = NULL) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
 
         if(!empty($banreason)) { $msg = ' banreason='.$this->escapeText($banreason); } else { $msg = NULL; }
@@ -106,7 +106,7 @@ class ts3admin {
      * @param		string	$banreason	Banreason [optional]
      * @return     array banId
      */
-    function banAddByUid($uid, $time = 0, $banreason = NULL) {
+    function banAddByUid(string $uid, $time = 0, $banreason = NULL) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
 
         if(!empty($banreason)) { $msg = ' banreason='.$this->escapeText($banreason); } else { $msg = NULL; }
@@ -278,7 +278,7 @@ class ts3admin {
             //Permissions given
 
             //Errorcollector
-            $errors = array();
+            $errors = [];
 
             //Split Permissions to prevent query from overload
             $permissions = array_chunk($permissions, 50, true);
@@ -287,7 +287,7 @@ class ts3admin {
             foreach($permissions as $permission_part)
             {
                 //Create command_string for each command that we could use implode later
-                $command_string = array();
+                $command_string = [];
 
                 foreach($permission_part as $key => $value)
                 {
@@ -307,7 +307,7 @@ class ts3admin {
 
             if(count($errors) == 0)
             {
-                return $this->generateOutput(true, array(), true);
+                return $this->generateOutput(true, [], true);
             }else{
                 return $this->generateOutput(false, $errors, false);
             }
@@ -315,7 +315,7 @@ class ts3admin {
         }else{
             // No permissions given
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -345,7 +345,7 @@ class ts3admin {
             //Permissions given
 
             //Errorcollector
-            $errors = array();
+            $errors = [];
 
             //Split Permissions to prevent query from overload
             $permissions = array_chunk($permissions, 50, true);
@@ -354,7 +354,7 @@ class ts3admin {
             foreach($permissions as $permission_part)
             {
                 //Create command_string for each command that we could use implode later
-                $command_string = array();
+                $command_string = [];
 
                 foreach($permission_part as $key => $value)
                 {
@@ -374,7 +374,7 @@ class ts3admin {
 
             if(count($errors) == 0)
             {
-                return $this->generateOutput(true, array(), true);
+                return $this->generateOutput(true, [], true);
             }else{
                 return $this->generateOutput(false, $errors, false);
             }
@@ -382,7 +382,7 @@ class ts3admin {
         }else{
             // No permissions given
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -408,7 +408,7 @@ class ts3admin {
      */
     function channelClientDelPerm($cid, $cldbid, $permissions) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
-        $permissionArray = array();
+        $permissionArray = [];
 
         if(count($permissions) > 0) {
             foreach($permissions AS $value) {
@@ -417,7 +417,7 @@ class ts3admin {
             return $this->getData('boolean', 'channelclientdelperm cid='.$cid.' cldbid='.$cldbid.' '.implode('|', $permissionArray));
         }else{
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -527,7 +527,7 @@ class ts3admin {
      */
     function channelDelPerm($cid, $permissions) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
-        $permissionArray = array();
+        $permissionArray = [];
 
         if(count($permissions) > 0) {
             foreach($permissions AS $value) {
@@ -536,7 +536,7 @@ class ts3admin {
             return $this->getData('boolean', 'channeldelperm cid='.$cid.' '.implode('|', $permissionArray));
         }else{
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -648,7 +648,7 @@ class ts3admin {
             //Permissions given
 
             //Errorcollector
-            $errors = array();
+            $errors = [];
 
             //Split Permissions to prevent query from overload
             $permissions = array_chunk($permissions, 50, true);
@@ -657,7 +657,7 @@ class ts3admin {
             foreach($permissions as $permission_part)
             {
                 //Create command_string for each command that we could use implode later
-                $command_string = array();
+                $command_string = [];
 
                 foreach($permission_part as $key => $value)
                 {
@@ -676,7 +676,7 @@ class ts3admin {
             }
 
             if(count($errors) == 0) {
-                return $this->generateOutput(true, array(), true);
+                return $this->generateOutput(true, [], true);
             }else{
                 return $this->generateOutput(false, $errors, false);
             }
@@ -684,7 +684,7 @@ class ts3admin {
         }else{
             // No permissions given
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -781,7 +781,7 @@ class ts3admin {
      */
     function channelGroupDelPerm($cgid, $permissions) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
-        $permissionArray = array();
+        $permissionArray = [];
 
         if(count($permissions) > 0) {
             foreach($permissions AS $value) {
@@ -790,7 +790,7 @@ class ts3admin {
             return $this->getData('boolean', 'channelgroupdelperm cgid='.$cgid.' '.implode('|', $permissionArray));
         }else{
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -1042,7 +1042,7 @@ class ts3admin {
             //Permissions given
 
             //Errorcollector
-            $errors = array();
+            $errors = [];
 
             //Split Permissions to prevent query from overload
             $permissions = array_chunk($permissions, 50, true);
@@ -1051,7 +1051,7 @@ class ts3admin {
             foreach($permissions as $permission_part)
             {
                 //Create command_string for each command that we could use implode later
-                $command_string = array();
+                $command_string = [];
 
                 foreach($permission_part as $key => $value)
                 {
@@ -1071,14 +1071,14 @@ class ts3admin {
 
             if(count($errors) == 0)
             {
-                return $this->generateOutput(true, array(), true);
+                return $this->generateOutput(true, [], true);
             }else{
                 return $this->generateOutput(false, $errors, false);
             }
         }else{
             // No permissions given
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -1101,10 +1101,10 @@ class ts3admin {
 
         if(empty($uid))
         {
-            return $this->generateOutput(false, array('Error: empty uid'), false);
+            return $this->generateOutput(false, ['Error: empty uid'], false);
         }
 
-        $newChars = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p');
+        $newChars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'];
         $auid = '';
 
         for ($i = 0; $i <= 19; $i++) {
@@ -1117,7 +1117,7 @@ class ts3admin {
 
         if(!$init["success"])
         {
-            return $this->generateOutput(false, array('Error: init failed'), false);
+            return $this->generateOutput(false, ['Error: init failed'], false);
         }
 
         $download = $this->ftDownloadFile($init);
@@ -1289,7 +1289,7 @@ class ts3admin {
     function clientDelPerm($cldbid, $permissionIds) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
 
-        $permissionArray = array();
+        $permissionArray = [];
 
         if(count($permissionIds) > 0) {
             foreach($permissionIds AS $value) {
@@ -1298,7 +1298,7 @@ class ts3admin {
             return $this->getData('boolean', 'clientdelperm cldbid='.$cldbid.' '.implode('|', $permissionArray));
         }else{
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -1373,7 +1373,7 @@ class ts3admin {
      * @param		string	$cluid	clientUID
      * @return     array clientInfo
      */
-    function clientGetDbIdFromUid($cluid) {
+    function clientGetDbIdFromUid(string $cluid) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('array', 'clientgetdbidfromuid cluid='.$cluid);
     }
@@ -1397,7 +1397,7 @@ class ts3admin {
      * @param		string	$cluid	clientUID
      * @return     array clientList
      */
-    function clientGetIds($cluid) {
+    function clientGetIds(string $cluid) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('multi', 'clientgetids cluid='.$cluid);
     }
@@ -1445,7 +1445,7 @@ class ts3admin {
      * @param		string	$cluid	clientUID
      * @return     array clientInfo
      */
-    function clientGetNameFromUid($cluid) {
+    function clientGetNameFromUid(string $cluid) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('array', 'clientgetnamefromuid cluid='.$cluid);
     }
@@ -1543,7 +1543,7 @@ class ts3admin {
     function clientKick($clid, $kickMode = "server", $kickmsg = "") {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
 
-        if(in_array($kickMode, array('server', 'channel'))) {
+        if(in_array($kickMode, ['server', 'channel'])) {
 
             if($kickMode == 'server') { $from = '5'; }
             if($kickMode == 'channel') { $from = '4'; }
@@ -1553,7 +1553,7 @@ class ts3admin {
             return $this->getData('boolean', 'clientkick clid='.$clid.' reasonid='.$from.$msg);
         }else{
             $this->addDebugLog('invalid kickMode');
-            return $this->generateOutput(false, array('Error: invalid kickMode'), false);
+            return $this->generateOutput(false, ['Error: invalid kickMode'], false);
         }
     }
 
@@ -1824,7 +1824,7 @@ class ts3admin {
      * @param		string $cldbid	clientDBID
      * @return     array customInfos
      */
-    function customInfo($cldbid) {
+    function customInfo(string $cldbid) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('multi', 'custominfo cldbid='.$cldbid);
     }
@@ -1907,7 +1907,7 @@ class ts3admin {
      * @param		string	$dirname	dirPath
      * @return     boolean success
      */
-    function ftCreateDir($cid, $cpw = null, $dirname) {
+    function ftCreateDir(string $cid, $dirname, $cpw = null) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('boolean', 'ftcreatedir cid='.$cid.' cpw='.$this->escapeText($cpw).' dirname='.$this->escapeText($dirname));
     }
@@ -1932,9 +1932,9 @@ class ts3admin {
      * @param		array	$files	files
      * @return     boolean success
      */
-    function ftDeleteFile($cid, $cpw = '', $files) {
+    function ftDeleteFile(string $cid, $files, $cpw = '') {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
-        $fileArray = array();
+        $fileArray = [];
 
         if(count($files) > 0) {
             foreach($files AS $file) {
@@ -1943,7 +1943,7 @@ class ts3admin {
             return $this->getData('boolean', 'ftdeletefile cid='.$cid.' cpw='.$this->escapeText($cpw).' '.implode('|', $fileArray));
         }else{
             $this->addDebugLog('no files given');
-            return $this->generateOutput(false, array('Error: no files given'), false);
+            return $this->generateOutput(false, ['Error: no files given'], false);
         }
     }
 
@@ -1956,7 +1956,7 @@ class ts3admin {
      * @param		array	$data	return of ftInitDownload
      * @return     array downloadedFile
      */
-    function ftDownloadFile($data) {
+    function ftDownloadFile(array $data) {
         $errnum = null;
         $errstr = null;
         $this->runtime['fileSocket'] = @fsockopen($this->runtime['host'], $data['data']['port'], $errnum, $errstr, $this->runtime['timeout']);
@@ -1968,7 +1968,7 @@ class ts3admin {
             return $content;
         }else{
             $this->addDebugLog('fileSocket returns '.$errnum. ' | '.$errstr);
-            return $this->generateOutput(false, array('Error in fileSocket: '.$errnum. ' | '.$errstr), false);
+            return $this->generateOutput(false, ['Error in fileSocket: '.$errnum. ' | '.$errstr], false);
         }
     }
 
@@ -1984,7 +1984,7 @@ class ts3admin {
      * @param		string 	$file	path to file
      * @return     boolean success
      */
-    function ftGetFileInfo($cid, $cpw = '', $file) {
+    function ftGetFileInfo(string $cid, $file, $cpw = '') {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
 
         return $this->getData('multi', 'ftgetfileinfo cid='.$cid.' cpw='.$this->escapeText($cpw).' name='.$this->escapeText($file));
@@ -2014,7 +2014,7 @@ class ts3admin {
      * @param		string	$path	filePath
      * @return     array	fileList
      */
-    function ftGetFileList($cid, $cpw = '', $path) {
+    function ftGetFileList(string $cid, $path, $cpw = '') {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('multi', 'ftgetfilelist cid='.$cid.' cpw='.$this->escapeText($cpw).' path='.$this->escapeText($path));
     }
@@ -2043,9 +2043,9 @@ class ts3admin {
      * @param		integer	$seekpos		seekpos (default = 0) [optional]
      * @return     array	initDownloadFileInfo
      */
-    function ftInitDownload($name, $cid, $cpw = '', $seekpos = 0) {
+    function ftInitDownload($name, string $cid, $cpw = '', $seekpos = 0) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
-        return $this->getData('array', 'ftinitdownload clientftfid='.rand(1,99).' name='.$this->escapeText($name).' cid='.$cid.' cpw='.$this->escapeText($cpw).' seekpos='.$seekpos);
+        return $this->getData('array', 'ftinitdownload clientftfid='.random_int(1,99).' name='.$this->escapeText($name).' cid='.$cid.' cpw='.$this->escapeText($cpw).' seekpos='.$seekpos);
     }
 
     /**
@@ -2074,13 +2074,13 @@ class ts3admin {
      * @param		boolean	$resume		resume		[optional] (default = 0)
      * @return     array	initUploadFileInfo
      */
-    function ftInitUpload($filename, $cid, $size, $cpw = '', $overwrite = false, $resume = false) {
+    function ftInitUpload($filename, string $cid, $size, $cpw = '', $overwrite = false, $resume = false) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
 
         if($overwrite) { $overwrite = ' overwrite=1'; }else{ $overwrite = ' overwrite=0'; }
         if($resume) { $resume = ' resume=1'; }else{ $resume = ' resume=0'; }
 
-        return $this->getData('array', 'ftinitupload clientftfid='.rand(1,99).' name='.$this->escapeText($filename).' cid='.$cid.' cpw='.$this->escapeText($cpw).' size='.($size + 1).$overwrite.$resume);
+        return $this->getData('array', 'ftinitupload clientftfid='.random_int(1,99).' name='.$this->escapeText($filename).' cid='.$cid.' cpw='.$this->escapeText($cpw).' size='.($size + 1).$overwrite.$resume);
     }
 
     /**
@@ -2130,7 +2130,7 @@ class ts3admin {
      * @param		string  $tcpw		targetChannelPassword [optional]
      * @return     boolean success
      */
-    function ftRenameFile($cid, $cpw = null, $oldname, $newname, $tcid = null,  $tcpw = null) {
+    function ftRenameFile($cid, $oldname, $newname, $cpw = null, $tcid = null,  $tcpw = null) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         $newTarget = ($tcid != null ? ' tcid='.$tcid.' '.$tcpw : '');
         return $this->getData('boolean', 'ftrenamefile cid='.$cid.' cpw='.$cpw.' oldname='.$this->escapeText($oldname).' newname='.$this->escapeText($newname).$newTarget);
@@ -2162,17 +2162,17 @@ class ts3admin {
      * @param		string	$uploadData		data which should be uploaded
      * @return     array response
      */
-    function ftUploadFile($data, $uploadData) {
+    function ftUploadFile(array $data, $uploadData) {
         $this->runtime['fileSocket'] = @fsockopen($this->runtime['host'], $data['data']['port'], $errnum, $errstr, $this->runtime['timeout']);
         if($this->runtime['fileSocket']) {
             $this->ftSendKey($data['data']['ftkey'], "\n");
             $this->ftSendData($uploadData);
             @fclose($this->runtime['fileSocket']);
             $this->runtime['fileSocket'] = '';
-            return $this->generateOutput(true, array(), true);
+            return $this->generateOutput(true, [], true);
         }else{
             $this->addDebugLog('fileSocket returns '.$errnum. ' | '.$errstr);
-            return $this->generateOutput(false, array('Error in fileSocket: '.$errnum. ' | '.$errstr), false);
+            return $this->generateOutput(false, ['Error in fileSocket: '.$errnum. ' | '.$errstr], false);
         }
     }
 
@@ -2188,7 +2188,7 @@ class ts3admin {
     function gm($msg) {
         if(empty($msg)) {
             $this->addDebugLog('empty message given');
-            return $this->generateOutput(false, array('Error: empty message given'), false);
+            return $this->generateOutput(false, ['Error: empty message given'], false);
         }
         return $this->getData('boolean', 'gm msg='.$this->escapeText($msg));
     }
@@ -2257,7 +2257,7 @@ class ts3admin {
             return $this->getData('boolean', 'instanceedit '.$settingsString);
         }else{
             $this->addDebugLog('empty array entered');
-            return $this->generateOutput(false, array('Error: You can \'t give an empty array'), false);
+            return $this->generateOutput(false, ['Error: You can \'t give an empty array'], false);
         }
     }
 
@@ -2309,11 +2309,11 @@ class ts3admin {
                 return $this->getData('boolean', 'logadd loglevel='.$logLevel.' logmsg='.$this->escapeText($logMsg));
             }else{
                 $this->addDebugLog('logMessage empty!');
-                return $this->generateOutput(false, array('Error: logMessage empty!'), false);
+                return $this->generateOutput(false, ['Error: logMessage empty!'], false);
             }
         }else{
             $this->addDebugLog('invalid logLevel!');
-            return $this->generateOutput(false, array('Error: invalid logLevel!'), false);
+            return $this->generateOutput(false, ['Error: invalid logLevel!'], false);
         }
     }
 
@@ -2377,7 +2377,7 @@ class ts3admin {
             return $this->getData('multi', 'logview lines='.$lines.' reverse='.($reverse == 0 ? '0' : '1').' instance='.($instance == 0 ? '0' : '1').' begin_pos='.($begin_pos == 0 ? '0' : $begin_pos));
         }else{
             $this->addDebugLog('please choose a limit between 1 and 100');
-            $this->generateOutput(false, array('Error: please choose a limit between 1 and 100'), false);
+            $this->generateOutput(false, ['Error: please choose a limit between 1 and 100'], false);
         }
     }
 
@@ -2392,7 +2392,7 @@ class ts3admin {
      * @param		string	$message	Text of the message
      * @return     boolean success
      */
-    function messageAdd($cluid, $subject, $message) {
+    function messageAdd(string $cluid, $subject, $message) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('boolean', 'messageadd cluid='.$cluid.' subject='.$this->escapeText($subject).' message='.$this->escapeText($message));
     }
@@ -2406,7 +2406,7 @@ class ts3admin {
      * @param		string	$messageID		messageID
      * @return     boolean success
      */
-    function messageDelete($messageID) {
+    function messageDelete(string $messageID) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('boolean', 'messagedel msgid='.$messageID);
     }
@@ -2420,7 +2420,7 @@ class ts3admin {
      * @param		string	$messageID		messageID
      * @return     array messageInformation
      */
-    function messageGet($messageID) {
+    function messageGet(string $messageID) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('array', 'messageget msgid='.$messageID);
     }
@@ -2448,7 +2448,7 @@ class ts3admin {
      * @param		integer	$flag			flag {1|0}
      * @return     array messageInformation
      */
-    function messageUpdateFlag($messageID, $flag = 1) {
+    function messageUpdateFlag(string $messageID, $flag = 1) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('boolean', 'messageupdateflag msgid='.$messageID.' flag='.$flag);
     }
@@ -2470,9 +2470,9 @@ class ts3admin {
      * @param		mixed	$perm	permid or permsid
      * @return     array permissionInfoList
      */
-    function permFind($perm) {
+    function permFind(mixed $perm) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
-        return $this->getData('multi', 'permfind '.(is_int($perm) || ctype_digit($perm) ? 'permid=' : 'permsid=').$perm);
+        return $this->getData('multi', 'permfind '.(is_int($perm) || ctype_digit((string) $perm) ? 'permid=' : 'permsid=').$perm);
     }
 
 
@@ -2497,9 +2497,9 @@ class ts3admin {
      * @param		mixed	$perm	permid or permsid
      * @return     array permissionInfo
      */
-    function permGet($perm) {
+    function permGet(mixed $perm) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
-        return $this->getData('array', 'permget '.(is_int($perm) || ctype_digit($perm) ? 'permid=' : 'permsid=').$perm);
+        return $this->getData('array', 'permget '.(is_int($perm) || ctype_digit((string) $perm) ? 'permid=' : 'permsid=').$perm);
     }
 
     /**
@@ -2526,7 +2526,7 @@ class ts3admin {
      * @return     array	permissionList
      */
     function permIdGetByName($permsids) {
-        $permissionArray = array();
+        $permissionArray = [];
 
         if(count($permsids) > 0) {
             foreach($permsids AS $value) {
@@ -2535,7 +2535,7 @@ class ts3admin {
             return $this->getData('multi', 'permidgetbyname '.$this->escapeText(implode('|', $permissionArray)));
         }else{
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
 
     }
@@ -2630,8 +2630,8 @@ class ts3admin {
      */
     function permissionList($new = false) {
         if($new === true) {
-            $groups = array();
-            $permissions = array();
+            $groups = [];
+            $permissions = [];
 
             $response = $this->getElement('data', $this->getData('multi', 'permissionlist -new'));
 
@@ -2639,7 +2639,7 @@ class ts3admin {
 
             foreach($response as $field) {
                 if(isset($field['group_id_end'])) {
-                    $groups[] = array('num' => $gc, 'group_id_end' => $field['group_id_end']);
+                    $groups[] = ['num' => $gc, 'group_id_end' => $field['group_id_end']];
                     $gc++;
                 }else{
                     $permissions[] = $field;
@@ -2652,7 +2652,7 @@ class ts3admin {
                 $rounds = $groups[$i]['group_id_end'] - $counter;
                 $groups[$i]['pcount'] = $rounds;
                 for($j = 0; $j < $rounds; $j++) {
-                    $groups[$i]['permissions'][] = array('permid' => ($counter + 1), 'permname' => $permissions[$counter]['permname'], 'permdesc' => $permissions[$counter]['permdesc'], 'grantpermid' => ($counter + 32769));
+                    $groups[$i]['permissions'][] = ['permid' => ($counter + 1), 'permname' => $permissions[$counter]['permname'], 'permdesc' => $permissions[$counter]['permdesc'], 'grantpermid' => ($counter + 32769)];
                     $counter++;
                 }
             }
@@ -2742,7 +2742,7 @@ class ts3admin {
      * @param		array	$customFieldSet			customFieldSet [optional]
      * @return     array	tokenInformation
      */
-    function privilegekeyAdd($tokentype, $tokenid1, $tokenid2, $description ='', $customFieldSet = array()) {
+    function privilegekeyAdd($tokentype, $tokenid1, $tokenid2, $description ='', $customFieldSet = []) {
         return $this->tokenAdd($tokentype, $tokenid1, $tokenid2, $description, $customFieldSet);
     }
 
@@ -2803,7 +2803,7 @@ class ts3admin {
      * @author     Par0noid Solutions
      * @return 	none
      */
-    private function quit() {
+    private function quit(): void {
         $this->logout();
         @fputs($this->runtime['socket'], "quit\n");
         @fclose($this->runtime['socket']);
@@ -2821,7 +2821,7 @@ class ts3admin {
      * @return     boolean success
      */
     function selectServer($value, $type = 'port', $virtual = false) {
-        if(in_array($type, array('port', 'serverId'))) {
+        if(in_array($type, ['port', 'serverId'])) {
             if($type == 'port') {
                 if($virtual) { $virtual = ' -virtual'; }else{ $virtual = ''; }
                 $res = $this->getData('boolean', 'use port='.$value.$virtual);
@@ -2839,7 +2839,7 @@ class ts3admin {
             }
         }else{
             $this->addDebugLog('wrong value type');
-            return $this->generateOutput(false, array('Error: wrong value type'), false);
+            return $this->generateOutput(false, ['Error: wrong value type'], false);
         }
     }
 
@@ -2901,7 +2901,7 @@ class ts3admin {
      * @param		array	$data	serverSettings	[optional]
      * @return     array serverInfo
      */
-    function serverCreate($data = array()) {
+    function serverCreate(array $data = []) {
         $settingsString = '';
 
         if(count($data) == 0) {	$data['virtualserver_name'] = 'Teamspeak 3 Server'; }
@@ -3020,7 +3020,7 @@ class ts3admin {
             //Permissions given
 
             //Errorcollector
-            $errors = array();
+            $errors = [];
 
             //Split Permissions to prevent query from overload
             $permissions = array_chunk($permissions, 50, true);
@@ -3029,7 +3029,7 @@ class ts3admin {
             foreach($permissions as $permission_part)
             {
                 //Create command_string for each command that we could use implode later
-                $command_string = array();
+                $command_string = [];
 
                 foreach($permission_part as $key => $value)
                 {
@@ -3049,7 +3049,7 @@ class ts3admin {
 
             if(count($errors) == 0)
             {
-                return $this->generateOutput(true, array(), true);
+                return $this->generateOutput(true, [], true);
             }else{
                 return $this->generateOutput(false, $errors, false);
             }
@@ -3057,7 +3057,7 @@ class ts3admin {
         }else{
             // No permissions given
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -3086,7 +3086,7 @@ class ts3admin {
             //Permissions given
 
             //Errorcollector
-            $errors = array();
+            $errors = [];
 
             //Split Permissions to prevent query from overload
             $permissions = array_chunk($permissions, 50, true);
@@ -3095,7 +3095,7 @@ class ts3admin {
             foreach($permissions as $permission_part)
             {
                 //Create command_string for each command that we could use implode later
-                $command_string = array();
+                $command_string = [];
 
                 foreach($permission_part as $key => $value)
                 {
@@ -3115,7 +3115,7 @@ class ts3admin {
 
             if(count($errors) == 0)
             {
-                return $this->generateOutput(true, array(), true);
+                return $this->generateOutput(true, [], true);
             }else{
                 return $this->generateOutput(false, $errors, false);
             }
@@ -3123,7 +3123,7 @@ class ts3admin {
         }else{
             // No permissions given
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -3147,7 +3147,7 @@ class ts3admin {
      */
     function serverGroupAutoDeletePerm($sgtype, $permissions) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
-        $permissionArray = array();
+        $permissionArray = [];
 
         if(count($permissions) > 0) {
             foreach($permissions AS $value) {
@@ -3156,7 +3156,7 @@ class ts3admin {
             return $this->getData('boolean', 'servergroupautodelperm sgtype='.$sgtype.' '.implode('|', $permissionArray));
         }else{
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -3263,7 +3263,7 @@ class ts3admin {
      */
     function serverGroupDeletePerm($sgid, $permissionIds) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
-        $permissionArray = array();
+        $permissionArray = [];
 
         if(count($permissionIds) > 0) {
             foreach($permissionIds AS $value) {
@@ -3272,7 +3272,7 @@ class ts3admin {
             return $this->getData('boolean', 'servergroupdelperm sgid='.$sgid.' '.implode('|', $permissionArray));
         }else{
             $this->addDebugLog('no permissions given');
-            return $this->generateOutput(false, array('Error: no permissions given'), false);
+            return $this->generateOutput(false, ['Error: no permissions given'], false);
         }
     }
 
@@ -3610,7 +3610,7 @@ class ts3admin {
      * @param		bool	$mapping	mapping [optional]
      * @return     boolean success
      */
-    function serverSnapshotDeploy($snapshot, $mapping = false) {
+    function serverSnapshotDeploy(string $snapshot, $mapping = false) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('boolean', 'serversnapshotdeploy '.($mapping ? '-mapping ' : '').$snapshot);
     }
@@ -3654,7 +3654,7 @@ class ts3admin {
      * @param		string	$tcpw			channelPW
      * @return     boolean success
      */
-    function serverTempPasswordAdd($pw, $duration, $desc = 'none', $tcid = 0, $tcpw = null) {
+    function serverTempPasswordAdd($pw, string $duration, $desc = 'none', $tcid = 0, $tcpw = null) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getdata('boolean', 'servertemppasswordadd pw='.$this->escapeText($pw).' desc='.(!empty($desc) ? $this->escapeText($desc) : 'none').' duration='.$duration.' tcid='.$tcid.(!empty($tcpw) ? ' tcpw='.$this->escapeText($tcpw) : ''));
     }
@@ -3752,7 +3752,7 @@ class ts3admin {
      * @param		array	$customFieldSet			customFieldSet [optional]
      * @return     array	tokenInformation
      */
-    function tokenAdd($tokentype, $tokenid1, $tokenid2, $description ='', $customFieldSet = array()) {
+    function tokenAdd($tokentype, $tokenid1, $tokenid2, $description ='', $customFieldSet = []) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
 
         if(!empty($description)) { $description = ' tokendescription=' . $this->escapeText($description); }
@@ -3760,7 +3760,7 @@ class ts3admin {
         if($tokentype == '0') { $tokenid2 = '0'; }
 
         if(count($customFieldSet)) {
-            $settingsString = array();
+            $settingsString = [];
 
             foreach($customFieldSet as $key => $value) {
                 $settingsString[] = 'ident='.$this->escapeText($key).'\svalue='.$this->escapeText($value);
@@ -3783,7 +3783,7 @@ class ts3admin {
      * @param		string	$token	token
      * @return     boolean success
      */
-    function tokenDelete($token) {
+    function tokenDelete(string $token) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('boolean', 'privilegekeydelete token='.$token);
     }
@@ -3824,7 +3824,7 @@ class ts3admin {
      * @param		string	$token	token
      * @return     boolean success
      */
-    function tokenUse($token) {
+    function tokenUse(string $token) {
         if(!$this->runtime['selected']) { return $this->checkSelected(); }
         return $this->getData('boolean', 'privilegekeyuse token='.$token);
     }
@@ -3904,7 +3904,7 @@ class ts3admin {
     private function checkSelected() {
         $backtrace = debug_backtrace();
         $this->addDebugLog('you can\'t use this function if no server is selected', $backtrace[1]['function'], $backtrace[0]['line']);
-        return $this->generateOutput(false, array('you can\'t use this function if no server is selected'), false);
+        return $this->generateOutput(false, ['you can\'t use this function if no server is selected'], false);
     }
 
     /**
@@ -3916,7 +3916,7 @@ class ts3admin {
      * @param		integer	$seconds	time in seconds
      * @return     string strTime
      */
-    public function convertSecondsToStrTime($seconds) {
+    public function convertSecondsToStrTime($seconds): string {
         $conv_time = $this->convertSecondsToArrayTime($seconds);
         return $conv_time['days'].'d '.$conv_time['hours'].'h '.$conv_time['minutes'].'m '.$conv_time['seconds'].'s';
     }
@@ -3941,8 +3941,8 @@ class ts3admin {
      * @param		integer	$seconds	time in seconds
      * @return     array time
      */
-    public function convertSecondsToArrayTime($seconds) {
-        $conv_time = array();
+    public function convertSecondsToArrayTime($seconds): array {
+        $conv_time = [];
         $conv_time['days']=floor($seconds / 86400);
         $conv_time['hours']=floor(($seconds - ($conv_time['days'] * 86400)) / 3600);
         $conv_time['minutes']=floor(($seconds - (($conv_time['days'] * 86400)+($conv_time['hours']*3600))) / 60);
@@ -3979,7 +3979,7 @@ class ts3admin {
      * @param		array	$array		array
      * @return     mixed
      */
-    public function getElement($element, $array) {
+    public function getElement($element, array $array) {
         return $array[$element];
     }
 
@@ -4056,9 +4056,9 @@ class ts3admin {
      * @param	array	$args	method arguments
      * @return	void
      */
-    function __call($name, $args) {
+    function __call(string $name, $args) {
         $this->addDebugLog('Method '.$name.' doesn\'t exist', $name, 0);
-        return $this->generateOutput(false, array('Method '.$name.' doesn\'t exist'), false);
+        return $this->generateOutput(false, ['Method '.$name.' doesn\'t exist'], false);
     }
 
     /**
@@ -4069,7 +4069,7 @@ class ts3admin {
      * @author     Par0noid Solutions
      * @return     boolean connected
      */
-    private function isConnected() {
+    private function isConnected(): bool {
         if(empty($this->runtime['socket'])) {
             return false;
         }else{
@@ -4088,8 +4088,8 @@ class ts3admin {
      * @param		mixed		$data		parsed data from server
      * @return     array output
      */
-    private function generateOutput($success, $errors, $data) {
-        return array('success' => $success, 'errors' => $errors, 'data' => $data);
+    private function generateOutput(bool $success, $errors, mixed $data): array {
+        return ['success' => $success, 'errors' => $errors, 'data' => $data];
     }
 
     /**
@@ -4101,9 +4101,9 @@ class ts3admin {
      * @param		string	$text	text which should be escaped
      * @return     string	text
      */
-    private function unEscapeText($text) {
-        $escapedChars = array("\t", "\v", "\r", "\n", "\f", "\s", "\p", "\/");
-        $unEscapedChars = array('', '', '', '', '', ' ', '|', '/');
+    private function unEscapeText(string $text): string|array {
+        $escapedChars = ["\t", "\v", "\r", "\n", "\f", "\s", "\p", "\/"];
+        $unEscapedChars = ['', '', '', '', '', ' ', '|', '/'];
         $text = str_replace($escapedChars, $unEscapedChars, $text);
         return $text;
     }
@@ -4117,7 +4117,7 @@ class ts3admin {
      * @param		string	$text	text which should be escaped
      * @return     string	text
      */
-    private function escapeText($text) {
+    private function escapeText($text): string|array {
         $text = str_replace("\t", '\t', $text);
         $text = str_replace("\v", '\v', $text);
         $text = str_replace("\r", '\r', $text);
@@ -4138,9 +4138,9 @@ class ts3admin {
      * @param		string	$text	plain text server response
      * @return     string	text
      */
-    private function splitBanIds($text) {
-        $data = array();
-        $text = str_replace(array("\n", "\r"), '', $text);
+    private function splitBanIds($text): array {
+        $data = [];
+        $text = str_replace(["\n", "\r"], '', $text);
         $ids = explode("banid=", $text);
         unset($ids[0]);
         return $ids;
@@ -4161,21 +4161,21 @@ class ts3admin {
     function connect() {
         if($this->isConnected()) {
             $this->addDebugLog('Error: you are already connected!');
-            return $this->generateOutput(false, array('Error: the script is already connected!'), false);
+            return $this->generateOutput(false, ['Error: the script is already connected!'], false);
         }
         $socket = @fsockopen($this->runtime['host'], $this->runtime['queryport'], $errnum, $errstr, $this->runtime['timeout']);
 
         if(!$socket) {
             $this->addDebugLog('Error: connection failed!');
-            return $this->generateOutput(false, array('Error: connection failed!', 'Server returns: '.$errstr), false);
+            return $this->generateOutput(false, ['Error: connection failed!', 'Server returns: '.$errstr], false);
         }else{
-            if(strpos(fgets($socket), 'TS3') !== false) {
+            if(str_contains(fgets($socket), 'TS3')) {
                 $tmpVar = fgets($socket);
                 $this->runtime['socket'] = $socket;
-                return $this->generateOutput(true, array(), true);
+                return $this->generateOutput(true, [], true);
             }else{
                 $this->addDebugLog('host isn\'t a ts3 instance!');
-                return $this->generateOutput(false, array('Error: host isn\'t a ts3 instance!'), false);
+                return $this->generateOutput(false, ['Error: host isn\'t a ts3 instance!'], false);
             }
         }
     }
@@ -4190,10 +4190,10 @@ class ts3admin {
      * @param		array	$tracert	array with information from first exec
      * @return     mixed data
      */
-    private function executeCommand($command, $tracert) {
+    private function executeCommand($command, array $tracert) {
         if(!$this->isConnected()) {
             $this->addDebugLog('script isn\'t connected to server', $tracert[1]['function'], $tracert[0]['line']);
-            return $this->generateOutput(false, array('Error: script isn\'t connected to server'), false);
+            return $this->generateOutput(false, ['Error: script isn\'t connected to server'], false);
         }
 
         $data = '';
@@ -4210,15 +4210,15 @@ class ts3admin {
         do {
             $data .= fgets($this->runtime['socket'], 4096);
 
-            if(strpos($data, 'error id=3329 msg=connection') !== false) {
+            if(str_contains($data, 'error id=3329 msg=connection')) {
                 $this->runtime['socket'] = '';
                 $this->addDebugLog('You got banned from server. Socket closed.', $tracert[1]['function'], $tracert[0]['line']);
-                return $this->generateOutput(false, array('You got banned from server. Connection closed.'), false);
+                return $this->generateOutput(false, ['You got banned from server. Connection closed.'], false);
             }
 
-        } while(strpos($data, 'msg=') === false or strpos($data, 'error id=') === false);
+        } while(!str_contains($data, 'msg=') or !str_contains($data, 'error id='));
 
-        if(strpos($data, 'error id=0 msg=ok') === false) {
+        if(!str_contains($data, 'error id=0 msg=ok')) {
             $splittedResponse = explode('error id=', $data);
             $chooseEnd = count($splittedResponse) - 1;
 
@@ -4226,9 +4226,9 @@ class ts3admin {
 
             $this->addDebugLog('ErrorID: '.$cutIdAndMsg[0].' | Message: '.$this->unEscapeText($cutIdAndMsg[1]), $tracert[1]['function'], $tracert[0]['line']);
 
-            return $this->generateOutput(false, array('ErrorID: '.$cutIdAndMsg[0].' | Message: '.$this->unEscapeText($cutIdAndMsg[1])), false);
+            return $this->generateOutput(false, ['ErrorID: '.$cutIdAndMsg[0].' | Message: '.$this->unEscapeText($cutIdAndMsg[1])], false);
         }else{
-            return $this->generateOutput(true, array(), $data);
+            return $this->generateOutput(true, [], $data);
         }
     }
 
@@ -4243,36 +4243,36 @@ class ts3admin {
      * @param		string	$command	command which should be executed
      * @return		mixed data
      */
-    private function getData($mode, $command) {
+    private function getData(string $mode, $command) {
 
-        $validModes = array('boolean', 'array', 'multi', 'plain');
+        $validModes = ['boolean', 'array', 'multi', 'plain'];
 
         if(!in_array($mode, $validModes)) {
             $this->addDebugLog($mode.' is an invalid mode');
-            return $this->generateOutput(false, array('Error: '.$mode.' is an invalid mode'), false);
+            return $this->generateOutput(false, ['Error: '.$mode.' is an invalid mode'], false);
         }
 
         if(empty($command)) {
             $this->addDebugLog('you have to enter a command');
-            return $this->generateOutput(false, array('Error: you have to enter a command'), false);
+            return $this->generateOutput(false, ['Error: you have to enter a command'], false);
         }
 
         $fetchData = $this->executeCommand($command, debug_backtrace());
 
 
-        $fetchData['data'] = str_replace(array('error id=0 msg=ok', chr('01')), '', $fetchData['data']);
+        $fetchData['data'] = str_replace(['error id=0 msg=ok', chr('01')], '', $fetchData['data']);
 
 
         if($fetchData['success']) {
             if($mode == 'boolean') {
-                return $this->generateOutput(true, array(), true);
+                return $this->generateOutput(true, [], true);
             }
 
             if($mode == 'array') {
-                if(empty($fetchData['data'])) { return $this->generateOutput(true, array(), array()); }
+                if(empty($fetchData['data'])) { return $this->generateOutput(true, [], []); }
                 $datasets = explode(' ', $fetchData['data']);
 
-                $output = array();
+                $output = [];
 
                 foreach($datasets as $dataset) {
                     $dataset = explode('=', $dataset);
@@ -4291,18 +4291,18 @@ class ts3admin {
 
                     }
                 }
-                return $this->generateOutput(true, array(), $output);
+                return $this->generateOutput(true, [], $output);
             }
             if($mode == 'multi') {
-                if(empty($fetchData['data'])) { return $this->generateOutput(true, array(), array()); }
+                if(empty($fetchData['data'])) { return $this->generateOutput(true, [], []); }
                 $datasets = explode('|', $fetchData['data']);
 
-                $output = array();
+                $output = [];
 
                 foreach($datasets as $datablock) {
                     $datablock = explode(' ', $datablock);
 
-                    $tmpArray = array();
+                    $tmpArray = [];
 
                     foreach($datablock as $dataset) {
                         $dataset = explode('=', $dataset);
@@ -4321,7 +4321,7 @@ class ts3admin {
                     }
                     $output[] = $tmpArray;
                 }
-                return $this->generateOutput(true, array(), $output);
+                return $this->generateOutput(true, [], $output);
             }
             if($mode == 'plain') {
                 return $fetchData;
@@ -4341,7 +4341,7 @@ class ts3admin {
      * @param		string $additional
      * @return     none
      */
-    private function ftSendKey($key, $additional = NULL) {
+    private function ftSendKey(string $key, $additional = NULL): void {
         fputs($this->runtime['fileSocket'], $key.$additional);
     }
 
@@ -4351,11 +4351,10 @@ class ts3admin {
      * Sends data to ftHost
      *
      * @author     Par0noid Solutions
-     * @param		mixed	$data
      * @return     none
      */
-    private function ftSendData($data) {
-        $data = str_split($data, 4096);
+    private function ftSendData(mixed $data): void {
+        $data = str_split((string) $data, 4096);
         foreach($data as $dat) {
             fputs($this->runtime['fileSocket'], $dat);
         }
@@ -4370,7 +4369,7 @@ class ts3admin {
      * @param		int	$size
      * @return     string data
      */
-    private function ftRead($size) {
+    private function ftRead($size): string {
         $data = '';
         while(strlen($data) < $size) {
             $data .= fgets($this->runtime['fileSocket'], 4096);
@@ -4414,7 +4413,7 @@ class ts3admin {
      * @param		string	$line			line where error triggered [optional]
      * @return     array debugLog
      */
-    private function addDebugLog($text, $methodName = '', $line = '') {
+    private function addDebugLog(string $text, $methodName = '', $line = ''): void {
         if(empty($methodName) and empty($line)) {
             $backtrace = debug_backtrace();
             $methodName = $backtrace[1]['function'];

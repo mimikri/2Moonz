@@ -50,28 +50,18 @@
 class LightOpenID
 {
     public $returnUrl
-         , $required = array()
-         , $optional = array()
+         , $required = []
+         , $optional = []
          , $verify_peer = null
          , $capath = null
          , $cainfo = null
          , $data;
     private $identity, $claimed_id;
     protected $server, $version, $trustRoot, $aliases, $identifier_select = false
-            , $ax = false, $sreg = false, $setup_url = null, $headers = array();
-    static protected $ax_to_sreg = array(
-        'namePerson/friendly'     => 'nickname',
-        'contact/email'           => 'email',
-        'namePerson'              => 'fullname',
-        'birthDate'               => 'dob',
-        'person/gender'           => 'gender',
-        'contact/postalCode/home' => 'postcode',
-        'contact/country/home'    => 'country',
-        'pref/language'           => 'language',
-        'pref/timezone'           => 'timezone',
-        );
+            , $ax = false, $sreg = false, $setup_url = null, $headers = [];
+    static protected $ax_to_sreg = ['namePerson/friendly'     => 'nickname', 'contact/email'           => 'email', 'namePerson'              => 'fullname', 'birthDate'               => 'dob', 'person/gender'           => 'gender', 'contact/postalCode/home' => 'postcode', 'contact/country/home'    => 'country', 'pref/language'           => 'language', 'pref/timezone'           => 'timezone'];
 
-    function __construct($host)
+    function __construct(string $host)
     {
         $this->trustRoot = (strpos($host, '://') ? $host : 'http://' . $host);
         if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')
@@ -85,7 +75,7 @@ class LightOpenID
             $this->trustRoot = substr($this->trustRoot, 0, $host_end);
         }
 
-        $uri = rtrim(preg_replace('#((?<=\?)|&)openid\.[^&]+#', '', $_SERVER['REQUEST_URI']), '?');
+        $uri = rtrim(preg_replace('#((?<=\?)|&)openid\.[^&]+#', '', (string) $_SERVER['REQUEST_URI']), '?');
         $this->returnUrl = $this->trustRoot . $uri;
 
         $this->data = ($_SERVER['REQUEST_METHOD'] === 'POST') ? $_POST : $_GET;
@@ -113,7 +103,7 @@ class LightOpenID
             break;
         case 'trustRoot':
         case 'realm':
-            $this->trustRoot = trim($value);
+            $this->trustRoot = trim((string) $value);
         }
     }
 
@@ -141,10 +131,10 @@ class LightOpenID
      */
     function hostExists($url)
     {
-        if (strpos($url, '/') === false) {
+        if (!str_contains((string) $url, '/')) {
             $server = $url;
         } else {
-            $server = @parse_url($url, PHP_URL_HOST);
+            $server = @parse_url((string) $url, PHP_URL_HOST);
         }
 
         if (!$server) {
@@ -154,7 +144,7 @@ class LightOpenID
         return !!gethostbynamel($server);
     }
 
-    protected function request_curl($url, $method='GET', $params=array(), $update_claimed_id)
+    protected function request_curl(string $url, $update_claimed_id, $method='GET', $params=[]): array|bool|string
     {
         $params = http_build_query($params, '', '&');
         $curl = curl_init($url . ($method == 'GET' && $params ? '?' . $params : ''));
@@ -162,7 +152,7 @@ class LightOpenID
         curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/xrds+xml, */*'));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Accept: application/xrds+xml, */*']);
 
         if($this->verify_peer !== null) {
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->verify_peer);
@@ -201,7 +191,7 @@ class LightOpenID
                 $header_response = substr($response, 0, strpos($response, "\r\n\r\n"));
             }
 
-            $headers = array();
+            $headers = [];
             foreach(explode("\n", $header_response) as $header) {
                 $pos = strpos($header,':');
                 if ($pos !== false) {
@@ -232,14 +222,17 @@ class LightOpenID
         return $response;
     }
 
-    protected function parse_header_array($array, $update_claimed_id)
+    /**
+     * @return string[]
+     */
+    protected function parse_header_array($array, $update_claimed_id): array
     {
-        $headers = array();
+        $headers = [];
         foreach($array as $header) {
-            $pos = strpos($header,':');
+            $pos = strpos((string) $header,':');
             if ($pos !== false) {
-                $name = strtolower(trim(substr($header, 0, $pos)));
-                $headers[$name] = trim(substr($header, $pos+1));
+                $name = strtolower(trim(substr((string) $header, 0, $pos)));
+                $headers[$name] = trim(substr((string) $header, $pos+1));
 
                 # Following possible redirections. The point is just to have
                 # claimed_id change with them, because the redirections
@@ -247,10 +240,10 @@ class LightOpenID
                 # We ignore redirections with relative paths.
                 # If any known provider uses them, file a bug report.
                 if($name == 'location' && $update_claimed_id) {
-                    if(strpos($headers[$name], 'http') === 0) {
+                    if(str_starts_with($headers[$name], 'http')) {
                         $this->identity = $this->claimed_id = $headers[$name];
                     } elseif($headers[$name][0] == '/') {
-                        $parsed_url = parse_url($this->claimed_id);
+                        $parsed_url = parse_url((string) $this->claimed_id);
                         $this->identity =
                         $this->claimed_id = $parsed_url['scheme'] . '://'
                                           . $parsed_url['host']
@@ -262,7 +255,7 @@ class LightOpenID
         return $headers;
     }
 
-    protected function request_streams($url, $method='GET', $params=array(), $update_claimed_id)
+    protected function request_streams($url, $update_claimed_id, $method='GET', $params=[])
     {
         if(!$this->hostExists($url)) {
             throw new ErrorException("Could not connect to $url.", 404);
@@ -271,28 +264,11 @@ class LightOpenID
         $params = http_build_query($params, '', '&');
         switch($method) {
         case 'GET':
-            $opts = array(
-                'http' => array(
-                    'method' => 'GET',
-                    'header' => 'Accept: application/xrds+xml, */*',
-                    'ignore_errors' => true,
-                ), 'ssl' => array(
-                    'CN_match' => parse_url($url, PHP_URL_HOST),
-                ),
-            );
+            $opts = ['http' => ['method' => 'GET', 'header' => 'Accept: application/xrds+xml, */*', 'ignore_errors' => true], 'ssl' => ['CN_match' => parse_url((string) $url, PHP_URL_HOST)]];
             $url = $url . ($params ? '?' . $params : '');
             break;
         case 'POST':
-            $opts = array(
-                'http' => array(
-                    'method' => 'POST',
-                    'header'  => 'Content-type: application/x-www-form-urlencoded',
-                    'content' => $params,
-                    'ignore_errors' => true,
-                ), 'ssl' => array(
-                    'CN_match' => parse_url($url, PHP_URL_HOST),
-                ),
-            );
+            $opts = ['http' => ['method' => 'POST', 'header'  => 'Content-type: application/x-www-form-urlencoded', 'content' => $params, 'ignore_errors' => true], 'ssl' => ['CN_match' => parse_url((string) $url, PHP_URL_HOST)]];
             break;
         case 'HEAD':
             # We want to send a HEAD request,
@@ -300,29 +276,21 @@ class LightOpenID
             # we have to change the defaults.
             $default = stream_context_get_options(stream_context_get_default());
             stream_context_get_default(
-                array(
-                    'http' => array(
-                        'method' => 'HEAD',
-                        'header' => 'Accept: application/xrds+xml, */*',
-                        'ignore_errors' => true,
-                    ), 'ssl' => array(
-                        'CN_match' => parse_url($url, PHP_URL_HOST),
-                    ),
-                )
+                ['http' => ['method' => 'HEAD', 'header' => 'Accept: application/xrds+xml, */*', 'ignore_errors' => true], 'ssl' => ['CN_match' => parse_url((string) $url, PHP_URL_HOST)]]
             );
 
             $url = $url . ($params ? '?' . $params : '');
             $headers = get_headers ($url);
             if(!$headers) {
-                return array();
+                return [];
             }
 
-            if(intval(substr($headers[0], strlen('HTTP/1.1 '))) == 405) {
+            if(intval(substr((string) $headers[0], strlen('HTTP/1.1 '))) == 405) {
                 # The server doesn't support HEAD, so let's emulate it with
                 # a GET.
                 $args = func_get_args();
                 $args[1] = 'GET';
-                call_user_func_array(array($this, 'request_streams'), $args);
+                call_user_func_array([$this, 'request_streams'], $args);
                 return $this->headers;
             }
 
@@ -334,11 +302,7 @@ class LightOpenID
         }
 
         if($this->verify_peer) {
-            $opts['ssl'] += array(
-                'verify_peer' => true,
-                'capath'      => $this->capath,
-                'cafile'      => $this->cainfo,
-            );
+            $opts['ssl'] += ['verify_peer' => true, 'capath'      => $this->capath, 'cafile'      => $this->cainfo];
         }
 
         $context = stream_context_create ($opts);
@@ -352,17 +316,17 @@ class LightOpenID
         return file_get_contents($url, false, $context);
     }
 
-    protected function request($url, $method='GET', $params=array(), $update_claimed_id=false)
+    protected function request($url, $method='GET', $params=[], $update_claimed_id=false)
     {
         if (function_exists('curl_init')
             && (!in_array('https', stream_get_wrappers()) || !ini_get('safe_mode') && !ini_get('open_basedir'))
         ) {
-            return $this->request_curl($url, $method, $params, $update_claimed_id);
+            return $this->request_curl($url, $update_claimed_id, $method, $params);
         }
-        return $this->request_streams($url, $method, $params, $update_claimed_id);
+        return $this->request_streams($url, $update_claimed_id, $method, $params);
     }
 
-    protected function build_url($url, $parts)
+    protected function build_url($url, $parts): string
     {
         if (isset($url['query'], $parts['query'])) {
             $parts['query'] = $url['query'] . '&' . $parts['query'];
@@ -387,8 +351,8 @@ class LightOpenID
      */
     protected function htmlTag($content, $tag, $attrName, $attrValue, $valueName)
     {
-        preg_match_all("#<{$tag}[^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*$valueName=['\"](.+?)['\"][^>]*/?>#i", $content, $matches1);
-        preg_match_all("#<{$tag}[^>]*$valueName=['\"](.+?)['\"][^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*/?>#i", $content, $matches2);
+        preg_match_all("#<{$tag}[^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*$valueName=['\"](.+?)['\"][^>]*/?>#i", (string) $content, $matches1);
+        preg_match_all("#<{$tag}[^>]*$valueName=['\"](.+?)['\"][^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*/?>#i", (string) $content, $matches2);
 
         $result = array_merge($matches1[1], $matches2[1]);
         return empty($result)?false:$result[0];
@@ -404,7 +368,7 @@ class LightOpenID
     {
         if (!$url) throw new ErrorException('No identity supplied.');
         # Use xri.net proxy to resolve i-name identities
-        if (!preg_match('#^https?:#', $url)) {
+        if (!preg_match('#^https?:#', (string) $url)) {
             $url = "https://xri.net/$url";
         }
 
@@ -419,17 +383,17 @@ class LightOpenID
         # We'll jump a maximum of 5 times, to avoid endless redirections.
         for ($i = 0; $i < 5; $i ++) {
             if ($yadis) {
-                $headers = $this->request($url, 'HEAD', array(), true);
+                $headers = $this->request($url, 'HEAD', [], true);
 
                 $next = false;
                 if (isset($headers['x-xrds-location'])) {
-                    $url = $this->build_url(parse_url($url), parse_url(trim($headers['x-xrds-location'])));
+                    $url = $this->build_url(parse_url((string) $url), parse_url(trim((string) $headers['x-xrds-location'])));
                     $next = true;
                 }
 
                 if (isset($headers['content-type'])
-                    && (strpos($headers['content-type'], 'application/xrds+xml') !== false
-                        || strpos($headers['content-type'], 'text/xml') !== false)
+                    && (str_contains((string) $headers['content-type'], 'application/xrds+xml')
+                        || str_contains((string) $headers['content-type'], 'text/xml'))
                 ) {
                     # Apparently, some providers return XRDS documents as text/html.
                     # While it is against the spec, allowing this here shouldn't break
@@ -438,7 +402,7 @@ class LightOpenID
                     # Found an XRDS document, now let's find the server, and optionally delegate.
                     $content = $this->request($url, 'GET');
 
-                    preg_match_all('#<Service.*?>(.*?)</Service>#s', $content, $m);
+                    preg_match_all('#<Service.*?>(.*?)</Service>#s', (string) $content, $m);
                     foreach($m[1] as $content) {
                         $content = ' ' . $content; # The space is added, so that strpos doesn't return 0.
 
@@ -496,16 +460,16 @@ class LightOpenID
                 if ($next) continue;
 
                 # There are no relevant information in headers, so we search the body.
-                $content = $this->request($url, 'GET', array(), true);
+                $content = $this->request($url, 'GET', [], true);
 
                 if (isset($this->headers['x-xrds-location'])) {
-                    $url = $this->build_url(parse_url($url), parse_url(trim($this->headers['x-xrds-location'])));
+                    $url = $this->build_url(parse_url((string) $url), parse_url(trim((string) $this->headers['x-xrds-location'])));
                     continue;
                 }
 
                 $location = $this->htmlTag($content, 'meta', 'http-equiv', 'X-XRDS-Location', 'content');
                 if ($location) {
-                    $url = $this->build_url(parse_url($url), parse_url($location));
+                    $url = $this->build_url(parse_url((string) $url), parse_url((string) $location));
                     continue;
                 }
             }
@@ -540,15 +504,15 @@ class LightOpenID
         throw new ErrorException('Endless redirection!', 500);
     }
 
-    protected function sregParams()
+    protected function sregParams(): array
     {
-        $params = array();
+        $params = [];
         # We always use SREG 1.1, even if the server is advertising only support for 1.0.
         # That's because it's fully backwards compatibile with 1.0, and some providers
         # advertise 1.0 even if they accept only 1.1. One such provider is myopenid.com
         $params['openid.ns.sreg'] = 'http://openid.net/extensions/sreg/1.1';
         if ($this->required) {
-            $params['openid.sreg.required'] = array();
+            $params['openid.sreg.required'] = [];
             foreach ($this->required as $required) {
                 if (!isset(self::$ax_to_sreg[$required])) continue;
                 $params['openid.sreg.required'][] = self::$ax_to_sreg[$required];
@@ -557,7 +521,7 @@ class LightOpenID
         }
 
         if ($this->optional) {
-            $params['openid.sreg.optional'] = array();
+            $params['openid.sreg.optional'] = [];
             foreach ($this->optional as $optional) {
                 if (!isset(self::$ax_to_sreg[$optional])) continue;
                 $params['openid.sreg.optional'][] = self::$ax_to_sreg[$optional];
@@ -567,17 +531,20 @@ class LightOpenID
         return $params;
     }
 
-    protected function axParams()
+    /**
+     * @return int[]|non-falsy-string[]
+     */
+    protected function axParams(): array
     {
-        $params = array();
+        $params = [];
         if ($this->required || $this->optional) {
             $params['openid.ns.ax'] = 'http://openid.net/srv/ax/1.0';
             $params['openid.ax.mode'] = 'fetch_request';
-            $this->aliases  = array();
-            $counts   = array();
-            $required = array();
-            $optional = array();
-            foreach (array('required','optional') as $type) {
+            $this->aliases  = [];
+            $counts   = [];
+            $required = [];
+            $optional = [];
+            foreach (['required', 'optional'] as $type) {
                 foreach ($this->$type as $alias => $field) {
                     if (is_int($alias)) $alias = strtr($field, '/', '_');
                     $this->aliases[$alias] = 'http://axschema.org/' . $field;
@@ -613,28 +580,18 @@ class LightOpenID
         # we need to somehow preserve the claimed id between requests.
         # The simplest way is to just send it along with the return_to url.
         if($this->identity != $this->claimed_id) {
-            $returnUrl .= (strpos($returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $this->claimed_id;
+            $returnUrl .= (strpos((string) $returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $this->claimed_id;
         }
 
-        $params = array(
-            'openid.return_to'  => $returnUrl,
-            'openid.mode'       => $immediate ? 'checkid_immediate' : 'checkid_setup',
-            'openid.identity'   => $this->identity,
-            'openid.trust_root' => $this->trustRoot,
-            ) + $this->sregParams();
+        $params = ['openid.return_to'  => $returnUrl, 'openid.mode'       => $immediate ? 'checkid_immediate' : 'checkid_setup', 'openid.identity'   => $this->identity, 'openid.trust_root' => $this->trustRoot] + $this->sregParams();
 
-        return $this->build_url(parse_url($this->server)
-                               , array('query' => http_build_query($params, '', '&')));
+        return $this->build_url(parse_url((string) $this->server)
+                               , ['query' => http_build_query($params, '', '&')]);
     }
 
     protected function authUrl_v2($immediate)
     {
-        $params = array(
-            'openid.ns'          => 'http://specs.openid.net/auth/2.0',
-            'openid.mode'        => $immediate ? 'checkid_immediate' : 'checkid_setup',
-            'openid.return_to'   => $this->returnUrl,
-            'openid.realm'       => $this->trustRoot,
-        );
+        $params = ['openid.ns'          => 'http://specs.openid.net/auth/2.0', 'openid.mode'        => $immediate ? 'checkid_immediate' : 'checkid_setup', 'openid.return_to'   => $this->returnUrl, 'openid.realm'       => $this->trustRoot];
         if ($this->ax) {
             $params += $this->axParams();
         }
@@ -655,8 +612,8 @@ class LightOpenID
             $params['openid.claimed_id'] = $this->claimed_id;
         }
 
-        return $this->build_url(parse_url($this->server)
-                               , array('query' => http_build_query($params, '', '&')));
+        return $this->build_url(parse_url((string) $this->server)
+                               , ['query' => http_build_query($params, '', '&')]);
     }
 
     /**
@@ -681,7 +638,7 @@ class LightOpenID
      * @return Bool Whether the verification was successful.
      * @throws ErrorException
      */
-    function validate()
+    function validate(): false|int
     {
         # If the request was using immediate mode, a failure may be reported
         # by presenting user_setup_url (for 1.1) or reporting
@@ -695,12 +652,8 @@ class LightOpenID
             return false;
         }
 
-        $this->claimed_id = isset($this->data['openid_claimed_id'])?$this->data['openid_claimed_id']:$this->data['openid_identity'];
-        $params = array(
-            'openid.assoc_handle' => $this->data['openid_assoc_handle'],
-            'openid.signed'       => $this->data['openid_signed'],
-            'openid.sig'          => $this->data['openid_sig'],
-            );
+        $this->claimed_id = $this->data['openid_claimed_id'] ?? $this->data['openid_identity'];
+        $params = ['openid.assoc_handle' => $this->data['openid_assoc_handle'], 'openid.signed'       => $this->data['openid_signed'], 'openid.sig'          => $this->data['openid_sig']];
 
         if (isset($this->data['openid_ns'])) {
             # We're dealing with an OpenID 2.0 server, so let's set an ns
@@ -712,7 +665,7 @@ class LightOpenID
         ) {
             # If it's an OpenID 1 provider, and we've got claimed_id,
             # we have to append it to the returnUrl, like authUrl_v1 does.
-            $this->returnUrl .= (strpos($this->returnUrl, '?') ? '&' : '?')
+            $this->returnUrl .= (strpos((string) $this->returnUrl, '?') ? '&' : '?')
                              .  'openid.claimed_id=' . $this->claimed_id;
         }
 
@@ -724,7 +677,7 @@ class LightOpenID
 
         $server = $this->discover($this->claimed_id);
 
-        foreach (explode(',', $this->data['openid_signed']) as $item) {
+        foreach (explode(',', (string) $this->data['openid_signed']) as $item) {
             # Checking whether magic_quotes_gpc is turned on, because
             # the function may fail if it is. For example, when fetching
             # AX namePerson, it might containg an apostrophe, which will be escaped.
@@ -732,7 +685,7 @@ class LightOpenID
             # wants to verify. stripslashes() should solve that problem, but we can't
             # use it when magic_quotes is off.
             $value = $this->data['openid_' . str_replace('.','_',$item)];
-            $params['openid.' . $item] = function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc() ? stripslashes($value) : $value;
+            $params['openid.' . $item] = function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc() ? stripslashes((string) $value) : $value;
 
         }
 
@@ -740,10 +693,13 @@ class LightOpenID
 
         $response = $this->request($server, 'POST', $params);
 
-        return preg_match('/is_valid\s*:\s*true/i', $response);
+        return preg_match('/is_valid\s*:\s*true/i', (string) $response);
     }
 
-    protected function getAxAttributes()
+    /**
+     * @return mixed[]
+     */
+    protected function getAxAttributes(): array
     {
         $alias = null;
         if (isset($this->data['openid_ns_ax'])
@@ -754,10 +710,10 @@ class LightOpenID
             # 'ax' prefix is either undefined, or points to another extension,
             # so we search for another prefix
             foreach ($this->data as $key => $val) {
-                if (substr($key, 0, strlen('openid_ns_')) == 'openid_ns_'
+                if (str_starts_with((string) $key, 'openid_ns_')
                     && $val == 'http://openid.net/srv/ax/1.0'
                 ) {
-                    $alias = substr($key, strlen('openid_ns_'));
+                    $alias = substr((string) $key, strlen('openid_ns_'));
                     break;
                 }
             }
@@ -765,13 +721,13 @@ class LightOpenID
         if (!$alias) {
             # An alias for AX schema has not been found,
             # so there is no AX data in the OP's response
-            return array();
+            return [];
         }
 
-        $attributes = array();
-        foreach (explode(',', $this->data['openid_signed']) as $key) {
+        $attributes = [];
+        foreach (explode(',', (string) $this->data['openid_signed']) as $key) {
             $keyMatch = $alias . '.value.';
-            if (substr($key, 0, strlen($keyMatch)) != $keyMatch) {
+            if (!str_starts_with($key, $keyMatch)) {
                 continue;
             }
             $key = substr($key, strlen($keyMatch));
@@ -782,7 +738,7 @@ class LightOpenID
                 continue;
             }
             $value = $this->data['openid_' . $alias . '_value_' . $key];
-            $key = substr($this->data['openid_' . $alias . '_type_' . $key],
+            $key = substr((string) $this->data['openid_' . $alias . '_type_' . $key],
                           strlen('http://axschema.org/'));
 
             $attributes[$key] = $value;
@@ -790,13 +746,16 @@ class LightOpenID
         return $attributes;
     }
 
-    protected function getSregAttributes()
+    /**
+     * @return mixed[]
+     */
+    protected function getSregAttributes(): array
     {
-        $attributes = array();
+        $attributes = [];
         $sreg_to_ax = array_flip(self::$ax_to_sreg);
-        foreach (explode(',', $this->data['openid_signed']) as $key) {
+        foreach (explode(',', (string) $this->data['openid_signed']) as $key) {
             $keyMatch = 'sreg.';
-            if (substr($key, 0, strlen($keyMatch)) != $keyMatch) {
+            if (!str_starts_with($key, $keyMatch)) {
                 continue;
             }
             $key = substr($key, strlen($keyMatch));

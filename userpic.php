@@ -16,7 +16,7 @@
  */
 
 define('MODE', 'BANNER');
-define('ROOT_PATH', str_replace('\\', '/',dirname(__FILE__)).'/');
+define('ROOT_PATH', str_replace('\\', '/',__DIR__).'/');
 set_include_path(ROOT_PATH);
 
 if(!extension_loaded('gd')) {
@@ -32,7 +32,7 @@ if(!isModuleAvailable(MODULE_BANNER) || $id == 0) {
 
 $LNG = new Language;
 $LNG->getUserAgentLanguage();
-$LNG->includeData(array('L18N', 'BANNER', 'CUSTOM'));
+$LNG->includeData(['L18N', 'BANNER', 'CUSTOM']);
 
 require 'includes/classes/class.StatBanner.php';
 

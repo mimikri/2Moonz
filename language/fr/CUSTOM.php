@@ -26,8 +26,8 @@
  * @info $Id: CUSTOM.php 2095 2011-12-21 19:39:40Z slaver7 $
  * @link http://code.google.com/p/2moons/
  */
- 
+
 // If you have custom lang vars, you can include them here. The file ll be not overwrite by updatemanager
 // Also you can overwrite exists var, too. You use the same key.
- 
+
 ?>

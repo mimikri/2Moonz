@@ -29,22 +29,22 @@ class SQLDumper
 		}
 	}
 	
-	private function setTimelimit()
+	private function setTimelimit(): void
 	{
 		@set_time_limit(600); // 10 Minutes
 	}
 		
-	private function canNative($command)
+	private function canNative(string $command): bool
 	{
 		return function_exists('shell_exec') && function_exists('escapeshellarg') && shell_exec("which " . $command) !== "";
 	}
 	
-	private function nativeDumpToFile($dbTables, $filePath)
+	private function nativeDumpToFile($dbTables, string $filePath): string
 	{
-		$database	= array();
+		$database	= [];
 		require 'includes/config.php';
 
-        $dbVersion	= Database::get()->selectSingle('SELECT @@version', array(), '@@version');
+        $dbVersion	= Database::get()->selectSingle('SELECT @@version', [], '@@version');
         if(version_compare($dbVersion, '5.5') >= 0) {
             putenv('MYSQL_PWD='.$database['userpw']);
             $passwordArgument = '';
@@ -61,14 +61,14 @@ class SQLDumper
 		return $sqlDump;
 	}
 	
-	private function softwareDumpToFile($dbTables, $filePath)
+	private function softwareDumpToFile($dbTables, $filePath): bool
 	{
 		$this->setTimelimit();
 
 		$db	= Database::get();
-		$database	= array();
+		$database	= [];
 		require 'includes/config.php';
-		$integerTypes	= array('tinyint', 'smallint', 'mediumint', 'int', 'bigint', 'decimal', 'float', 'double', 'real');
+		$integerTypes	= ['tinyint', 'smallint', 'mediumint', 'int', 'bigint', 'decimal', 'float', 'double', 'real'];
 		$gameVersion	= Config::get()->VERSION;
 		$fp	= fopen($filePath, 'w');
 		fwrite($fp, "-- MySQL dump | 2Moons dumper v{$gameVersion}
@@ -91,7 +91,7 @@ class SQLDumper
 
 		foreach($dbTables as $dbTable)
 		{
-			$numColumns	= array();
+			$numColumns	= [];
 			$firstRow	= true;
 
 			fwrite($fp, "--\n-- Table structure for table `{$dbTable}`\n--\n\nDROP TABLE IF EXISTS `{$dbTable}`;
@@ -99,13 +99,7 @@ class SQLDumper
 /*!40101 SET character_set_client = utf8 */;\n\n");
 
 			$createTable	= $db->nativeQuery("SHOW CREATE TABLE ".$dbTable);
-            $createTableSql = isset($createTable['Create Table']) ?
-                $createTable['Create Table'] : (
-                #old mysql clients
-                isset($createTable[0]['Create Table']) ?
-                    $createTable[0]['Create Table'] :
-                    false
-            );
+            $createTableSql = $createTable['Create Table'] ?? $createTable[0]['Create Table'] ?? false;
 
             if($createTableSql === false) {
                 throw new Exception("Error after executing SHOW CREATE TABLE ".$dbTable."! Can't find key 'Create Table' in the results. Available data: \n\n".print_r($createTable, true));
@@ -134,13 +128,13 @@ LOCK TABLES `{$dbTable}` WRITE;
 
 ");
 			$columnsData	= $db->nativeQuery("SHOW COLUMNS FROM `".$dbTable."`");
-			$columnNames	= array();
+			$columnNames	= [];
 			foreach($columnsData as $columnData)
 			{
 				$columnNames[]	= $columnData['Field'];
 				foreach($integerTypes as $type)
 				{
-					if(strpos($columnData['Type'], $type.'(') !== false)
+					if(str_contains((string) $columnData['Type'], $type.'('))
 					{
 						$numColumns[]	= $columnData['Field'];
 						break;
@@ -155,7 +149,7 @@ LOCK TABLES `{$dbTable}` WRITE;
 			$tableData	= $db->select("SELECT * FROM ".$dbTable);
 			foreach($tableData as $tableRow)
 			{
-				$rowData = array();
+				$rowData = [];
 				$i++;
 				if(($i % 50) === 0)
 				{
@@ -177,7 +171,7 @@ LOCK TABLES `{$dbTable}` WRITE;
 				{
 					if(in_array($colum, $numColumns))
 					{
-						$rowData[]	= $value === NULL ? 'NULL' : $value;
+						$rowData[]	= $value ?? 'NULL';
 					}
 					else
 					{
@@ -209,16 +203,16 @@ UNLOCK TABLES;
 		return filesize($filePath) !== 0;
 	}
 	
-	public function restoreDatabase($filePath)
+	public function restoreDatabase($filePath): void
 	{
 		// Ugly.
 		$this->setTimelimit();
 		
 		if($this->canNative('mysql'))
 		{
-			$database	= array();
+			$database	= [];
 			require 'includes/config.php';
-			$sqlDump	= shell_exec("mysql --host='".escapeshellarg($database['host'])."' --port=".((int) $database['port'])." --user='".escapeshellarg($database['user'])."' --password='".escapeshellarg($database['userpw'])."' '".escapeshellarg($database['databasename'])."' < ".escapeshellarg($filePath)." 2>&1 1> /dev/null");
+			$sqlDump	= shell_exec("mysql --host='".escapeshellarg($database['host'])."' --port=".((int) $database['port'])." --user='".escapeshellarg($database['user'])."' --password='".escapeshellarg($database['userpw'])."' '".escapeshellarg($database['databasename'])."' < ".escapeshellarg((string) $filePath)." 2>&1 1> /dev/null");
 			if(strlen($sqlDump) !== 0) #mysql error
 			{
 				throw new Exception($sqlDump);

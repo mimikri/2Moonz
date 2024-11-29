@@ -18,7 +18,7 @@
 
 class ShowFleetAjaxPage extends AbstractGamePage
 {
-	public $returnData	= array();
+	public $returnData	= [];
 
 	public static $requireModule = 0;
 
@@ -28,14 +28,14 @@ class ShowFleetAjaxPage extends AbstractGamePage
 		$this->setWindow('ajax');
 	}
 
-	private function sendData($Code, $Message)
+	private function sendData(int $Code, $Message): void
 	{
 		$this->returnData['code']	= $Code;
 		$this->returnData['mess']	= $Message;
 		$this->sendJSON($this->returnData);
 	}
 
-	public function show()
+	public function show(): void
 	{
 		global $USER, $PLANET, $resource, $LNG, $pricelist;
 
@@ -61,7 +61,7 @@ class ShowFleetAjaxPage extends AbstractGamePage
 			$this->sendData(612, $LNG['fa_no_more_slots']);
 		}
 
-		$fleetArray = array();
+		$fleetArray = [];
 
 		$db = Database::get();
 
@@ -78,7 +78,7 @@ class ShowFleetAjaxPage extends AbstractGamePage
 					$this->sendData(611, $LNG['fa_no_spios']);
 				}
 
-				$fleetArray = array(210 => $ships);
+				$fleetArray = [210 => $ships];
 				$this->returnData['ships'][210]	= $PLANET[$resource[210]] - $ships;
 				break;
 			case 8:
@@ -87,13 +87,11 @@ class ShowFleetAjaxPage extends AbstractGamePage
 				}
 
 				$sql = "SELECT (der_metal + der_crystal) as sum FROM %%PLANETS%% WHERE id = :planetID;";
-				$totalDebris = $db->selectSingle($sql, array(
-					':planetID' => $planetID
-				), 'sum');
+				$totalDebris = $db->selectSingle($sql, [':planetID' => $planetID], 'sum');
 
-				$recElementIDs	= array(219, 209);
+				$recElementIDs	= [219, 209];
 
-				$fleetArray		= array();
+				$fleetArray		= [];
 
 				foreach($recElementIDs as $elementID)
 				{
@@ -136,9 +134,7 @@ class ShowFleetAjaxPage extends AbstractGamePage
 		LEFT JOIN %%STATPOINTS%% as stat ON stat.id_owner = user.id AND stat.stat_type = '1'
 		WHERE planet.id = :planetID;";
 
-		$targetData = $db->selectSingle($sql, array(
-			':planetID' => $planetID
-		));
+		$targetData = $db->selectSingle($sql, [':planetID' => $planetID]);
 
 		if (empty($targetData)) {
 			$this->sendData(601, $LNG['fa_planet_not_exist']);
@@ -157,10 +153,7 @@ class ShowFleetAjaxPage extends AbstractGamePage
 			FROM %%STATPOINTS%%
 			WHERE id_owner = :userId AND stat_type = :statType';
 
-			$USER	+= Database::get()->selectSingle($sql, array(
-				':userId'	=> $USER['id'],
-				':statType'	=> 1
-			));
+			$USER	+= Database::get()->selectSingle($sql, [':userId'	=> $USER['id'], ':statType'	=> 1]);
 
 			$IsNoobProtec	= CheckNoobProtec($USER, $targetData, $targetData);
 
@@ -178,7 +171,7 @@ class ShowFleetAjaxPage extends AbstractGamePage
 		}
 
 		$SpeedFactor    	= FleetFunctions::GetGameSpeedFactor();
-		$Distance    		= FleetFunctions::GetTargetDistance(array($PLANET['galaxy'], $PLANET['system'], $PLANET['planet']), array($targetData['galaxy'], $targetData['system'], $targetData['planet']));
+		$Distance    		= FleetFunctions::GetTargetDistance([$PLANET['galaxy'], $PLANET['system'], $PLANET['planet']], [$targetData['galaxy'], $targetData['system'], $targetData['planet']]);
 		$SpeedAllMin		= FleetFunctions::GetFleetMaxSpeed($fleetArray, $USER);
 		$Duration			= FleetFunctions::GetMissionDuration(10, $SpeedAllMin, $Distance, $SpeedFactor, $USER);
 		$consumption		= FleetFunctions::GetFleetConsumption($fleetArray, $Duration, $Distance, $USER, $SpeedFactor);
@@ -198,11 +191,7 @@ class ShowFleetAjaxPage extends AbstractGamePage
 
 		$this->returnData['slots']++;
 
-		$fleetResource	= array(
-			901	=> 0,
-			902	=> 0,
-			903	=> 0,
-		);
+		$fleetResource	= [901	=> 0, 902	=> 0, 903	=> 0];
 
 		$fleetStartTime		= $Duration + TIMESTAMP;
 		$fleetStayTime		= $fleetStartTime;

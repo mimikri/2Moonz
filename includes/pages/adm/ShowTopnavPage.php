@@ -15,12 +15,12 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-function ShowTopnavPage()
+function ShowTopnavPage(): void
 {
 	global $LNG, $USER;
 	$template	= new template();
 
-	$universeSelect	= array();
+	$universeSelect	= [];
 	foreach(Universe::availableUniverses() as $uniId)
 	{
 		$config = Config::get($uniId);
@@ -28,20 +28,7 @@ function ShowTopnavPage()
 	}
 
 	ksort($universeSelect);
-	$template->assign_vars(array(	
-		'ad_authlevel_title'	=> $LNG['ad_authlevel_title'],
-		're_reset_universe'		=> $LNG['re_reset_universe'],
-		'mu_universe'			=> $LNG['mu_universe'],
-		'mu_moderation_page'	=> $LNG['mu_moderation_page'],
-		'adm_cp_title'			=> $LNG['adm_cp_title'],
-		'adm_cp_index'			=> $LNG['adm_cp_index'],
-		'adm_cp_logout'			=> $LNG['adm_cp_logout'],
-		'sid'					=> session_id(),
-		'id'					=> $USER['id'],
-		'authlevel'				=> $USER['authlevel'],
-		'AvailableUnis'			=> $universeSelect,
-		'UNI'					=> Universe::getEmulated(),
-	));
+	$template->assign_vars(['ad_authlevel_title'	=> $LNG['ad_authlevel_title'], 're_reset_universe'		=> $LNG['re_reset_universe'], 'mu_universe'			=> $LNG['mu_universe'], 'mu_moderation_page'	=> $LNG['mu_moderation_page'], 'adm_cp_title'			=> $LNG['adm_cp_title'], 'adm_cp_index'			=> $LNG['adm_cp_index'], 'adm_cp_logout'			=> $LNG['adm_cp_logout'], 'sid'					=> session_id(), 'id'					=> $USER['id'], 'authlevel'				=> $USER['authlevel'], 'AvailableUnis'			=> $universeSelect, 'UNI'					=> Universe::getEmulated()]);
 	
 	$template->show('ShowTopnavPage.tpl');
 }

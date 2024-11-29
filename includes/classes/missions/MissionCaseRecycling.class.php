@@ -22,16 +22,16 @@ class MissionCaseRecycling extends MissionFunctions implements Mission
 		$this->_fleet	= $Fleet;
 	}
 	
-	function TargetEvent()
+	function TargetEvent(): void
 	{	
 		global $pricelist, $resource;
 		
-		$resourceIDs	= array(901, 902, 903, 921);
-		$debrisIDs		= array(901, 902);
-		$resQuery		= array();
-		$collectQuery	= array();
+		$resourceIDs	= [901, 902, 903, 921];
+		$debrisIDs		= [901, 902];
+		$resQuery		= [];
+		$collectQuery	= [];
 		
-		$collectedGoods = array();
+		$collectedGoods = [];
 		foreach($debrisIDs as $debrisID)
 		{
 			$collectedGoods[$debrisID] = 0;
@@ -41,16 +41,12 @@ class MissionCaseRecycling extends MissionFunctions implements Mission
 		$sql	= 'SELECT '.implode(',', $resQuery).', ('.implode(' + ', $resQuery).') as total
 		FROM %%PLANETS%% WHERE id = :planetId';
 
-		$targetData	= Database::get()->selectSingle($sql, array(
-			':planetId'	=> $this->_fleet['fleet_end_id']
-		));
+		$targetData	= Database::get()->selectSingle($sql, [':planetId'	=> $this->_fleet['fleet_end_id']]);
 
 		if(!empty($targetData['total']))
 		{
 			$sql				= 'SELECT * FROM %%USERS%% WHERE id = :userId;';
-			$targetUser			= Database::get()->selectSingle($sql, array(
-				':userId'	=> $this->_fleet['fleet_owner']
-			));
+			$targetUser			= Database::get()->selectSingle($sql, [':userId'	=> $this->_fleet['fleet_owner']]);
 
 			$targetUserFactors	= getFactors($targetUser);
 			$shipStorageFactor	= 1 + $targetUserFactors['ShipStorage'];
@@ -84,9 +80,7 @@ class MissionCaseRecycling extends MissionFunctions implements Mission
 
 			$totalStorage = $recyclerStorage + min(0, $otherFleetStorage - $incomingGoods);
 
-			$param	= array(
-				':planetId'	=> $this->_fleet['fleet_end_id']
-			);
+			$param	= [':planetId'	=> $this->_fleet['fleet_end_id']];
 
 			// fast way
 			$collectFactor	= min(1, $totalStorage / $targetData['total']);
@@ -121,19 +115,17 @@ class MissionCaseRecycling extends MissionFunctions implements Mission
 		$this->SaveFleet();
 	}
 	
-	function EndStayEvent()
+	function EndStayEvent(): void
 	{
 		return;
 	}
 	
-	function ReturnEvent()
+	function ReturnEvent(): void
 	{
 		$LNG		= $this->getLanguage(NULL, $this->_fleet['fleet_owner']);
 
 		$sql		= 'SELECT name FROM %%PLANETS%% WHERE id = :planetId;';
-		$planetName	= Database::get()->selectSingle($sql, array(
-			':planetId'	=> $this->_fleet['fleet_start_id'],
-		), 'name');
+		$planetName	= Database::get()->selectSingle($sql, [':planetId'	=> $this->_fleet['fleet_start_id']], 'name');
 	
 		$Message	= sprintf($LNG['sys_tran_mess_owner'],
 			$planetName, GetStartAddressLink($this->_fleet, ''),

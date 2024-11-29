@@ -10,18 +10,18 @@
 // Class to initialize the MySQL DataBase connection:
 class AJAXChatDataBaseMySQLi {
 
-	var $_connectionID;
-	var $_errno = 0;
-	var $_error = '';
-	var $_dbName;
+	public $_connectionID;
+	public $_errno = 0;
+	public $_error = '';
+	public $_dbName;
 
-	function __construct(&$dbConnectionConfig) {
+	function __construct(array &$dbConnectionConfig) {
 		$this->_connectionID = $dbConnectionConfig['link'];
 		$this->_dbName = $dbConnectionConfig['name'];
 	}
 	
 	// Method to connect to the DataBase server:
-	function connect(&$dbConnectionConfig) {
+	function connect(array &$dbConnectionConfig): bool {
 		@$this->_connectionID = new mysqli(
 			$dbConnectionConfig['host'],
 			$dbConnectionConfig['user'],
@@ -36,7 +36,7 @@ class AJAXChatDataBaseMySQLi {
 	}
 	
 	// Method to select the DataBase:
-	function select($dbName) {
+	function select($dbName): bool {
 		if(!$this->_connectionID->select_db($dbName)) {
 			$this->_errno = $this->_connectionID->errno;
 			$this->_error = $this->_connectionID->error;
@@ -47,12 +47,12 @@ class AJAXChatDataBaseMySQLi {
 	}
 	
 	// Method to determine if an error has occured:
-	function error() {
+	function error(): bool {
 		return (bool)$this->_error;
 	}
 	
 	// Method to return the error report:
-	function getError() {
+	function getError(): string {
 		if($this->error()) {
 			$str = 'Error-Report: '	.$this->_error."\n";
 			$str .= 'Error-Code: '.$this->_errno."\n";
@@ -68,12 +68,12 @@ class AJAXChatDataBaseMySQLi {
 	}
 	
 	// Method to prevent SQL injections:
-	function makeSafe($value) {
+	function makeSafe($value): string {
 		return "'".$this->_connectionID->escape_string($value)."'";
 	}
 
 	// Method to perform SQL queries:
-	function sqlQuery($sql) {
+	function sqlQuery($sql): \AJAXChatMySQLiQuery {
 		return new AJAXChatMySQLiQuery($sql, $this->_connectionID);
 	}
 

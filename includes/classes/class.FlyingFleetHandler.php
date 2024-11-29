@@ -19,27 +19,14 @@ class FlyingFleetHandler
 {	
 	protected $token;
 	
-	public static $missionObjPattern	= array(
-		1	=> 'MissionCaseAttack',
-		2	=> 'MissionCaseACS',
-		3	=> 'MissionCaseTransport',
-		4	=> 'MissionCaseStay',
-		5	=> 'MissionCaseStayAlly',
-		6	=> 'MissionCaseSpy',
-		7	=> 'MissionCaseColonisation',
-		8	=> 'MissionCaseRecycling',
-		9	=> 'MissionCaseDestruction',
-		10	=> 'MissionCaseMIP',
-		11	=> 'MissionCaseFoundDM',
-		15	=> 'MissionCaseExpedition',
-	);
+	public static $missionObjPattern	= [1	=> 'MissionCaseAttack', 2	=> 'MissionCaseACS', 3	=> 'MissionCaseTransport', 4	=> 'MissionCaseStay', 5	=> 'MissionCaseStayAlly', 6	=> 'MissionCaseSpy', 7	=> 'MissionCaseColonisation', 8	=> 'MissionCaseRecycling', 9	=> 'MissionCaseDestruction', 10	=> 'MissionCaseMIP', 11	=> 'MissionCaseFoundDM', 15	=> 'MissionCaseExpedition'];
 		
-	function setToken($token)
+	function setToken($token): void
 	{
 		$this->token	= $token;
 	}
 	
-	function run()
+	function run(): void
 	{
 		require_once 'includes/classes/class.MissionFunctions.php';
 		require_once 'includes/classes/missions/Mission.interface.php';
@@ -51,18 +38,14 @@ class FlyingFleetHandler
 		INNER JOIN %%FLEETS%% ON fleetID = fleet_id
 		WHERE `lock` = :token;';
 
-		$fleetResult = $db->select($sql, array(
-			':token'	=> $this->token
-		));
+		$fleetResult = $db->select($sql, [':token'	=> $this->token]);
 
 		foreach($fleetResult as $fleetRow)
 		{
 			if(!isset(self::$missionObjPattern[$fleetRow['fleet_mission']])) {
 				$sql = 'DELETE FROM %%FLEETS%% WHERE fleet_id = :fleetId;';
 
-				$db->delete($sql, array(
-					':fleetId'	=> $fleetRow['fleet_id']
-			  	));
+				$db->delete($sql, [':fleetId'	=> $fleetRow['fleet_id']]);
 
 				continue;
 			}

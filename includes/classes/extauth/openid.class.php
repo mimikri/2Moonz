@@ -19,7 +19,7 @@ require 'includes/libs/OpenID/openid.php';
 
 class OpenIDAuth implements externalAuth
 {
-	private $oidObj	= NULL;
+	private readonly \LightOpenID $oidObj;
 
 	public function __construct()
 	{
@@ -29,8 +29,8 @@ class OpenIDAuth implements externalAuth
 			if(isset($_REQUEST['openid_identifier']))
 			{
 				$this->oidObj->identity = $_REQUEST['openid_identifier'];
-				$this->oidObj->required = array('namePerson/friendly', 'contact/email', 'pref/language');
-				$this->oidObj->optional = array('namePerson');
+				$this->oidObj->required = ['namePerson/friendly', 'contact/email', 'pref/language'];
+				$this->oidObj->optional = ['namePerson'];
 
 				HTTP::sendHeader('Location', $this->oidObj->authUrl());
 				exit;
@@ -40,12 +40,12 @@ class OpenIDAuth implements externalAuth
 		}
 	}
 
-	public function isActiveMode()
+	public function isActiveMode(): bool
 	{
 		return false;
 	}
 
-	public function isValid()
+	public function isValid(): bool
 	{
 		return $this->oidObj->mode && $this->oidObj->mode != 'cancel';
 	}
@@ -74,7 +74,7 @@ class OpenIDAuth implements externalAuth
 		return false;
 	}
 	
-	public function register()
+	public function register(): void
 	{
 		$uid	= $this->getAccount();
 		$user	= $this->oidObj->getAttributes();
@@ -87,10 +87,7 @@ class OpenIDAuth implements externalAuth
 		$sql	= 'SELECT validationID, validationKey FROM %%USERS_VALID%%
 		WHERE universe = :universe AND email = :email;';
 
-		$registerData	= Database::get()->selectSingle($sql, array(
-			':universe'	=> Universe::current(),
-			':email'	=> $user['contact/email']
-		));
+		$registerData	= Database::get()->selectSingle($sql, [':universe'	=> Universe::current(), ':email'	=> $user['contact/email']]);
 
 		if(!empty($registerData))
 		{
@@ -105,11 +102,7 @@ class OpenIDAuth implements externalAuth
 		account = :accountId
 		mode = :mode;';
 
-		Database::get()->insert($sql, array(
-			':email'		=> $user['contact/email'],
-			':accountId'	=> $uid,
-			':mode'			=> $this->oidObj->identity,
-		));
+		Database::get()->insert($sql, [':email'		=> $user['contact/email'], ':accountId'	=> $uid, ':mode'			=> $this->oidObj->identity]);
 	}
 
 	public function getLoginData()
@@ -122,21 +115,13 @@ class OpenIDAuth implements externalAuth
 		INNER JOIN %%USERS%% user ON auth.id = user.id AND user.universe = :universe
 		WHERE auth.account = :email AND mode = :mode;';
 		
-		return Database::get()->select($sql, array(
-			':universe'	=> Universe::current(),
-			':email'	=> $user['contact/email'],
-			':mode'		=> $this->oidObj->identity
-		));
+		return Database::get()->select($sql, [':universe'	=> Universe::current(), ':email'	=> $user['contact/email'], ':mode'		=> $this->oidObj->identity]);
 	}
 
-	public function getAccountData()
+	public function getAccountData(): array
 	{
 		$user	= $this->oidObj->getAttributes();
 
-		return array(
-			'id'		=> $user['contact/email'],
-			'name'		=> $this->getAccount(),
-			'locale'	=> $user['pref/language']
-		);
+		return ['id'		=> $user['contact/email'], 'name'		=> $this->getAccount(), 'locale'	=> $user['pref/language']];
 	}
 }

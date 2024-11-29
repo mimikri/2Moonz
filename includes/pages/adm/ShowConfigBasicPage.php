@@ -15,43 +15,16 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FILE__))) throw new Exception("Permission error!");
+if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__))) throw new Exception("Permission error!");
 
-function ShowConfigBasicPage()
+function ShowConfigBasicPage(): void
 {
 	global $LNG;
 	$config = Config::get(Universe::getEmulated());
 
 	if (!empty($_POST))
 	{
-		$config_before = array(
-			'ttf_file'				=> $config->ttf_file,
-			'game_name'				=> $config->game_name,
-			'mail_active'			=> $config->mail_active,
-			'mail_use'				=> $config->mail_use,
-			'smail_path'			=> $config->smail_path,
-			'smtp_host'				=> $config->smtp_host,
-			'smtp_port'				=> $config->smtp_port,
-			'smtp_user'				=> $config->smtp_user,
-			'smtp_pass'				=> $config->smtp_pass,
-			'smtp_ssl'				=> $config->smtp_ssl,
-			'smtp_sendmail'			=> $config->smtp_sendmail,
-			'ga_active'				=> $config->ga_active,
-			'ga_key'				=> $config->ga_key,
-			'capaktiv'				=> $config->capaktiv,
-			'cappublic'				=> $config->cappublic,
-			'capprivate'			=> $config->capprivate,
-			'del_oldstuff'			=> $config->del_oldstuff,
-			'del_user_manually'		=> $config->del_user_manually,
-			'del_user_automatic'	=> $config->del_user_automatic,
-			'del_user_sendmail'		=> $config->del_user_sendmail,
-			'sendmail_inactive'		=> $config->sendmail_inactive,
-			'timezone'				=> $config->timezone,
-			'dst'					=> $config->dst,
-			'close_reason'			=> $config->close_reason,
-			'message_delete_behavior' => $config->message_delete_behavior,
-			'message_delete_days'	=> $config->message_delete_days,
-		);
+		$config_before = ['ttf_file'				=> $config->ttf_file, 'game_name'				=> $config->game_name, 'mail_active'			=> $config->mail_active, 'mail_use'				=> $config->mail_use, 'smail_path'			=> $config->smail_path, 'smtp_host'				=> $config->smtp_host, 'smtp_port'				=> $config->smtp_port, 'smtp_user'				=> $config->smtp_user, 'smtp_pass'				=> $config->smtp_pass, 'smtp_ssl'				=> $config->smtp_ssl, 'smtp_sendmail'			=> $config->smtp_sendmail, 'ga_active'				=> $config->ga_active, 'ga_key'				=> $config->ga_key, 'capaktiv'				=> $config->capaktiv, 'cappublic'				=> $config->cappublic, 'capprivate'			=> $config->capprivate, 'del_oldstuff'			=> $config->del_oldstuff, 'del_user_manually'		=> $config->del_user_manually, 'del_user_automatic'	=> $config->del_user_automatic, 'del_user_sendmail'		=> $config->del_user_sendmail, 'sendmail_inactive'		=> $config->sendmail_inactive, 'timezone'				=> $config->timezone, 'dst'					=> $config->dst, 'close_reason'			=> $config->close_reason, 'message_delete_behavior' => $config->message_delete_behavior, 'message_delete_days'	=> $config->message_delete_days];
 		
 		$capaktiv 				= isset($_POST['capaktiv']) && $_POST['capaktiv'] == 'on' ? 1 : 0;
 		$ga_active 				= isset($_POST['ga_active']) && $_POST['ga_active'] == 'on' ? 1 : 0;
@@ -81,34 +54,7 @@ function ShowConfigBasicPage()
 		$message_delete_behavior = HTTP::_GP('message_delete_behavior', 0);
 		$message_delete_days	= HTTP::_GP('message_delete_days', 0);
 
-		$config_after = array(
-			'ttf_file'				=> $ttf_file,
-			'game_name'				=> $game_name,
-			'mail_active'			=> $mail_active,
-			'mail_use'				=> $mail_use,
-			'smail_path'			=> $smail_path,
-			'smtp_host'				=> $smtp_host,
-			'smtp_port'				=> $smtp_port,
-			'smtp_user'				=> $smtp_user,
-			'smtp_pass'				=> $smtp_pass,
-			'smtp_ssl'				=> $smtp_ssl,
-			'smtp_sendmail'			=> $smtp_sendmail,
-			'ga_active'				=> $ga_active,
-			'ga_key'				=> $ga_key,
-			'capaktiv'				=> $capaktiv,
-			'cappublic'				=> $cappublic,
-			'capprivate'			=> $capprivate,
-			'del_oldstuff'			=> $del_oldstuff,
-			'del_user_manually'		=> $del_user_manually,
-			'del_user_automatic'	=> $del_user_automatic,
-			'del_user_sendmail'		=> $del_user_sendmail,
-			'sendmail_inactive'		=> $sendmail_inactive,
-			'timezone'				=> $timezone,
-			'dst'					=> $dst,
-			'close_reason'			=> $close_reason,
-			'message_delete_behavior' => $message_delete_behavior,
-			'message_delete_days'	=> $message_delete_days,
-		);
+		$config_after = ['ttf_file'				=> $ttf_file, 'game_name'				=> $game_name, 'mail_active'			=> $mail_active, 'mail_use'				=> $mail_use, 'smail_path'			=> $smail_path, 'smtp_host'				=> $smtp_host, 'smtp_port'				=> $smtp_port, 'smtp_user'				=> $smtp_user, 'smtp_pass'				=> $smtp_pass, 'smtp_ssl'				=> $smtp_ssl, 'smtp_sendmail'			=> $smtp_sendmail, 'ga_active'				=> $ga_active, 'ga_key'				=> $ga_key, 'capaktiv'				=> $capaktiv, 'cappublic'				=> $cappublic, 'capprivate'			=> $capprivate, 'del_oldstuff'			=> $del_oldstuff, 'del_user_manually'		=> $del_user_manually, 'del_user_automatic'	=> $del_user_automatic, 'del_user_sendmail'		=> $del_user_sendmail, 'sendmail_inactive'		=> $sendmail_inactive, 'timezone'				=> $timezone, 'dst'					=> $dst, 'close_reason'			=> $close_reason, 'message_delete_behavior' => $message_delete_behavior, 'message_delete_days'	=> $message_delete_days];
 
 		foreach($config_after as $key => $value)
 		{
@@ -127,39 +73,7 @@ function ShowConfigBasicPage()
 	
 	$template	= new template();
 	
-	$template->assign_vars(array(
-		'del_oldstuff'					=> $config->del_oldstuff,
-		'del_user_manually'				=> $config->del_user_manually,
-		'del_user_automatic'			=> $config->del_user_automatic,
-		'del_user_sendmail'				=> $config->del_user_sendmail,
-		'sendmail_inactive'				=> $config->sendmail_inactive,
-		'ttf_file'						=> $config->ttf_file,
-		'game_name'						=> $config->game_name,
-		'mail_active'					=> $config->mail_active,
-		'mail_use'						=> $config->mail_use,
-		'smail_path'					=> $config->smail_path,
-		'smtp_host' 					=> $config->smtp_host,
-		'smtp_port' 					=> $config->smtp_port,
-		'smtp_user' 					=> $config->smtp_user,
-		'smtp_pass' 					=> $config->smtp_pass,
-		'smtp_sendmail' 				=> $config->smtp_sendmail,
-		'smtp_ssl'						=> $config->smtp_ssl,
-		'capprivate' 					=> $config->capprivate,
-		'cappublic' 	   				=> $config->cappublic,
-		'capaktiv'      	           	=> $config->capaktiv,
-        'ga_active'               		=> $config->ga_active,
-		'ga_key'           				=> $config->ga_key,
-		'timezone'           			=> $config->timezone,
-		'dst'           				=> $config->dst,
-		'message_delete_behavior'  		=> $config->message_delete_behavior,
-		'message_delete_days'         	=> $config->message_delete_days,
-		'Selector'						=> array(
-		    'timezone' => $TimeZones,
-            'mail' => $LNG['se_mail_sel'],
-            'encry' => array('' => $LNG['se_smtp_ssl_1'], 'ssl' => $LNG['se_smtp_ssl_2'], 'tls' => $LNG['se_smtp_ssl_3']),
-            'message_delete_behavior' => array(0 => $LNG['se_message_delete_behavior_0'], 1 => $LNG['se_message_delete_behavior_1']),
-        ),
-	));
+	$template->assign_vars(['del_oldstuff'					=> $config->del_oldstuff, 'del_user_manually'				=> $config->del_user_manually, 'del_user_automatic'			=> $config->del_user_automatic, 'del_user_sendmail'				=> $config->del_user_sendmail, 'sendmail_inactive'				=> $config->sendmail_inactive, 'ttf_file'						=> $config->ttf_file, 'game_name'						=> $config->game_name, 'mail_active'					=> $config->mail_active, 'mail_use'						=> $config->mail_use, 'smail_path'					=> $config->smail_path, 'smtp_host' 					=> $config->smtp_host, 'smtp_port' 					=> $config->smtp_port, 'smtp_user' 					=> $config->smtp_user, 'smtp_pass' 					=> $config->smtp_pass, 'smtp_sendmail' 				=> $config->smtp_sendmail, 'smtp_ssl'						=> $config->smtp_ssl, 'capprivate' 					=> $config->capprivate, 'cappublic' 	   				=> $config->cappublic, 'capaktiv'      	           	=> $config->capaktiv, 'ga_active'               		=> $config->ga_active, 'ga_key'           				=> $config->ga_key, 'timezone'           			=> $config->timezone, 'dst'           				=> $config->dst, 'message_delete_behavior'  		=> $config->message_delete_behavior, 'message_delete_days'         	=> $config->message_delete_days, 'Selector'						=> ['timezone' => $TimeZones, 'mail' => $LNG['se_mail_sel'], 'encry' => ['' => $LNG['se_smtp_ssl_1'], 'ssl' => $LNG['se_smtp_ssl_2'], 'tls' => $LNG['se_smtp_ssl_3']], 'message_delete_behavior' => [0 => $LNG['se_message_delete_behavior_0'], 1 => $LNG['se_message_delete_behavior_1']]]]);
 	
 	$template->show('ConfigBasicBody.tpl');
 }

@@ -19,14 +19,14 @@ require_once 'includes/classes/cronjob/CronjobTask.interface.php';
 
 class ReferralCronJob implements CronjobTask
 {
-	function run()
+	function run(): ?bool
 	{		
 		if(Config::get(ROOT_UNI)->ref_active != 1)
 		{
 			return null;
 		}
 		/** @var $langObjects Language[] */
-		$langObjects	= array();
+		$langObjects	= [];
 
 		$db	= Database::get();
 
@@ -36,17 +36,14 @@ class ReferralCronJob implements CronjobTask
 		ON stats.`id_owner` = user.`id` AND stats.`stat_type` = :type AND stats.`total_points` >= :points
 		WHERE user.`ref_bonus` = 1;';
 
-		$userArray	= $db->select($sql, array(
-			':type'		=> 1,
-			':points'	=> Config::get(ROOT_UNI)->ref_minpoints
-		));
+		$userArray	= $db->select($sql, [':type'		=> 1, ':points'	=> Config::get(ROOT_UNI)->ref_minpoints]);
 
 		foreach($userArray as $user)
 		{
 			if(!isset($langObjects[$user['lang']]))
 			{
 				$langObjects[$user['lang']]	= new Language($user['lang']);
-				$langObjects[$user['lang']]->includeData(array('L18N', 'INGAME', 'TECH', 'CUSTOM'));
+				$langObjects[$user['lang']]->includeData(['L18N', 'INGAME', 'TECH', 'CUSTOM']);
 			}
 
 			$userConfig	= Config::get($user['universe']);
@@ -54,16 +51,11 @@ class ReferralCronJob implements CronjobTask
 			$LNG	= $langObjects[$user['lang']];
 			$sql	= 'UPDATE %%USERS%% SET `darkmatter` = `darkmatter` + :bonus WHERE `id` = :userId;';
 
-			$db->update($sql, array(
-				':bonus'	=> $userConfig->ref_bonus,
-				':userId'	=> $user['ref_id']
-			));
+			$db->update($sql, [':bonus'	=> $userConfig->ref_bonus, ':userId'	=> $user['ref_id']]);
 
 			$sql	= 'UPDATE %%USERS%% SET `ref_bonus` = 0 WHERE `id` = :userId;';
 
-			$db->update($sql, array(
-				':userId'	=> $user['id']
-			));
+			$db->update($sql, [':userId'	=> $user['id']]);
 
 			$Message	= sprintf($LNG['sys_refferal_text'], $user['username'], pretty_number($userConfig->ref_minpoints), pretty_number($userConfig->ref_bonus), $LNG['tech'][921]);
 			PlayerUtil::sendMessage($user['ref_id'], 0, $LNG['sys_refferal_from'], 4, sprintf($LNG['sys_refferal_title'], $user['username']), $Message, TIMESTAMP);

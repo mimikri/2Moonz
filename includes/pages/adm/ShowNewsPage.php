@@ -15,9 +15,9 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FILE__))) throw new Exception("Permission error!");
+if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__))) throw new Exception("Permission error!");
 
-function ShowNewsPage(){
+function ShowNewsPage(): void{
 	global $LNG, $USER;
 	$get_action = empty($_GET['action']) ? '' : $_GET['action'];
 	if($get_action == 'send') {
@@ -32,15 +32,9 @@ function ShowNewsPage(){
 	}
 
 	$query = $GLOBALS['DATABASE']->query("SELECT * FROM ".NEWS." ORDER BY id ASC");
-	$NewsList = array();
+	$NewsList = [];
 	while ($u = $GLOBALS['DATABASE']->fetch_array($query)) {
-		$NewsList[]	= array(
-			'id'		=> $u['id'],
-			'title'		=> $u['title'],
-			'date'		=> _date($LNG['php_tdformat'], $u['date'], $USER['timezone']),
-			'user'		=> $u['user'],
-			'confirm'	=> sprintf($LNG['nws_confirm'], $u['title']),
-		);
+		$NewsList[]	= ['id'		=> $u['id'], 'title'		=> $u['title'], 'date'		=> _date($LNG['php_tdformat'], $u['date'], $USER['timezone']), 'user'		=> $u['user'], 'confirm'	=> sprintf($LNG['nws_confirm'], $u['title'])];
 	}
 	
 	$template	= new template();
@@ -48,33 +42,12 @@ function ShowNewsPage(){
 
 	if($get_action== 'edit' && isset($_GET['id'])) {
 		$News = $GLOBALS['DATABASE']->getFirstRow("SELECT id, title, text FROM ".NEWS." WHERE id = '".$GLOBALS['DATABASE']->sql_escape($_GET['id'])."';");
-		$template->assign_vars(array(	
-			'mode'			=> 1,
-			'nws_head'		=> sprintf($LNG['nws_head_edit'], $News['title']),
-			'news_id'		=> $News['id'],
-			'news_title'	=> $News['title'],
-			'news_text'		=> $News['text'],
-		));
+		$template->assign_vars(['mode'			=> 1, 'nws_head'		=> sprintf($LNG['nws_head_edit'], $News['title']), 'news_id'		=> $News['id'], 'news_title'	=> $News['title'], 'news_text'		=> $News['text']]);
 	} elseif($get_action == 'create') {
-		$template->assign_vars(array(	
-			'mode'			=> 2,
-			'nws_head'		=> $LNG['nws_head_create'],
-		));
+		$template->assign_vars(['mode'			=> 2, 'nws_head'		=> $LNG['nws_head_create']]);
 	}
 	
-	$template->assign_vars(array(	
-		'NewsList'		=> $NewsList,
-		'button_submit'	=> $LNG['button_submit'],
-		'nws_total'		=> sprintf($LNG['nws_total'], count($NewsList)),
-		'nws_news'		=> $LNG['nws_news'],
-		'nws_id'		=> $LNG['nws_id'],
-		'nws_title'		=> $LNG['nws_title'],
-		'nws_date'		=> $LNG['nws_date'],
-		'nws_from'		=> $LNG['nws_from'],
-		'nws_del'		=> $LNG['nws_del'],
-		'nws_create'	=> $LNG['nws_create'],
-		'nws_content'	=> $LNG['nws_content'],
-	));
+	$template->assign_vars(['NewsList'		=> $NewsList, 'button_submit'	=> $LNG['button_submit'], 'nws_total'		=> sprintf($LNG['nws_total'], count($NewsList)), 'nws_news'		=> $LNG['nws_news'], 'nws_id'		=> $LNG['nws_id'], 'nws_title'		=> $LNG['nws_title'], 'nws_date'		=> $LNG['nws_date'], 'nws_from'		=> $LNG['nws_from'], 'nws_del'		=> $LNG['nws_del'], 'nws_create'	=> $LNG['nws_create'], 'nws_content'	=> $LNG['nws_content']]);
 	
 	$template->show('NewsPage.tpl');
 }

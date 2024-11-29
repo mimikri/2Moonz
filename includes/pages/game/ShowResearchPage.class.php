@@ -26,7 +26,7 @@ class ShowResearchPage extends AbstractGamePage
 		parent::__construct();
 	}
 	
-	private function CheckLabSettingsInQueue()
+	private function CheckLabSettingsInQueue(): bool
 	{
 		global $PLANET;
 		if ($PLANET['b_building'] == 0)
@@ -41,7 +41,7 @@ class ShowResearchPage extends AbstractGamePage
 		return true;
 	}
 	
-	private function CancelBuildingFromQueue()
+	private function CancelBuildingFromQueue(): bool
 	{
 		global $PLANET, $USER, $resource;
 		$CurrentQueue  = unserialize($USER['b_tech_queue']);
@@ -68,7 +68,7 @@ class ShowResearchPage extends AbstractGamePage
 		}
 		else
 		{
-			$params = array('techPlanet' => $USER['b_tech_planet']);
+			$params = ['techPlanet' => $USER['b_tech_planet']];
 			$sql = "UPDATE %%PLANETS%% SET ";
 			if(isset($costResources[901])) {
 				$sql	.= $resource[901]." = ".$resource[901]." + :".$resource[901].", ";
@@ -104,7 +104,7 @@ class ShowResearchPage extends AbstractGamePage
 			$USER['b_tech']			= 0;
 		} else {
 			$BuildEndTime		= TIMESTAMP;
-			$NewCurrentQueue	= array();
+			$NewCurrentQueue	= [];
 			foreach($CurrentQueue as $ListIDArray)
 			{
 				if($elementId == $ListIDArray[0] || empty($ListIDArray[0]))
@@ -112,11 +112,7 @@ class ShowResearchPage extends AbstractGamePage
 					
 				if($ListIDArray[4] != $PLANET['id']) {
 					$sql = "SELECT :resource6, :resource31, id FROM %%PLANETS%% WHERE id = :id;";
-					$CPLANET = $db->selectSingle($sql, array(
-						':resource6'	=> $resource[6],
-						':resource31'	=> $resource[31],
-						':id'			=> $ListIDArray[4]
-					));
+					$CPLANET = $db->selectSingle($sql, [':resource6'	=> $resource[6], ':resource31'	=> $resource[31], ':id'			=> $ListIDArray[4]]);
 				} else
 					$CPLANET		= $PLANET;
 				
@@ -131,7 +127,7 @@ class ShowResearchPage extends AbstractGamePage
 				$USER['b_tech_queue'] 		= serialize($NewCurrentQueue);
 				$this->ecoObj->setData($USER, $PLANET);
 				$this->ecoObj->SetNextQueueTechOnTop();
-				list($USER, $PLANET)		= $this->ecoObj->getData();
+				[$USER, $PLANET]		= $this->ecoObj->getData();
 			} else {
 				$USER['b_tech']    			= 0;
 				$USER['b_tech_queue'] 		= '';
@@ -165,7 +161,7 @@ class ShowResearchPage extends AbstractGamePage
 		$elementId 		= $CurrentQueue[$QueueID - 2][0];
 		$BuildEndTime	= $CurrentQueue[$QueueID - 2][3];
 		unset($CurrentQueue[$QueueID - 1]);
-		$NewCurrentQueue	= array();
+		$NewCurrentQueue	= [];
 		foreach($CurrentQueue as $ID => $ListIDArray)
 		{				
 			if ($ID < $QueueID - 1) {
@@ -178,11 +174,7 @@ class ShowResearchPage extends AbstractGamePage
 					$db = Database::get();
 
 					$sql = "SELECT :resource6, :resource31 FROM %%PLANETS%% WHERE id = :id;";
-					$CPLANET = $db->selectSingle($sql, array(
-						':resource6'	=> $resource[6],
-						':resource31'	=> $resource[31],
-						':id'			=> $ListIDArray[4]
-					));
+					$CPLANET = $db->selectSingle($sql, [':resource6'	=> $resource[6], ':resource31'	=> $resource[31], ':id'			=> $ListIDArray[4]]);
 				} else
 					$CPLANET				= $PLANET;
 				
@@ -202,13 +194,13 @@ class ShowResearchPage extends AbstractGamePage
 		return true;
 	}
 
-	private function AddBuildingToQueue($elementId, $AddMode = true)
+	private function AddBuildingToQueue($elementId, bool $AddMode = true): bool
 	{
 		global $PLANET, $USER, $resource, $reslist, $pricelist;
 
 		if(!in_array($elementId, $reslist['tech'])
 			|| !BuildFunctions::isTechnologieAccessible($USER, $PLANET, $elementId)
-			|| !$this->CheckLabSettingsInQueue($PLANET)
+			|| !$this->CheckLabSettingsInQueue()
 		)
 		{
 			return false;
@@ -219,7 +211,7 @@ class ShowResearchPage extends AbstractGamePage
 		if (!empty($CurrentQueue)) {
 			$ActualCount   	= count($CurrentQueue);
 		} else {
-			$CurrentQueue  	= array();
+			$CurrentQueue  	= [];
 			$ActualCount   	= 0;
 		}
 				
@@ -251,7 +243,7 @@ class ShowResearchPage extends AbstractGamePage
 			$elementTime    			= BuildFunctions::getBuildingTime($USER, $PLANET, $elementId, $costResources);
 			$BuildEndTime				= TIMESTAMP + $elementTime;
 			
-			$USER['b_tech_queue']		= serialize(array(array($elementId, $BuildLevel, $elementTime, $BuildEndTime, $PLANET['id'])));
+			$USER['b_tech_queue']		= serialize([[$elementId, $BuildLevel, $elementTime, $BuildEndTime, $PLANET['id']]]);
 			$USER['b_tech']				= $BuildEndTime;
 			$USER['b_tech_id']			= $elementId;
 			$USER['b_tech_planet']		= $PLANET['id'];
@@ -275,21 +267,21 @@ class ShowResearchPage extends AbstractGamePage
 			$elementTime    			= BuildFunctions::getBuildingTime($USER, $PLANET, $elementId, NULL, !$AddMode, $BuildLevel);
 			
 			$BuildEndTime				= $CurrentQueue[$ActualCount - 1][3] + $elementTime;
-			$CurrentQueue[]				= array($elementId, $BuildLevel, $elementTime, $BuildEndTime, $PLANET['id']);
+			$CurrentQueue[]				= [$elementId, $BuildLevel, $elementTime, $BuildEndTime, $PLANET['id']];
 			$USER['b_tech_queue']		= serialize($CurrentQueue);
 		}
 		return true;
 	}
 
-	private function getQueueData()
+	private function getQueueData(): array
 	{
 		global $LNG, $PLANET, $USER;
 
-		$scriptData		= array();
-		$quickinfo		= array();
+		$scriptData		= [];
+		$quickinfo		= [];
 		
 		if ($USER['b_tech'] == 0)
-		return array('queue' => $scriptData, 'quickinfo' => $quickinfo);
+		return ['queue' => $scriptData, 'quickinfo' => $quickinfo];
 		
 		$CurrentQueue   = unserialize($USER['b_tech_queue']);
 		
@@ -304,22 +296,13 @@ class ShowResearchPage extends AbstractGamePage
 			if($BuildArray[4] != $PLANET['id'])
 				$PlanetName		= $USER['PLANETS'][$BuildArray[4]]['name'];
 				
-			$scriptData[] = array(
-				'element'	=> $BuildArray[0], 
-				'level' 	=> $BuildArray[1], 
-				'time' 		=> $BuildArray[2], 
-				'resttime' 	=> ($BuildArray[3] - TIMESTAMP), 
-				'destroy' 	=> ($BuildArray[4] == 'destroy'), 
-				'endtime' 	=> _date('U', $BuildArray[3], $USER['timezone']),
-				'display' 	=> _date($LNG['php_tdformat'], $BuildArray[3], $USER['timezone']),
-				'planet'	=> $PlanetName,
-			);
+			$scriptData[] = ['element'	=> $BuildArray[0], 'level' 	=> $BuildArray[1], 'time' 		=> $BuildArray[2], 'resttime' 	=> ($BuildArray[3] - TIMESTAMP), 'destroy' 	=> ($BuildArray[4] == 'destroy'), 'endtime' 	=> _date('U', $BuildArray[3], $USER['timezone']), 'display' 	=> _date($LNG['php_tdformat'], $BuildArray[3], $USER['timezone']), 'planet'	=> $PlanetName];
 		}
 		
-		return array('queue' => $scriptData, 'quickinfo' => $quickinfo);
+		return ['queue' => $scriptData, 'quickinfo' => $quickinfo];
 	}
 
-	public function show()
+	public function show(): void
 	{
 		global $PLANET, $USER, $LNG, $resource, $reslist, $pricelist;
 		
@@ -355,12 +338,12 @@ class ShowResearchPage extends AbstractGamePage
 			$this->redirectTo('game.php?page=research');
 		}
 		
-		$bContinue		= $this->CheckLabSettingsInQueue($PLANET);
+		$bContinue		= $this->CheckLabSettingsInQueue();
 		
 		$queueData		= $this->getQueueData();
 		$TechQueue		= $queueData['queue'];
 		$QueueCount		= count($TechQueue);
-		$ResearchList	= array();
+		$ResearchList	= [];
 
 		foreach($reslist['tech'] as $elementId)
 		{
@@ -381,24 +364,10 @@ class ShowResearchPage extends AbstractGamePage
 			$elementTime    	= BuildFunctions::getBuildingTime($USER, $PLANET, $elementId, $costResources);
 			$buyable			= $QueueCount != 0 || BuildFunctions::isElementBuyable($USER, $PLANET, $elementId, $costResources);
 
-			$ResearchList[$elementId]	= array(
-				'id'				=> $elementId,
-				'level'				=> $USER[$resource[$elementId]],
-				'maxLevel'			=> $pricelist[$elementId]['max'],
-				'costResources'		=> $costResources,
-				'costOverflow'		=> $costOverflow,
-				'elementTime'    	=> $elementTime,
-				'buyable'			=> $buyable,
-				'levelToBuild'		=> $levelToBuild,
-			);
+			$ResearchList[$elementId]	= ['id'				=> $elementId, 'level'				=> $USER[$resource[$elementId]], 'maxLevel'			=> $pricelist[$elementId]['max'], 'costResources'		=> $costResources, 'costOverflow'		=> $costOverflow, 'elementTime'    	=> $elementTime, 'buyable'			=> $buyable, 'levelToBuild'		=> $levelToBuild];
 		}
 		
-		$this->assign(array(
-			'ResearchList'	=> $ResearchList,
-			'IsLabinBuild'	=> !$bContinue,
-			'IsFullQueue'	=> Config::get()->max_elements_tech == 0 || Config::get()->max_elements_tech == count($TechQueue),
-			'Queue'			=> $TechQueue,
-		));
+		$this->assign(['ResearchList'	=> $ResearchList, 'IsLabinBuild'	=> !$bContinue, 'IsFullQueue'	=> Config::get()->max_elements_tech == 0 || Config::get()->max_elements_tech == count($TechQueue), 'Queue'			=> $TechQueue]);
 		
 		$this->display('page.research.default.tpl');
 	}

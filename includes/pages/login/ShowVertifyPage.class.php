@@ -24,7 +24,7 @@ class ShowVertifyPage extends AbstractLoginPage
 		parent::__construct();
 	}
 
-	private function _activeUser()
+	private function _activeUser(): array
 	{
 		global $LNG;
 
@@ -38,11 +38,7 @@ class ShowVertifyPage extends AbstractLoginPage
 		AND validationKey	= :validationKey
 		AND universe		= :universe;";
 
-		$userData = $db->selectSingle($sql, array(
-			':validationKey'	=> $validationKey,
-			':validationID'		=> $validationID,
-			':universe'			=> Universe::current()
-		));
+		$userData = $db->selectSingle($sql, [':validationKey'	=> $validationKey, ':validationID'		=> $validationID, ':universe'			=> Universe::current()]);
 
 		if(empty($userData))
 		{
@@ -52,31 +48,21 @@ class ShowVertifyPage extends AbstractLoginPage
 		$config	= Config::get();
 
 		$sql = "DELETE FROM %%USERS_VALID%% WHERE validationID = :validationID;";
-		$db->delete($sql, array(
-			':validationID'	=> $validationID
-		));
+		$db->delete($sql, [':validationID'	=> $validationID]);
 
-		list($userID, $planetID) = PlayerUtil::createPlayer($userData['universe'], $userData['userName'], $userData['password'], $userData['email'], $userData['language']);
+		[$userID, $planetID] = PlayerUtil::createPlayer($userData['universe'], $userData['userName'], $userData['password'], $userData['email'], $userData['language']);
 
 		if($config->mail_active == 1)
 		{
 			require('includes/classes/Mail.class.php');
 			$MailSubject	= sprintf($LNG['registerMailCompleteTitle'], $config->game_name, Universe::current());
 			$MailRAW		= $LNG->getTemplate('email_reg_done');
-			$MailContent	= str_replace(array(
-				'{USERNAME}',
-				'{GAMENAME}',
-				'{GAMEMAIL}',
-			), array(
-				$userData['userName'],
-				$config->game_name.' - '.$config->uni_name,
-				$config->smtp_sendmail,
-			), $MailRAW);
+			$MailContent	= str_replace(['{USERNAME}', '{GAMENAME}', '{GAMEMAIL}'], [$userData['userName'], $config->game_name.' - '.$config->uni_name, $config->smtp_sendmail], $MailRAW);
 
 			try {
 				Mail::send($userData['email'], $userData['userName'], $MailSubject, $MailContent);
 			}
-			catch (Exception $e)
+			catch (Exception)
 			{
 				// This mail is wayne.
 			}
@@ -90,10 +76,7 @@ class ShowVertifyPage extends AbstractLoginPage
 			WHERE
 			`id`		= :userID;";
 
-			$db->update($sql, array(
-				':referralId'	=> $userData['referralID'],
-				':userID'		=> $userID
-			));
+			$db->update($sql, [':referralId'	=> $userData['referralID'], ':userID'		=> $userID]);
 		}
 
 		if(!empty($userData['externalAuthUID']))
@@ -102,11 +85,7 @@ class ShowVertifyPage extends AbstractLoginPage
 			`id`		= :userID,
 			`account`	= :externalAuthUID,
 			`mode`		= :externalAuthMethod;";
-			$db->insert($sql, array(
-				':userID'				=> $userID,
-				':externalAuthUID'		=> $userData['externalAuthUID'],
-				':externalAuthMethod'	=> $userData['externalAuthMethod']
-			));
+			$db->insert($sql, [':userID'				=> $userID, ':externalAuthUID'		=> $userData['externalAuthUID'], ':externalAuthMethod'	=> $userData['externalAuthMethod']]);
 		}
 
 		$senderName = $LNG['registerWelcomePMSenderName'];
@@ -115,14 +94,10 @@ class ShowVertifyPage extends AbstractLoginPage
 
 		PlayerUtil::sendMessage($userID, 1, $senderName, 1, $subject, $message, TIMESTAMP);
 		
-		return array(
-			'userID'	=> $userID,
-			'userName'	=> $userData['userName'],
-			'planetID'	=> $planetID
-		);
+		return ['userID'	=> $userID, 'userName'	=> $userData['userName'], 'planetID'	=> $planetID];
 	}
 
-	function show()
+	function show(): void
 	{
 		$userData	= $this->_activeUser();
 
@@ -134,7 +109,7 @@ class ShowVertifyPage extends AbstractLoginPage
 		HTTP::redirectTo('game.php');
 	}
 
-	function json()
+	function json(): void
 	{
 		global $LNG;
 		$userData	= $this->_activeUser();

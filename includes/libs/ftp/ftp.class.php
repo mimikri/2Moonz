@@ -32,10 +32,7 @@ class FTP
    /**
     * @var array File extensions that are considered ASCII for upload/download operations.
 	*/
-	protected $ascii_array = array( 'am', 'asp', 'bat', 'c', 'cfm', 'cgi', 'conf', 'cpp', 'css', 'dhtml', 'diz', 'h',
-									'hpp', 'htaccess', 'htpasswd', 'htusers', 'htgroups', 'htm', 'html', 'in', 'inc', 'js', 'm4', 'mak',
-									'nfo', 'nsi', 'pas', 'patch', 'php', 'php3', 'php4', 'php5', 'phpx', 'phtml', 'pl', 'po',
-									'py', 'qmail', 'sh', 'shtml', 'sql', 'tcl', 'tpl', 'txt', 'vbs', 'xml', 'xrc' );
+	protected $ascii_array = ['am', 'asp', 'bat', 'c', 'cfm', 'cgi', 'conf', 'cpp', 'css', 'dhtml', 'diz', 'h', 'hpp', 'htaccess', 'htpasswd', 'htusers', 'htgroups', 'htm', 'html', 'in', 'inc', 'js', 'm4', 'mak', 'nfo', 'nsi', 'pas', 'patch', 'php', 'php3', 'php4', 'php5', 'phpx', 'phtml', 'pl', 'po', 'py', 'qmail', 'sh', 'shtml', 'sql', 'tcl', 'tpl', 'txt', 'vbs', 'xml', 'xrc'];
 	
 	
 
@@ -55,7 +52,7 @@ class FTP
 	{
 		if (self::$instance === NULL)
 		{
-			$klasse = __CLASS__;
+			$klasse = self::class;
 			self::$instance = new $klasse;
 		}
 		return self::$instance;
@@ -71,7 +68,7 @@ class FTP
 	 * @param  bool   $fallback If a SSL-FTP connect fails, try a default FTP connect as fallback 
 	 * @return void
 	 */
-	public function connect($config, $useSSL = false, $fallback = false)
+	public function connect(array $config, $useSSL = false, $fallback = false): void
 	{
 		// Check if native FTP support is enabled
 		if (function_exists('ftp_connect') === false)
@@ -117,16 +114,16 @@ class FTP
 		
 		// Detect FTP Server OS
 		// This is required by some operations, such as chmod, to prevent wrong return values
-		$tmpOS = strtoupper( self::getSystem() );
-		if (strpos( $tmpOS, 'MAC' ) !== false)
+		$tmpOS = strtoupper( (string) self::getSystem() );
+		if (str_contains( $tmpOS, 'MAC' ))
 		{
 			$this->serverOS = 'MAC';
 		}
-		else if (strpos( $tmpOS, 'WIN' ) !== false)
+		else if (str_contains( $tmpOS, 'WIN' ))
 		{
 			$this->serverOS = 'WIN';
 		}
-		else if (strpos( $tmpOS, 'UNIX' ) !== false)
+		else if (str_contains( $tmpOS, 'UNIX' ))
 		{
 			$this->serverOS = 'UNIX';
 		}
@@ -342,7 +339,7 @@ class FTP
 	 * @param  mixed  $mode Value 0 means default list. Value 1 means extended list.
 	 * @return array  Complete file list as one Array ($mode = 0) or file list as multidimensional array ($mode = 1)
 	 */
-	public function getFileList( $dir, $mode = 0 )
+	public function getFileList( $dir, mixed $mode = 0 )
 	{
 		if (is_resource( $this->cid ))
 		{
@@ -384,8 +381,8 @@ class FTP
 			if ($mode == 1)
 			{
 				$rawfilelist = ftp_rawlist( $this->cid, $dir, true );
-				$dirarray    = array( $dir );
-				$rawdirarray = array();
+				$dirarray    = [$dir];
+				$rawdirarray = [];
 				$listecount  = count( $rawfilelist );
 				for ($i = 0; $i < $listecount; $i++)
 				{
@@ -465,12 +462,12 @@ class FTP
 			{
 				$currentWorkingDir = self::getDir();
 				// Remove trailing slash
-				if (substr( $dir, -1 ) == '/')
+				if (str_ends_with($dir, '/'))
 				{
 					$dir = substr( $dir, 0, -1 );
 				}
 				// Start in root dir?
-				if (substr( $dir, 0, 1 ) == '/')
+				if (str_starts_with($dir, '/'))
 				{
 					self::changeDir( '/' );
 				}
@@ -568,7 +565,7 @@ class FTP
 		if (is_resource( $this->cid ))
 		{
 			// Add trailing slash
-			if (substr( $dir, -1 ) != '/')
+			if (!str_ends_with($dir, '/'))
 			{
 				$dir = $dir. '/';
 			}
@@ -597,7 +594,7 @@ class FTP
 	 * @param  string  $dir Path to dir
 	 * @return bool
 	 */
-	protected final function removeDirRecursive( $dir )
+	protected final function removeDirRecursive( string $dir ): bool
 	{
 		$filelist = self::getFileList( $dir, 1 );
 		if (!empty( $filelist ))
@@ -811,10 +808,10 @@ class FTP
 	 * @param  integer $filesize File size in Byte
 	 * @return string  Converted file size as decimal with suffix
 	 */
-	protected final function convertSize( $filesize )
+	protected final function convertSize( int|string $filesize ): string
 	{
 	    $size = intval( $filesize );
-		$type = array( 'Byte', 'KB', 'MB', 'GB', 'TB' );
+		$type = ['Byte', 'KB', 'MB', 'GB', 'TB'];
     	for ($i = 0; ($size >= 1024 && $i < (count( $type ) -1)); $size /= 1024, $i++ );
     	return round( $size, 2 ). " " .$type[$i];
 	}
@@ -826,27 +823,27 @@ class FTP
 	 * @param  string   $cm CHMOD as symbolic string
 	 * @return integer  CHMOD as octal with leading zero
 	 */
-	protected function convertToOctal( $cm )
+	protected function convertToOctal( $cm ): string
 	{
 		$oct = 0;
 		// Owner
-		if ($cm{1}      == 'r') $oct += 0400;
-		if ($cm{2}      == 'w') $oct += 0200;
-		if ($cm{3}      == 'x') $oct += 0100;
-		else if ($cm{3} == 's') $oct += 04100;
-		else if ($cm{3} == 'S') $oct += 04000;
+		if ($cm[1]      == 'r') $oct += 0400;
+		if ($cm[2]      == 'w') $oct += 0200;
+		if ($cm[3]      == 'x') $oct += 0100;
+		else if ($cm[3] == 's') $oct += 04100;
+		else if ($cm[3] == 'S') $oct += 04000;
 		// Group
-		if ($cm{4}      == 'r') $oct += 040;
-		if ($cm{5}      == 'w') $oct += 020;
-		if ($cm{6}      == 'x') $oct += 010;
-		else if ($cm{6} == 's') $oct += 02010;
-		else if ($cm{6} == 'S') $oct += 02000;
+		if ($cm[4]      == 'r') $oct += 040;
+		if ($cm[5]      == 'w') $oct += 020;
+		if ($cm[6]      == 'x') $oct += 010;
+		else if ($cm[6] == 's') $oct += 02010;
+		else if ($cm[6] == 'S') $oct += 02000;
 		// Other
-		if ($cm{7}      == 'r') $oct += 04;
-		if ($cm{8}      == 'w') $oct += 02;
-		if ($cm{9}      == 'x') $oct += 01;
-		else if ($cm{9} == 't') $oct += 01001;
-		else if ($cm{9} == 'T') $oct += 01000;
+		if ($cm[7]      == 'r') $oct += 04;
+		if ($cm[8]      == 'w') $oct += 02;
+		if ($cm[9]      == 'x') $oct += 01;
+		else if ($cm[9] == 't') $oct += 01001;
+		else if ($cm[9] == 'T') $oct += 01000;
 		
 		return sprintf( '%04o', $oct );
 	}
@@ -860,24 +857,23 @@ class FTP
 	 * @param  array  $rawfilelist Array with file list
 	 * @return array  File list
 	 */
-	protected function extractFileInfo( $rawfilelist )
+	protected function extractFileInfo( $rawfilelist ): array
 	{
-		$filearray = array();
+		$filearray = [];
 		if (is_array( $rawfilelist ))
 		{
 			foreach ($rawfilelist as $rawfile)
 			{
-				$fileinfo = preg_split( "/[\s]+/", $rawfile );
+				$fileinfo = preg_split( "/[\s]+/", (string) $rawfile );
 				if ($fileinfo[8] != '.' &&
 					$fileinfo[8] != '..')
 				{
-					switch ($fileinfo[0]{0})
-					{
-						case '-': $file['type'] = 'File'; break;
-						case 'd': $file['type'] = 'Dir'; break;
-						case 'l': $file['type'] = 'Link'; break;
-						default : $file['type'] = 'File'; break;
-					}
+					$file['type'] = match ($fileinfo[0][0]) {
+         '-' => 'File',
+         'd' => 'Dir',
+         'l' => 'Link',
+         default => 'File',
+     };
 					$file['chmod']    = self::convertToOctal( $fileinfo[0] );
 					$file['hardlink'] = $fileinfo[1];
 					$file['owner']    = $fileinfo[2];
@@ -901,7 +897,7 @@ class FTP
 	 * @param  string   $mode Transfer mode (ascii | binary | auto)
 	 * @return integer  1 = ASCII | 2 = BINARY
 	 */
-	protected function transferMode( $mode )
+	protected function transferMode( $mode ): int
 	{
 		// Check if a correct mode is given
 		if ($mode != 'ascii' || $mode != 'binary' || $mode != 'auto')

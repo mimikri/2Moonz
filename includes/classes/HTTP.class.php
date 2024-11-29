@@ -17,7 +17,7 @@
 
 class HTTP {
 	
-	static public function redirectTo($URL, $external = false)
+	static public function redirectTo(string $URL, $external = false): void
 	{
 		if($external)
 		{
@@ -30,19 +30,19 @@ class HTTP {
 		exit;
 	}
 
-	static public function sendHeader($name, $value = NULL)
+	static public function sendHeader(string $name, $value = NULL): void
 	{
 		header($name.(!is_null($value) ? ': '.$value : ''));
 	}
 
-	static public function redirectToUniverse($universe)
+	static public function redirectToUniverse(string $universe): void
 	{
 		HTTP::redirectTo(PROTOCOL.HTTP_HOST.HTTP_BASE."uni".$universe."/".HTTP_FILE, true);
 	}
 
-	static public function sendCookie($name, $value = "", $toTime = NULL)
+	static public function sendCookie($name, $value = "", $toTime = NULL): void
 	{
-		setcookie($name, $value, $toTime);
+		setcookie($name, (string) $value, $toTime);
 	}
 	
 	static public function _GP($name, $default, $multibyte = false, $highnum = false)
@@ -75,9 +75,12 @@ class HTTP {
 		return $default;
 	}
 
-	private static function _quoteArray($var, $multibyte, $onlyNumbers = false)
+	/**
+  * @return mixed[]
+  */
+ private static function _quoteArray(array $var, $multibyte, bool $onlyNumbers = false): array
 	{
-		$data	= array();
+		$data	= [];
 		foreach($var as $key => $value)
 		{
 			if(is_array($value))
@@ -97,9 +100,9 @@ class HTTP {
 		return $data;
 	}
 
-	private static function _quote($var, $multibyte)
+	private static function _quote($var, $multibyte): string|array|null
 	{
-		$var	= str_replace(array("\r\n", "\r", "\0"), array("\n", "\n", ''), $var);
+		$var	= str_replace(["\r\n", "\r", "\0"], ["\n", "\n", ''], $var);
 		$var	= htmlspecialchars($var, ENT_QUOTES, 'UTF-8');
 		$var	= trim($var);
 

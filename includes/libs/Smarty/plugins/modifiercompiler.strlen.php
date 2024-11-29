@@ -18,6 +18,6 @@
  *
  * @return string with compiled code
  */
-function smarty_modifiercompiler_strlen($params) {
+function smarty_modifiercompiler_strlen(array $params): string {
     return 'strlen((string) ' . $params[0] . ')';
 }

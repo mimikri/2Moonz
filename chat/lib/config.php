@@ -15,10 +15,10 @@ define('AJAX_CHAT_USER',		1);
 define('AJAX_CHAT_GUEST',		0);
 
 // AJAX Chat config parameters:
-$config = array();
+$config = [];
 
 // Database connection values:
-$config['dbConnection'] = array();
+$config['dbConnection'] = [];
 // Database hostname:
 $config['dbConnection']['host'] = null;
 // Database username:
@@ -33,21 +33,21 @@ $config['dbConnection']['type'] = null;
 $config['dbConnection']['link'] = null;
 
 // Database table names:
-$config['dbTableNames'] = array();
+$config['dbTableNames'] = [];
 $config['dbTableNames']['online']		= '';
 $config['dbTableNames']['messages']		= '';
 $config['dbTableNames']['bans']			= '';
 $config['dbTableNames']['invitations']	= '';
 
 // Available languages:
-$config['langAvailable'] = array('ar','bg','bp','ca','cy','cz','de','el','en','es','et','fi','fr','gl','he','hr','hu','in','it','ka','kr','ja','nl','no','pl','ro','ru','sk','sl','sr','sv','tr','uk','zh','zh-tw');
+$config['langAvailable'] = ['ar', 'bg', 'bp', 'ca', 'cy', 'cz', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'gl', 'he', 'hr', 'hu', 'in', 'it', 'ka', 'kr', 'ja', 'nl', 'no', 'pl', 'ro', 'ru', 'sk', 'sl', 'sr', 'sv', 'tr', 'uk', 'zh', 'zh-tw'];
 // Default language:
 $config['langDefault'] = 'en';
 // Language names:
-$config['langNames'] = array('ar'=>'عربي','bg'=>'Български','bp'=>'Português (Brasil)','ca'=>'Català','cy'=>'Cymraeg','cz'=>'Česky','de'=>'Deutsch','el'=>'Ελληνικα','en'=>'English','es'=>'Español','et'=>'Eesti','fi'=>'Suomi','fr'=>'Français','gl'=>'Galego','he'=>'עברית','hr' => 'Hrvatski','hu' => 'Magyar','in'=>'Bahasa Indonesia','it'=>'Italiano','ja'=>'日本語','ka'=>'ქართული','kr'=>'한글','nl'=>'Nederlands','no'=>'Norsk','pl'=>'Polski','ro'=>'România','ru'=>'Русский','sk'=>'Slovenčina','sl'=>'Slovensko','sr'=>'Srpski','sv'=>'Svenska','tr'=>'Türkçe','uk'=>'Українська','zh'=>'中文 (简体)', 'zh-tw'=>'中文 (繁體)');
+$config['langNames'] = ['ar'=>'عربي', 'bg'=>'Български', 'bp'=>'Português (Brasil)', 'ca'=>'Català', 'cy'=>'Cymraeg', 'cz'=>'Česky', 'de'=>'Deutsch', 'el'=>'Ελληνικα', 'en'=>'English', 'es'=>'Español', 'et'=>'Eesti', 'fi'=>'Suomi', 'fr'=>'Français', 'gl'=>'Galego', 'he'=>'עברית', 'hr' => 'Hrvatski', 'hu' => 'Magyar', 'in'=>'Bahasa Indonesia', 'it'=>'Italiano', 'ja'=>'日本語', 'ka'=>'ქართული', 'kr'=>'한글', 'nl'=>'Nederlands', 'no'=>'Norsk', 'pl'=>'Polski', 'ro'=>'România', 'ru'=>'Русский', 'sk'=>'Slovenčina', 'sl'=>'Slovensko', 'sr'=>'Srpski', 'sv'=>'Svenska', 'tr'=>'Türkçe', 'uk'=>'Українська', 'zh'=>'中文 (简体)', 'zh-tw'=>'中文 (繁體)'];
 
 // Available styles:
-$config['styleAvailable'] = array('2Moons');
+$config['styleAvailable'] = ['2Moons'];
 // Default style:
 $config['styleDefault'] = '2Moons';
 
@@ -108,7 +108,7 @@ $config['openingHour'] = 0;
 // Defines the hour of the day the chat is closed (openingHour - 24):
 $config['closingHour'] = 24;
 // Defines the weekdays the chat is opened (0=Sunday to 6=Saturday):
-$config['openingWeekDays'] = array(0,1,2,3,4,5,6);
+$config['openingWeekDays'] = [0, 1, 2, 3, 4, 5, 6];
 
 // Enable/Disable guest logins:
 $config['allowGuestLogins'] = true;

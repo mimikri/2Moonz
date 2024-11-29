@@ -18,9 +18,9 @@
 
 class TeamspeakBuildCache implements BuildCache
 {
-	function buildCache()
+	function buildCache(): array
 	{		
-		$teamspeakData	= array();
+		$teamspeakData	= [];
 		$config	= Config::get();
 		
 		switch($config->ts_version)
@@ -31,11 +31,12 @@ class TeamspeakBuildCache implements BuildCache
 
 				if($ts->connect($config->ts_server, $config->ts_tcpport, $config->ts_udpport, $config->ts_timeout)) {
 					$serverInfo	= $ts->info_serverInfo();
-					$teamspeakData	= array(
-						'password'	=> '', // NO Server-API avalible.
-						'current'	=> $serverInfo["server_currentusers"],
-						'maxuser'	=> $serverInfo["server_maxusers"],
-					);
+					$teamspeakData	= [
+         'password'	=> '',
+         // NO Server-API avalible.
+         'current'	=> $serverInfo["server_currentusers"],
+         'maxuser'	=> $serverInfo["server_maxusers"],
+     ];
 					$ts->disconnect();
 				} else {
 					$error	= $ts->debug();
@@ -69,11 +70,7 @@ class TeamspeakBuildCache implements BuildCache
 					throw new Exception('Teamspeak-Error: '.implode("<br>\r\n", $serverInfo['errors']));
 				}
 				
-				$teamspeakData	= array(
-					'password'	=> $serverInfo['data']['virtualserver_password'],
-					'current'	=> $serverInfo['data']['virtualserver_clientsonline'] - 1, 
-					'maxuser'	=> $serverInfo['data']['virtualserver_maxclients'],
-				);
+				$teamspeakData	= ['password'	=> $serverInfo['data']['virtualserver_password'], 'current'	=> $serverInfo['data']['virtualserver_clientsonline'] - 1, 'maxuser'	=> $serverInfo['data']['virtualserver_maxclients']];
 				
 				$tsAdmin->logout();
 			break;

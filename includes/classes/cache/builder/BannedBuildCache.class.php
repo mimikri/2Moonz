@@ -17,10 +17,13 @@
 
 class BannedBuildCache implements BuildCache
 {
-	function buildCache()
+	/**
+  * @return mixed[]
+  */
+ function buildCache(): array
 	{
 		$Data	= Core::getDB()->query("SELECT userID, MAX(banTime) FROM ".BANNED." WHERE banTime > ".TIMESTAMP." GROUP BY userID;");
-		$Bans	= array();
+		$Bans	= [];
 		while($Row = $Data->fetchObject())
 		{
 			$Bans[$Row->userID]	= $Row;

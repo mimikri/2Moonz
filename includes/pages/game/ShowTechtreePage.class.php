@@ -25,26 +25,26 @@ class ShowTechtreePage extends AbstractGamePage
         parent::__construct();
     }
 
-    function show()
+    function show(): void
     {
         global $resource, $requeriments, $reslist, $USER, $PLANET;
 
         $elementIDs		= array_merge(
-            array(0),
+            [0],
             $reslist['build'],
-            array(100),
+            [100],
             $reslist['tech'],
-            array(200),
+            [200],
             $reslist['fleet'],
-            array(400),
+            [400],
             $reslist['defense'],
-            array(500),
+            [500],
             $reslist['missile'],
-            array(600),
+            [600],
             $reslist['officier']
         );
 
-        $techTreeList = array();
+        $techTreeList = [];
 
         foreach($elementIDs as $elementId)
         {
@@ -54,15 +54,12 @@ class ShowTechtreePage extends AbstractGamePage
             }
             else
             {
-                $requirementsList	= array();
+                $requirementsList	= [];
                 if(isset($requeriments[$elementId]))
                 {
                     foreach($requeriments[$elementId] as $requireID => $RedCount)
                     {
-                        $requirementsList[$requireID]	= array(
-                            'count' => $RedCount,
-                            'own'   => isset($PLANET[$resource[$requireID]]) ? $PLANET[$resource[$requireID]] : $USER[$resource[$requireID]]
-                        );
+                        $requirementsList[$requireID]	= ['count' => $RedCount, 'own'   => $PLANET[$resource[$requireID]] ?? $USER[$resource[$requireID]]];
                     }
                 }
 
@@ -70,9 +67,7 @@ class ShowTechtreePage extends AbstractGamePage
             }
         }
 
-        $this->assign(array(
-            'TechTreeList'		=> $techTreeList,
-        ));
+        $this->assign(['TechTreeList'		=> $techTreeList]);
 
         $this->display('page.techTree.default.tpl');
     }

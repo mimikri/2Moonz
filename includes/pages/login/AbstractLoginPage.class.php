@@ -39,7 +39,7 @@ abstract class AbstractLoginPage
 
 	protected function getUniverseSelector()
 	{
-		$universeSelect	= array();
+		$universeSelect	= [];
 		foreach(Universe::availableUniverses() as $uniId)
 		{
 			$universeSelect[$uniId]	= Config::get($uniId)->uni_name;
@@ -54,7 +54,7 @@ abstract class AbstractLoginPage
 			return true;
 			
 		$this->tplObj	= new template;
-		list($tplDir)	= $this->tplObj->getTemplateDir();
+		[$tplDir]	= $this->tplObj->getTemplateDir();
 		$this->tplObj->setTemplateDir($tplDir.'login/');
 		return true;
 	}
@@ -68,7 +68,7 @@ abstract class AbstractLoginPage
 	}
 	
 	protected function getQueryString() {
-		$queryString	= array();
+		$queryString	= [];
 		$page			= HTTP::_GP('page', '');
 		
 		if(!empty($page)) {
@@ -89,31 +89,12 @@ abstract class AbstractLoginPage
 
 		$config	= Config::get();
 
-        $this->tplObj->assign_vars(array(
-			'recaptchaEnable'		=> $config->capaktiv,
-			'recaptchaPublicKey'	=> $config->cappublic,
-			'gameName' 				=> $config->game_name,
-			'facebookEnable'		=> $config->fb_on,
-			'fb_key' 				=> $config->fb_apikey,
-			'mailEnable'			=> $config->mail_active,
-			'reg_close'				=> $config->reg_closed,
-			'referralEnable'		=> $config->ref_active,
-			'analyticsEnable'		=> $config->ga_active,
-			'analyticsUID'			=> $config->ga_key,
-			'lang'					=> $LNG->getLanguage(),
-			'UNI'					=> Universe::current(),
-			'VERSION'				=> $config->VERSION,
-			'REV'					=> substr($config->VERSION, -4),
-			'languages'				=> Language::getAllowedLangs(false),
-		));
+        $this->tplObj->assign_vars(['recaptchaEnable'		=> $config->capaktiv, 'recaptchaPublicKey'	=> $config->cappublic, 'gameName' 				=> $config->game_name, 'facebookEnable'		=> $config->fb_on, 'fb_key' 				=> $config->fb_apikey, 'mailEnable'			=> $config->mail_active, 'reg_close'				=> $config->reg_closed, 'referralEnable'		=> $config->ref_active, 'analyticsEnable'		=> $config->ga_active, 'analyticsUID'			=> $config->ga_key, 'lang'					=> $LNG->getLanguage(), 'UNI'					=> Universe::current(), 'VERSION'				=> $config->VERSION, 'REV'					=> substr($config->VERSION, -4), 'languages'				=> Language::getAllowedLangs(false)]);
 	}
 	
 	protected function printMessage($message, $redirectButtons = null, $redirect = null, $fullSide = true)
 	{
-		$this->assign(array(
-			'message'			=> $message,
-			'redirectButtons'	=> $redirectButtons,
-		));
+		$this->assign(['message'			=> $message, 'redirectButtons'	=> $redirectButtons]);
 		
 		if(isset($redirect)) {
 			$this->tplObj->gotoside($redirect[0], $redirect[1]);
@@ -134,7 +115,7 @@ abstract class AbstractLoginPage
 		$this->tplObj->assign_vars($array, $nocache);
 	}
 	
-	protected function display($file) {
+	protected function display(string $file) {
 		global $LNG;
 		
 		$this->save();
@@ -154,17 +135,9 @@ abstract class AbstractLoginPage
 			$basePath = PROTOCOL.HTTP_HOST.HTTP_BASE;
 		}
 		
-		$this->assign(array(
-            'lang'    			=> $LNG->getLanguage(),
-			'bodyclass'			=> $this->getWindow(),
-			'basepath'			=> $basePath,
-			'isMultiUniverse'	=> count(Universe::availableUniverses()) > 1,
-			'unisWildcast'		=> UNIS_WILDCAST,
-		));
+		$this->assign(['lang'    			=> $LNG->getLanguage(), 'bodyclass'			=> $this->getWindow(), 'basepath'			=> $basePath, 'isMultiUniverse'	=> count(Universe::availableUniverses()) > 1, 'unisWildcast'		=> UNIS_WILDCAST]);
 
-		$this->assign(array(
-			'LNG'			=> $LNG,
-		), false);
+		$this->assign(['LNG'			=> $LNG], false);
 		
 		$this->tplObj->display('extends:layout.'.$this->getWindow().'.tpl|'.$file);
 		exit;
@@ -176,7 +149,7 @@ abstract class AbstractLoginPage
 		exit;
 	}
 	
-	protected function redirectTo($url) {
+	protected function redirectTo(string $url) {
 		$this->save();
 		HTTP::redirectTo($url);
 		exit;
@@ -184,10 +157,7 @@ abstract class AbstractLoginPage
 	
 	protected function redirectPost($url, $postFields) {
 		$this->save();
-		$this->assign(array(
-            'url'    		=> $url,
-			'postFields'	=> $postFields,
-		));
+		$this->assign(['url'    		=> $url, 'postFields'	=> $postFields]);
 		
 		$this->display('info.redirectPost.tpl');
 	}

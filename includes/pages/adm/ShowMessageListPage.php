@@ -15,21 +15,21 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FILE__))) throw new Exception("Permission error!");
+if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__))) throw new Exception("Permission error!");
 
-function ShowMessageListPage()
+function ShowMessageListPage(): void
 {
 	global $LNG, $USER;
 	$page		= HTTP::_GP('side', 1);
 	$type		= HTTP::_GP('type', 100);
 	$sender		= HTTP::_GP('sender', '', UTF8_SUPPORT);
 	$receiver	= HTTP::_GP('receiver', '', UTF8_SUPPORT);
-	$dateStart	= HTTP::_GP('dateStart', array());
-	$dateEnd	= HTTP::_GP('dateEnd', array());
+	$dateStart	= HTTP::_GP('dateStart', []);
+	$dateEnd	= HTTP::_GP('dateEnd', []);
 	
 	$perSide	= 50;
 
-	$messageList	= array();
+	$messageList	= [];
 	$userWhereSQL	= '';
 	$dateWhereSQL	= '';
 	$countJoinSQL	= '';
@@ -107,31 +107,12 @@ function ShowMessageListPage()
 	
 	while($messageRow = $GLOBALS['DATABASE']->fetch_array($messageRaw))
 	{
-		$messageList[$messageRow['message_id']]	= array(
-			'sender'	=> empty($messageRow['senderName']) ? $messageRow['message_from'] : $messageRow['senderName'].' (ID:&nbsp;'.$messageRow['message_sender'].')',
-			'receiver'	=> $messageRow['username'].' (ID:&nbsp;'.$messageRow['message_owner'].')',
-			'subject'	=> $messageRow['message_subject'],
-			'text'		=> $messageRow['message_text'],
-			'type'		=> $messageRow['message_type'],
-			'deleted'	=> $messageRow['message_deleted'] != NULL,
-			'time'		=> str_replace(' ', '&nbsp;', _date($LNG['php_tdformat'], $messageRow['message_time']), $USER['timezone']),
-		);
+		$messageList[$messageRow['message_id']]	= ['sender'	=> empty($messageRow['senderName']) ? $messageRow['message_from'] : $messageRow['senderName'].' (ID:&nbsp;'.$messageRow['message_sender'].')', 'receiver'	=> $messageRow['username'].' (ID:&nbsp;'.$messageRow['message_owner'].')', 'subject'	=> $messageRow['message_subject'], 'text'		=> $messageRow['message_text'], 'type'		=> $messageRow['message_type'], 'deleted'	=> $messageRow['message_deleted'] != NULL, 'time'		=> str_replace(' ', '&nbsp;', _date($LNG['php_tdformat'], $messageRow['message_time']), $USER['timezone'])];
 	}	
 	
 	$template 	= new template();
 
-	$template->assign_vars(array(
-		'categories'	=> $categories,
-		'maxPage'		=> $maxPage,
-		'page'			=> $page,
-		'messageList'	=> $messageList,
-		'type'			=> $type,
-		'dateStart'		=> $dateStart,
-		'dateEnd'		=> $dateEnd,
-		'sender'		=> $sender,
-		'receiver'		=> $receiver,
-		'Selected'		=> $type,
-	));
+	$template->assign_vars(['categories'	=> $categories, 'maxPage'		=> $maxPage, 'page'			=> $page, 'messageList'	=> $messageList, 'type'			=> $type, 'dateStart'		=> $dateStart, 'dateEnd'		=> $dateEnd, 'sender'		=> $sender, 'receiver'		=> $receiver, 'Selected'		=> $type]);
 				
 	$template->show('MessageList.tpl');
 }

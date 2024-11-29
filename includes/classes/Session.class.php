@@ -18,7 +18,7 @@
 class Session
 {
 	static private $obj = NULL;
-	static private $iniSet	= false;
+	static private bool $iniSet	= false;
 	private $data = NULL;
 
 	/**
@@ -27,7 +27,7 @@ class Session
 	 * @return bool
 	 */
 
-	static public function init()
+	static public function init(): bool
 	{
 		if(self::$iniSet === true)
 		{
@@ -115,10 +115,10 @@ class Session
 		if(!self::existsActiveSession())
 		{
 			self::$obj	= new self;
-			register_shutdown_function(array(self::$obj, 'save'));
+			register_shutdown_function([self::$obj, 'save']);
             try {
                 @session_start();
-            } catch (\Throwable $th) {
+            } catch (\Throwable) {
                 //throw $th;
             }
 		}
@@ -141,7 +141,7 @@ class Session
 			if(isset($_SESSION['obj']))
 			{
 				self::$obj	= unserialize($_SESSION['obj']);
-				register_shutdown_function(array(self::$obj, 'save'));
+				register_shutdown_function([self::$obj, 'save']);
 			}
 			else
 			{
@@ -158,7 +158,7 @@ class Session
 	 * @return bool
 	 */
 
-	static public function existsActiveSession()
+	static public function existsActiveSession(): bool
 	{
 		return isset(self::$obj);
 	}
@@ -170,7 +170,7 @@ class Session
 
 	public function __sleep()
 	{
-		return array('data');
+		return ['data'];
 	}
 
 	public function __wakeup()
@@ -200,7 +200,7 @@ class Session
 		return isset($this->data[$name]);
 	}
 
-	public function save()
+	public function save(): void
 	{
 	    // do not save an empty session
 	    $sessionId = session_id();
@@ -224,12 +224,7 @@ class Session
 
 		$db		= Database::get();
 
-		$db->replace($sql, array(
-			':sessionId'	=> session_id(),
-			':userId'		=> $this->data['userId'],
-			':lastActivity'	=> TIMESTAMP,
-			':userAddress'	=> $userIpAddress,
-		));
+		$db->replace($sql, [':sessionId'	=> session_id(), ':userId'		=> $this->data['userId'], ':lastActivity'	=> TIMESTAMP, ':userAddress'	=> $userIpAddress]);
 
 		$sql = 'UPDATE %%USERS%% SET
 		onlinetime	= :lastActivity,
@@ -237,11 +232,7 @@ class Session
 		WHERE
 		id = :userId;';
 
-		$db->update($sql, array(
-		   ':userAddress'	=> $userIpAddress,
-		   ':lastActivity'	=> TIMESTAMP,
-		   ':userId'		=> $this->data['userId'],
-		));
+		$db->update($sql, [':userAddress'	=> $userIpAddress, ':lastActivity'	=> TIMESTAMP, ':userId'		=> $this->data['userId']]);
 
 		$this->data['lastActivity']  = TIMESTAMP;
 		$this->data['sessionId']	 = session_id();
@@ -253,19 +244,17 @@ class Session
 		@session_write_close();
 	}
 
-	public function delete()
+	public function delete(): void
 	{
 		$sql	= 'DELETE FROM %%SESSION%% WHERE sessionID = :sessionId;';
 		$db		= Database::get();
 
-		$db->delete($sql, array(
-			':sessionId'	=> session_id(),
-		));
+		$db->delete($sql, [':sessionId'	=> session_id()]);
 
 		@session_destroy();
 	}
 
-	public function isValidSession()
+	public function isValidSession(): bool
 	{
 		if(empty($this->data['userIpAddress']) || $this->compareIpAddress($this->data['userIpAddress'], self::getClientIp(), COMPARE_IP_BLOCKS) === false)
 		{
@@ -280,9 +269,7 @@ class Session
 		$sql = 'SELECT COUNT(*) as record FROM %%SESSION%% WHERE sessionID = :sessionId;';
 		$db		= Database::get();
 
-		$sessionCount = $db->selectSingle($sql, array(
-			':sessionId'	=> session_id(),
-		), 'record');
+		$sessionCount = $db->selectSingle($sql, [':sessionId'	=> session_id()], 'record');
 
 		if($sessionCount == 0)
 		{
@@ -292,7 +279,7 @@ class Session
 		return true;
 	}
 
-	public function selectActivePlanet()
+	public function selectActivePlanet(): void
 	{
 		$httpData	= HTTP::_GP('cp', 0);
 
@@ -301,10 +288,7 @@ class Session
 			$sql	= 'SELECT id FROM %%PLANETS%% WHERE id = :planetId AND id_owner = :userId;';
 
 			$db	= Database::get();
-			$planetId	= $db->selectSingle($sql, array(
-				':userId'	=> $this->data['userId'],
-				':planetId'	=> $httpData,
-			), 'id');
+			$planetId	= $db->selectSingle($sql, [':userId'	=> $this->data['userId'], ':planetId'	=> $httpData], 'id');
 
 			if(!empty($planetId))
 			{
@@ -313,35 +297,35 @@ class Session
 		}
 	}
 
-	private function getRequestPath()
+	private function getRequestPath(): string
 	{
 		return HTTP_ROOT.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '');
 	}
 	
-	private function compareIpAddress($ip1, $ip2, $blockCount)
+	private function compareIpAddress($ip1, $ip2, int $blockCount): bool
 	{
-		if (strpos($ip2, ':') !== false && strpos($ip1, ':') !== false)
+		if (str_contains((string) $ip2, ':') && str_contains((string) $ip1, ':'))
 		{
 			$s_ip = $this->short_ipv6($ip1, $blockCount);
 			$u_ip = $this->short_ipv6($ip2, $blockCount);
 		}
 		else
 		{
-			$s_ip = implode('.', array_slice(explode('.', $ip1), 0, $blockCount));
-			$u_ip = implode('.', array_slice(explode('.', $ip2), 0, $blockCount));
+			$s_ip = implode('.', array_slice(explode('.', (string) $ip1), 0, $blockCount));
+			$u_ip = implode('.', array_slice(explode('.', (string) $ip2), 0, $blockCount));
 		}
 		
 		return ($s_ip == $u_ip);
 	}
 
-	private function short_ipv6($ip, $length)
+	private function short_ipv6($ip, int $length)
 	{
 		if ($length < 1)
 		{
 			return '';
 		}
 
-		$blocks = substr_count($ip, ':') + 1;
+		$blocks = substr_count((string) $ip, ':') + 1;
 		if ($blocks < 9)
 		{
 			$ip = str_replace('::', ':' . str_repeat('0000:', 9 - $blocks), $ip);
@@ -352,7 +336,7 @@ class Session
 		}
 		if ($length < 4)
 		{
-			$ip = implode(':', array_slice(explode(':', $ip), 0, 1 + $length));
+			$ip = implode(':', array_slice(explode(':', (string) $ip), 0, 1 + $length));
 		}
 
 		return $ip;

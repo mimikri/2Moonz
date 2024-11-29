@@ -6,7 +6,7 @@
 
 $LNG['faq_overview']	= "Guide du Noob";
 
-$LNG['questions']					= array();
+$LNG['questions']					= [];
 $LNG['questions'][1]['category']	= 'Conseil pour les débutants';
 $LNG['questions'][1][1]['title']	= 'Etape 1 : Production';
 $LNG['questions'][1][1]['body']		= <<<BODY

@@ -24,24 +24,18 @@ class ShowBattleHallPage extends AbstractGamePage
 		parent::__construct();
 	}
 
-	function show()
+	function show(): void
 	{
 		global $USER, $LNG;
 		$order  = HTTP::_GP('order', 'units');
 		$sort   = HTTP::_GP('sort', 'desc');
-		$sort   = strtoupper($sort) === "DESC" ? "DESC" : "ASC";
+		$sort   = strtoupper((string) $sort) === "DESC" ? "DESC" : "ASC";
 
 
-		switch($order)
-		{
-			case 'date':
-				$key = '%%TOPKB%%.time '.$sort;
-				break;
-			case 'units':
-			default:
-				$key = '%%TOPKB%%.units '.$sort;
-				break;
-		}
+		$key = match ($order) {
+      'date' => '%%TOPKB%%.time '.$sort,
+      default => '%%TOPKB%%.units '.$sort,
+  };
 
 		$db = Database::get();
 		$sql = "SELECT *, (
@@ -59,29 +53,15 @@ class ShowBattleHallPage extends AbstractGamePage
 		) as defender
 		FROM %%TOPKB%% WHERE universe = :universe ORDER BY ".$key." LIMIT 100;";
 
-		$top = $db->select($sql, array(
-			':universe' => Universe::current()
-		));
+		$top = $db->select($sql, [':universe' => Universe::current()]);
 
-		$TopKBList	= array();
+		$TopKBList	= [];
 		foreach($top as $data)
 		{
-			$TopKBList[]	= array(
-				'result'	=> $data['result'],
-				'date'		=> _date($LNG['php_tdformat'], $data['time'], $USER['timezone']),
-				'time'		=> TIMESTAMP - $data['time'],
-				'units'		=> $data['units'],
-				'rid'		=> $data['rid'],
-				'attacker'	=> $data['attacker'],
-				'defender'	=> $data['defender'],
-			);
+			$TopKBList[]	= ['result'	=> $data['result'], 'date'		=> _date($LNG['php_tdformat'], $data['time'], $USER['timezone']), 'time'		=> TIMESTAMP - $data['time'], 'units'		=> $data['units'], 'rid'		=> $data['rid'], 'attacker'	=> $data['attacker'], 'defender'	=> $data['defender']];
 		}
 
-		$this->assign(array(
-			'TopKBList'		=> $TopKBList,
-			'sort'			=> $sort,
-			'order'			=> $order,
-		));
+		$this->assign(['TopKBList'		=> $TopKBList, 'sort'			=> $sort, 'order'			=> $order]);
 
 		$this->display('page.battleHall.default.tpl');
 	}

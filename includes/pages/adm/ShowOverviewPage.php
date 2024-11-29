@@ -15,11 +15,11 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-function ShowOverviewPage()
+function ShowOverviewPage(): void
 {
 	global $LNG, $USER;
 	
-	$Message	= array();
+	$Message	= [];
 
 	if ($USER['authlevel'] >= AUTH_ADM)
 	{
@@ -42,21 +42,7 @@ function ShowOverviewPage()
 	$template	= new template();
 
 
-	$template->assign_vars(array(	
-		'ow_none'			=> $LNG['ow_none'],
-		'ow_overview'		=> $LNG['ow_overview'],
-		'ow_welcome_text'	=> $LNG['ow_welcome_text'],
-		'ow_credits'		=> $LNG['ow_credits'],
-		'ow_special_thanks'	=> $LNG['ow_special_thanks'],
-		'ow_translator'		=> $LNG['ow_translator'],
-		'ow_proyect_leader'	=> $LNG['ow_proyect_leader'],
-		'ow_support'		=> $LNG['ow_support'],
-		'ow_title'			=> $LNG['ow_title'],
-		'ow_forum'			=> $LNG['ow_forum'],
-		'ow_donate'			=> $LNG['ow_donate'],
-		'Messages'			=> $Message,
-		'date'				=> date('m\_Y', TIMESTAMP),
-	));
+	$template->assign_vars(['ow_none'			=> $LNG['ow_none'], 'ow_overview'		=> $LNG['ow_overview'], 'ow_welcome_text'	=> $LNG['ow_welcome_text'], 'ow_credits'		=> $LNG['ow_credits'], 'ow_special_thanks'	=> $LNG['ow_special_thanks'], 'ow_translator'		=> $LNG['ow_translator'], 'ow_proyect_leader'	=> $LNG['ow_proyect_leader'], 'ow_support'		=> $LNG['ow_support'], 'ow_title'			=> $LNG['ow_title'], 'ow_forum'			=> $LNG['ow_forum'], 'ow_donate'			=> $LNG['ow_donate'], 'Messages'			=> $Message, 'date'				=> date('m\_Y', TIMESTAMP)]);
 	
 	$template->show('OverviewBody.tpl');
 }

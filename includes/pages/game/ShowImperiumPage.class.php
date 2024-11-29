@@ -25,47 +25,36 @@ class ShowImperiumPage extends AbstractGamePage
 		parent::__construct();
 	}
 
-	function show()
+	function show(): void
 	{
 		global $USER, $PLANET, $resource, $reslist;
 
         $db = Database::get();
 
-		switch($USER['planet_sort'])
-		{
-			case 2:
-				$orderBy = 'name';
-				break;
-			case 1:
-				$orderBy = 'galaxy, `system`, planet, planet_type';
-				break;
-			default:
-				$orderBy = 'id';
-				break;
-		}
+		$orderBy = match ($USER['planet_sort']) {
+      2 => 'name',
+      1 => 'galaxy, `system`, planet, planet_type',
+      default => 'id',
+  };
 		
 		$orderBy .= ' '.($USER['planet_sort_order'] == 1) ? 'DESC' : 'ASC';
 
         $sql = "SELECT * FROM %%PLANETS%% WHERE id != :planetID AND id_owner = :userID AND destruyed = '0' ORDER BY :order;";
-        $PlanetsRAW = $db->select($sql, array(
-            ':planetID' => $PLANET['id'],
-            ':userID'   => $USER['id'],
-            ':order'    => $orderBy,
-        ));
+        $PlanetsRAW = $db->select($sql, [':planetID' => $PLANET['id'], ':userID'   => $USER['id'], ':order'    => $orderBy]);
 
-        $PLANETS	= array($PLANET);
+        $PLANETS	= [$PLANET];
 		
 		$PlanetRess	= new ResourceUpdate();
 		
 		foreach ($PlanetsRAW as $CPLANET)
 		{
-            list($USER, $CPLANET)	= $PlanetRess->CalcResource($USER, $CPLANET, true);
+            [$USER, $CPLANET]	= $PlanetRess->CalcResource($USER, $CPLANET, true);
 			
 			$PLANETS[]	= $CPLANET;
 			unset($CPLANET);
 		}
 
-        $planetList	= array();
+        $planetList	= [];
 
 		foreach($PLANETS as $Planet)
 		{
@@ -104,10 +93,7 @@ class ShowImperiumPage extends AbstractGamePage
 			$planetList['tech'][$elementID]	= $USER[$resource[$elementID]];
 		}
 		
-		$this->assign(array(
-			'colspan'		=> count($PLANETS) + 2,
-			'planetList'	=> $planetList,
-		));
+		$this->assign(['colspan'		=> count($PLANETS) + 2, 'planetList'	=> $planetList]);
 
 		$this->display('page.empire.default.tpl');
 	}

@@ -15,11 +15,11 @@ class BasicFileUtil {
 	 * 
 	 * @return	string
 	 */
-	public static function getTempFolder() {
+	public static function getTempFolder(): string {
 		
 		// use tmp folder in document root by default
 		if (!empty($_SERVER['DOCUMENT_ROOT'])) {
-			if (strpos($_SERVER['DOCUMENT_ROOT'], 'strato') !== false) {
+			if (str_contains((string) $_SERVER['DOCUMENT_ROOT'], 'strato')) {
 				// strato bugfix
 				// create tmp folder in document root automatically
 				if (!@file_exists($_SERVER['DOCUMENT_ROOT'].'/tmp')) { 

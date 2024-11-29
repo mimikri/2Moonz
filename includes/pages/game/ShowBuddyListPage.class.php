@@ -24,7 +24,7 @@ class ShowBuddyListPage extends AbstractGamePage
 		parent::__construct();
 	}
 	
-	function request()
+	function request(): void
 	{
 		global $USER, $LNG;
 		
@@ -41,10 +41,7 @@ class ShowBuddyListPage extends AbstractGamePage
 		$db = Database::get();
 
         $sql = "SELECT COUNT(*) as count FROM %%BUDDY%% WHERE (sender = :userID AND owner = :friendID) OR (owner = :userID AND sender = :friendID);";
-        $exists = $db->selectSingle($sql, array(
-            ':userID'	=> $USER['id'],
-            ':friendID'  => $id
-        ), 'count');
+        $exists = $db->selectSingle($sql, [':userID'	=> $USER['id'], ':friendID'  => $id], 'count');
 
 		if($exists != 0)
 		{
@@ -52,22 +49,14 @@ class ShowBuddyListPage extends AbstractGamePage
 		}
 		
 		$sql = "SELECT username, galaxy, `system`, planet FROM %%USERS%% WHERE id = :friendID;";
-        $userData = $db->selectSingle($sql, array(
-            ':friendID'  => $id
-        ));
+        $userData = $db->selectSingle($sql, [':friendID'  => $id]);
 
-		$this->assign(array(
-			'username'	=> $userData['username'],
-			'galaxy'	=> $userData['galaxy'],
-			'system'	=> $userData['system'],
-			'planet'	=> $userData['planet'],
-			'id'		=> $id,
-		));
+		$this->assign(['username'	=> $userData['username'], 'galaxy'	=> $userData['galaxy'], 'system'	=> $userData['system'], 'planet'	=> $userData['planet'], 'id'		=> $id]);
 		
 		$this->display('page.buddyList.request.tpl');
 	}
 	
-	function send()
+	function send(): void
 	{
 		global $USER, $LNG;
 		
@@ -86,10 +75,7 @@ class ShowBuddyListPage extends AbstractGamePage
         $db = Database::get();
 
         $sql = "SELECT COUNT(*) as count FROM %%BUDDY%% WHERE (sender = :userID AND owner = :friendID) OR (owner = :userID AND sender = :friendID);";
-        $exists = $db->selectSingle($sql, array(
-            ':userID'	=> $USER['id'],
-            ':friendID'  => $id
-        ), 'count');
+        $exists = $db->selectSingle($sql, [':userID'	=> $USER['id'], ':friendID'  => $id], 'count');
 
         if($exists != 0)
 		{
@@ -97,30 +83,21 @@ class ShowBuddyListPage extends AbstractGamePage
 		}
 
         $sql = "INSERT INTO %%BUDDY%% SET sender = :userID,	owner = :friendID, universe = :universe;";
-        $db->insert($sql, array(
-            ':userID'	=> $USER['id'],
-            ':friendID'  => $id,
-            ':universe' => Universe::current()
-        ));
+        $db->insert($sql, [':userID'	=> $USER['id'], ':friendID'  => $id, ':universe' => Universe::current()]);
 
         $buddyID	= $db->lastInsertId();
 
 		$sql = "INSERT INTO %%BUDDY_REQUEST%% SET id = :buddyID, text = :text;";
-        $db->insert($sql, array(
-            ':buddyID'  => $buddyID,
-            ':text' => $text
-        ));
+        $db->insert($sql, [':buddyID'  => $buddyID, ':text' => $text]);
 
         $sql = "SELECT username, lang FROM %%USERS%% WHERE id = :friendID;";
-        $row = $db->selectSingle($sql, array(
-            ':friendID'  => $id
-        ));
+        $row = $db->selectSingle($sql, [':friendID'  => $id]);
 		
 		$Friend_LNG = $LNG;
 		
 		if($USER['lang'] != $row['lang']){
 			$Friend_LNG = new Language($language);
-			$Friend_LNG->includeData(array('INGAME'));
+			$Friend_LNG->includeData(['INGAME']);
 		}
 		
         PlayerUtil::sendMessage($id, $USER['id'], $USER['username'], 4, $Friend_LNG['bu_new_request_title'], sprintf($Friend_LNG['bu_new_request_body'], $row['username'], $USER['username']), TIMESTAMP);
@@ -128,7 +105,7 @@ class ShowBuddyListPage extends AbstractGamePage
 		$this->printMessage($LNG['bu_request_send']);
 	}
 	
-	function delete()
+	function delete(): void
 	{
 		global $USER, $LNG;
 		
@@ -136,45 +113,35 @@ class ShowBuddyListPage extends AbstractGamePage
 		$db = Database::get();
 
         $sql = "SELECT COUNT(*) as count FROM %%BUDDY%% WHERE id = :id AND (sender = :userID OR owner = :userID);";
-        $isAllowed = $db->selectSingle($sql, array(
-            ':id'  => $id,
-            ':userID' => $USER['id']
-        ), 'count');
+        $isAllowed = $db->selectSingle($sql, [':id'  => $id, ':userID' => $USER['id']], 'count');
 
 		if($isAllowed)
 		{
 			$sql = "SELECT COUNT(*) as count FROM %%BUDDY_REQUEST%% WHERE :id;";
-            $isRequest = $db->selectSingle($sql, array(
-                ':id'  => $id
-            ), 'count');
+            $isRequest = $db->selectSingle($sql, [':id'  => $id], 'count');
 			
 			if($isRequest)
 			{
                 $sql = "SELECT u.username, u.id, u.lang FROM %%BUDDY%% b INNER JOIN %%USERS%% u ON u.id = IF(b.sender = :userID,b.owner,b.sender) WHERE b.id = :id;";
-                $requestData = $db->selectSingle($sql, array(
-                    ':id'       => $id,
-                    'userID'    => $USER['id']
-                ));
+                $requestData = $db->selectSingle($sql, [':id'       => $id, 'userID'    => $USER['id']]);
 				
 				$Enemy_LNG = $LNG;
 				
 				if($USER['lang'] != $requestData['lang']){
 					$Enemy_LNG = new Language($language);
-					$Enemy_LNG->includeData(array('INGAME'));
+					$Enemy_LNG->includeData(['INGAME']);
 				}
 
 				PlayerUtil::sendMessage($requestData['id'], $USER['id'], $USER['username'], 4, $Enemy_LNG['bu_rejected_request_title'], sprintf($Enemy_LNG['bu_rejected_request_body'], $requestData['username'], $USER['username']), TIMESTAMP);
 			}
 
             $sql = "DELETE b.*, r.* FROM %%BUDDY%% b LEFT JOIN %%BUDDY_REQUEST%% r USING (id) WHERE b.id = :id;";
-            $db->delete($sql, array(
-                ':id'       => $id,
-            ));
+            $db->delete($sql, [':id'       => $id]);
         }
 		$this->redirectTo("game.php?page=buddyList");
 	}
 	
-	function accept()
+	function accept(): void
 	{
 		global $USER, $LNG;
 		
@@ -182,20 +149,16 @@ class ShowBuddyListPage extends AbstractGamePage
 		$db = Database::get();
 
         $sql = "DELETE FROM %%BUDDY_REQUEST%% WHERE id = :id;";
-        $db->delete($sql, array(
-            ':id'       => $id
-        ));
+        $db->delete($sql, [':id'       => $id]);
 
         $sql = "SELECT sender, u.username, u.lang FROM %%BUDDY%% b INNER JOIN %%USERS%% u ON sender = u.id WHERE b.id = :id;";
-        $sender = $db->selectSingle($sql, array(
-            ':id'       => $id
-        ));
+        $sender = $db->selectSingle($sql, [':id'       => $id]);
 		
 		$Friend_LNG = $LNG;
 		
 		if($USER['lang'] != $sender['lang']){
 			$Friend_LNG = new Language($language);
-			$Friend_LNG->includeData(array('INGAME'));
+			$Friend_LNG->includeData(['INGAME']);
 		}
 
 		PlayerUtil::sendMessage($sender['sender'], $USER['id'], $USER['username'], 4, $Friend_LNG['bu_accepted_request_title'], sprintf($Friend_LNG['bu_accepted_request_body'], $sender['username'], $USER['username']), TIMESTAMP);
@@ -203,7 +166,7 @@ class ShowBuddyListPage extends AbstractGamePage
 		$this->redirectTo("game.php?page=buddyList");
 	}
 	
-	function show()
+	function show(): void
 	{
 		global $USER;
 		
@@ -211,13 +174,11 @@ class ShowBuddyListPage extends AbstractGamePage
         $sql = "SELECT a.sender, a.id as buddyid, b.id, b.username, b.onlinetime, b.galaxy, b.system, b.planet, b.ally_id, c.ally_name, d.text
 		FROM (%%BUDDY%% as a, %%USERS%% as b) LEFT JOIN %%ALLIANCE%% as c ON c.id = b.ally_id LEFT JOIN %%BUDDY_REQUEST%% as d ON a.id = d.id
 		WHERE (a.sender = ".$USER['id']." AND a.owner = b.id) OR (a.owner = :userID AND a.sender = b.id);";
-        $BuddyListResult = $db->select($sql, array(
-            'userID'    => $USER['id']
-        ));
+        $BuddyListResult = $db->select($sql, ['userID'    => $USER['id']]);
 
-        $myRequestList		= array();
-		$otherRequestList	= array();
-		$myBuddyList		= array();		
+        $myRequestList		= [];
+		$otherRequestList	= [];
+		$myBuddyList		= [];		
 				
 		foreach($BuddyListResult as $BuddyList)
 		{
@@ -235,11 +196,7 @@ class ShowBuddyListPage extends AbstractGamePage
 			}
 		}
 		
-		$this->assign(array(
-			'myBuddyList'		=> $myBuddyList,
-			'myRequestList'			=> $myRequestList,
-			'otherRequestList'	=> $otherRequestList,
-		));
+		$this->assign(['myBuddyList'		=> $myBuddyList, 'myRequestList'			=> $myRequestList, 'otherRequestList'	=> $otherRequestList]);
 		
 		$this->display('page.buddyList.default.tpl');
 	}

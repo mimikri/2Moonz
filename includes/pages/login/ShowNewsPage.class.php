@@ -24,27 +24,21 @@ class ShowNewsPage extends AbstractLoginPage
 		parent::__construct();
 	}
 	
-	function show() 
+	function show(): void 
 	{
 		global $LNG;
 
 		$sql = "SELECT date, title, text, user FROM %%NEWS%% ORDER BY id DESC;";
 		$newsResult = Database::get()->select($sql);
 
-		$newsList	= array();
+		$newsList	= [];
 		
 		foreach ($newsResult as $newsRow)
 		{
-			$newsList[]	= array(
-				'title' => $newsRow['title'],
-				'from' 	=> sprintf($LNG['news_from'], _date($LNG['php_tdformat'], $newsRow['date']), $newsRow['user']),
-				'text' 	=> makebr($newsRow['text']),
-			);
+			$newsList[]	= ['title' => $newsRow['title'], 'from' 	=> sprintf($LNG['news_from'], _date($LNG['php_tdformat'], $newsRow['date']), $newsRow['user']), 'text' 	=> makebr($newsRow['text'])];
 		}
 		
-		$this->assign(array(
-			'newsList'	=> $newsList,
-		));
+		$this->assign(['newsList'	=> $newsList]);
 		
 		$this->display('page.news.default.tpl');
 	}

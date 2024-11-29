@@ -39,15 +39,13 @@ class ReCaptcha
 
     /**
      * Shared secret for the site.
-     * @var string
      */
-    private $secret;
+    private readonly string $secret;
 
     /**
      * Method used to communicate with service. Defaults to POST request.
-     * @var RequestMethod
      */
-    private $requestMethod;
+    private \ReCaptcha\RequestMethod|\ReCaptcha\RequestMethod\Post $requestMethod;
 
     /**
      * Create a configured instance to use the reCAPTCHA service.
@@ -87,7 +85,7 @@ class ReCaptcha
     {
         // Discard empty solution submissions
         if (empty($response)) {
-            $recaptchaResponse = new Response(false, array('missing-input-response'));
+            $recaptchaResponse = new Response(false, ['missing-input-response']);
             return $recaptchaResponse;
         }
 

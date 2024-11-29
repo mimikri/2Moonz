@@ -37,14 +37,14 @@ class ShowPhalanxPage extends AbstractGamePage
 
 	static function GetPhalanxRange($PhalanxLevel)
 	{
-		return ($PhalanxLevel == 1) ? 1 : pow($PhalanxLevel, 2) - 1;
+		return ($PhalanxLevel == 1) ? 1 : $PhalanxLevel ** 2 - 1;
 	}
 
 	function __construct() {
 
 	}
 	
-	function show()
+	function show(): void
 	{
 		global $PLANET, $LNG, $resource;
 
@@ -56,7 +56,7 @@ class ShowPhalanxPage extends AbstractGamePage
 		$System 			= HTTP::_GP('system', 0);
 		$Planet 			= HTTP::_GP('planet', 0);
 		
-		if(!$this->allowPhalanx($Galaxy, $System))
+		if(!static::allowPhalanx($Galaxy, $System))
 		{
 			$this->printMessage($LNG['px_out_of_range']);
 		}
@@ -68,21 +68,12 @@ class ShowPhalanxPage extends AbstractGamePage
 
 		$db = Database::get();
 		$sql = "UPDATE %%PLANETS%% SET deuterium = deuterium - :phalanxDeuterium WHERE id = :planetID;";
-		$db->update($sql, array(
-			':phalanxDeuterium'	=> PHALANX_DEUTERIUM,
-			':planetID'			=> $PLANET['id']
-		));
+		$db->update($sql, [':phalanxDeuterium'	=> PHALANX_DEUTERIUM, ':planetID'			=> $PLANET['id']]);
 
 		$sql = "SELECT id, name, id_owner FROM %%PLANETS%% WHERE universe = :universe
 		AND galaxy = :galaxy AND `system` = :system AND planet = :planet AND :type;";
 		
-		$TargetInfo = $db->selectSingle($sql, array(
-			':universe'	=> Universe::current(),
-			':galaxy'	=> $Galaxy,
-			':system'	=> $System,
-			':planet'	=> $Planet,
-			':type'		=> 1
-		));
+		$TargetInfo = $db->selectSingle($sql, [':universe'	=> Universe::current(), ':galaxy'	=> $Galaxy, ':system'	=> $System, ':planet'	=> $Planet, ':type'		=> 1]);
 
 		if(empty($TargetInfo))
 		{
@@ -97,13 +88,7 @@ class ShowPhalanxPage extends AbstractGamePage
 		$fleetTableObj->setPlanet($TargetInfo['id']);
 		$fleetTable	=  $fleetTableObj->renderTable();
 		
-		$this->assign(array(
-			'galaxy'  		=> $Galaxy,
-			'system'  		=> $System,
-			'planet'   		=> $Planet,
-			'name'    		=> $TargetInfo['name'],
-			'fleetTable'	=> $fleetTable,
-		));
+		$this->assign(['galaxy'  		=> $Galaxy, 'system'  		=> $System, 'planet'   		=> $Planet, 'name'    		=> $TargetInfo['name'], 'fleetTable'	=> $fleetTable]);
 		
 		$this->display('page.phalanx.default.tpl');			
 	}

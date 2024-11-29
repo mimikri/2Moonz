@@ -17,22 +17,32 @@
  
 class Theme
 {
-	static public $Themes;
-	private $THEMESETTINGS;
+	/**
+  * @var never[]
+  */
+ public $skininfo;
+ public $skin;
+ /**
+  * @var string
+  */
+ public $template;
+ public $customtpls;
+ static public $Themes;
+	private ?array $THEMESETTINGS = null;
 	
 	function __construct()
 	{	
-		$this->skininfo = array();
-		$this->skin		= isset($_SESSION['dpath']) ? $_SESSION['dpath'] : DEFAULT_THEME;
+		$this->skininfo = [];
+		$this->skin		= $_SESSION['dpath'] ?? DEFAULT_THEME;
 		$this->setUserTheme($this->skin);
 	}
 	
-	function isHome() {
+	function isHome(): void {
 		$this->template		= ROOT_PATH.'styles/home/';
-		$this->customtpls	= array();
+		$this->customtpls	= [];
 	}
 	
-	function setUserTheme($Theme) {
+	function setUserTheme(string $Theme) {
 		if(!file_exists(ROOT_PATH.'styles/theme/'.$Theme.'/style.cfg'))
 			return false;
 			
@@ -41,7 +51,7 @@ class Theme
 		$this->setStyleSettings();
 	}
 		
-	function getTheme() {
+	function getTheme(): string {
 		return './styles/theme/'.$this->skin.'/';
 	}
 	
@@ -49,7 +59,7 @@ class Theme
 		return $this->skin;
 	}
 	
-	function getTemplatePath() {
+	function getTemplatePath(): string {
 		return ROOT_PATH.'/styles/templates/'.$this->skin.'/';
 	}
 		
@@ -60,24 +70,18 @@ class Theme
 		return in_array($tpl, $this->customtpls);
 	}
 	
-	function parseStyleCFG() {
+	function parseStyleCFG(): void {
 		require(ROOT_PATH.'styles/theme/'.$this->skin.'/style.cfg');
 		$this->skininfo		= $Skin;
 		$this->customtpls	= (array) $Skin['templates'];	
 	}
 	
-	function setStyleSettings() {
+	function setStyleSettings(): void {
 		if(file_exists(ROOT_PATH.'styles/theme/'.$this->skin.'/settings.cfg')) {
 			require(ROOT_PATH.'styles/theme/'.$this->skin.'/settings.cfg');
 		}
 		
-		$this->THEMESETTINGS	= array_merge(array(
-			'PLANET_ROWS_ON_OVERVIEW' => 2,
-			'SHORTCUT_ROWS_ON_FLEET1' => 2,
-			'COLONY_ROWS_ON_FLEET1' => 2,
-			'ACS_ROWS_ON_FLEET1' => 1,
-			'TOPNAV_SHORTLY_NUMBER' => 0,
-		), $THEMESETTINGS);
+		$this->THEMESETTINGS	= array_merge(['PLANET_ROWS_ON_OVERVIEW' => 2, 'SHORTCUT_ROWS_ON_FLEET1' => 2, 'COLONY_ROWS_ON_FLEET1' => 2, 'ACS_ROWS_ON_FLEET1' => 1, 'TOPNAV_SHORTLY_NUMBER' => 0], $THEMESETTINGS);
 	}
 	
 	function getStyleSettings() {
@@ -91,8 +95,8 @@ class Theme
 			{
 				self::$Themes	= unserialize(file_get_contents(ROOT_PATH.'cache/cache.themes.php'));
 			} else {
-				$Skins	= array_diff(scandir(ROOT_PATH.'styles/theme/'), array('..', '.', '.svn', '.htaccess', 'index.htm'));
-				$Themes	= array();
+				$Skins	= array_diff(scandir(ROOT_PATH.'styles/theme/'), ['..', '.', '.svn', '.htaccess', 'index.htm']);
+				$Themes	= [];
 				foreach($Skins as $Theme) {
 					if(!file_exists(ROOT_PATH.'styles/theme/'.$Theme.'/style.cfg'))
 						continue;

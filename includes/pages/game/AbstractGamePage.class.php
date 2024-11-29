@@ -52,7 +52,7 @@ abstract class AbstractGamePage
 			return true;
 
 		$this->tplObj	= new template;
-		list($tplDir)	= $this->tplObj->getTemplateDir();
+		[$tplDir]	= $this->tplObj->getTemplateDir();
 		$this->tplObj->setTemplateDir($tplDir.'game/');
 		return true;
 	}
@@ -66,7 +66,7 @@ abstract class AbstractGamePage
 	}
 
 	protected function getQueryString() {
-		$queryString	= array();
+		$queryString	= [];
 		$page			= HTTP::_GP('page', '');
 
 		if(!empty($page)) {
@@ -85,9 +85,7 @@ abstract class AbstractGamePage
 	{
 		require_once 'includes/classes/Cronjob.class.php';
 
-		$this->assign(array(
-			'cronjobs'		=> Cronjob::getNeedTodoExecutedJobs()
-		));
+		$this->assign(['cronjobs'		=> Cronjob::getNeedTodoExecutedJobs()]);
 	}
 
 	protected function getNavigationData()
@@ -96,7 +94,7 @@ abstract class AbstractGamePage
 
 		$config			= Config::get();
 
-		$PlanetSelect	= array();
+		$PlanetSelect	= [];
 
 		if(isset($USER['PLANETS'])) {
 			$USER['PLANETS']	= getPlanets($USER);
@@ -107,7 +105,7 @@ abstract class AbstractGamePage
 			$PlanetSelect[$PlanetQuery['id']]	= $PlanetQuery['name'].(($PlanetQuery['planet_type'] == 3) ? " (" . $LNG['fcm_moon'] . ")":"")." [".$PlanetQuery['galaxy'].":".$PlanetQuery['system'].":".$PlanetQuery['planet']."]";
 		}
 
-		$resourceTable	= array();
+		$resourceTable	= [];
 		$resourceSpeed	= $config->resource_multiplier;
 		foreach($reslist['resstype'][1] as $resourceID)
 		{
@@ -139,21 +137,7 @@ abstract class AbstractGamePage
 
 		$themeSettings	= $THEME->getStyleSettings();
 
-		$this->assign(array(
-			'PlanetSelect'		=> $PlanetSelect,
-			'new_message' 		=> $USER['messages'],
-			'vacation'			=> $USER['urlaubs_modus'] ? _date($LNG['php_tdformat'], $USER['urlaubs_until'], $USER['timezone']) : false,
-			'delete'			=> $USER['db_deaktjava'] ? sprintf($LNG['tn_delete_mode'], _date($LNG['php_tdformat'], $USER['db_deaktjava'] + ($config->del_user_manually * 86400)), $USER['timezone']) : false,
-			'darkmatter'		=> $USER['darkmatter'],
-			'current_pid'		=> $PLANET['id'],
-			'image'				=> $PLANET['image'],
-			'resourceTable'		=> $resourceTable,
-			'shortlyNumber'		=> $themeSettings['TOPNAV_SHORTLY_NUMBER'],
-			'closed'			=> !$config->game_disable,
-			'hasBoard'			=> filter_var($config->forum_url, FILTER_VALIDATE_URL),
-			'hasAdminAccess'	=> !empty(Session::load()->adminAccess),
-			'hasGate'			=> $PLANET[$resource[43]] > 0
-		));
+		$this->assign(['PlanetSelect'		=> $PlanetSelect, 'new_message' 		=> $USER['messages'], 'vacation'			=> $USER['urlaubs_modus'] ? _date($LNG['php_tdformat'], $USER['urlaubs_until'], $USER['timezone']) : false, 'delete'			=> $USER['db_deaktjava'] ? sprintf($LNG['tn_delete_mode'], _date($LNG['php_tdformat'], $USER['db_deaktjava'] + ($config->del_user_manually * 86400)), $USER['timezone']) : false, 'darkmatter'		=> $USER['darkmatter'], 'current_pid'		=> $PLANET['id'], 'image'				=> $PLANET['image'], 'resourceTable'		=> $resourceTable, 'shortlyNumber'		=> $themeSettings['TOPNAV_SHORTLY_NUMBER'], 'closed'			=> !$config->game_disable, 'hasBoard'			=> filter_var($config->forum_url, FILTER_VALIDATE_URL), 'hasAdminAccess'	=> !empty(Session::load()->adminAccess), 'hasGate'			=> $PLANET[$resource[43]] > 0]);
 	}
 
 	protected function getPageData()
@@ -169,7 +153,7 @@ abstract class AbstractGamePage
 		if(isset($USER['timezone'])) {
 			try {
 				$dateTimeUser	= new DateTime("now", new DateTimeZone($USER['timezone']));
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$dateTimeUser	= $dateTimeServer;
 			}
 		} else {
@@ -178,31 +162,11 @@ abstract class AbstractGamePage
 
 		$config	= Config::get();
 
-		$this->assign(array(
-			'vmode'				=> $USER['urlaubs_modus'],
-			'authlevel'			=> $USER['authlevel'],
-			'userID'			=> $USER['id'],
-			'bodyclass'			=> $this->getWindow(),
-			'game_name'			=> $config->game_name,
-			'uni_name'			=> $config->uni_name,
-			'ga_active'			=> $config->ga_active,
-			'ga_key'			=> $config->ga_key,
-			'debug'				=> $config->debug,
-			'VERSION'			=> $config->VERSION,
-			'date'				=> explode("|", date('Y\|n\|j\|G\|i\|s\|Z', TIMESTAMP)),
-			'isPlayerCardActive' => isModuleAvailable(MODULE_PLAYERCARD),
-			'REV'				=> substr($config->VERSION, -4),
-			'Offset'			=> $dateTimeUser->getOffset() - $dateTimeServer->getOffset(),
-			'queryString'		=> $this->getQueryString(),
-			'themeSettings'		=> $THEME->getStyleSettings(),
-		));
+		$this->assign(['vmode'				=> $USER['urlaubs_modus'], 'authlevel'			=> $USER['authlevel'], 'userID'			=> $USER['id'], 'bodyclass'			=> $this->getWindow(), 'game_name'			=> $config->game_name, 'uni_name'			=> $config->uni_name, 'ga_active'			=> $config->ga_active, 'ga_key'			=> $config->ga_key, 'debug'				=> $config->debug, 'VERSION'			=> $config->VERSION, 'date'				=> explode("|", date('Y\|n\|j\|G\|i\|s\|Z', TIMESTAMP)), 'isPlayerCardActive' => isModuleAvailable(MODULE_PLAYERCARD), 'REV'				=> substr($config->VERSION, -4), 'Offset'			=> $dateTimeUser->getOffset() - $dateTimeServer->getOffset(), 'queryString'		=> $this->getQueryString(), 'themeSettings'		=> $THEME->getStyleSettings()]);
 	}
 	protected function printMessage($message, $redirectButtons = NULL, $redirect = NULL, $fullSide = true)
 	{
-		$this->assign(array(
-			'message'			=> $message,
-			'redirectButtons'	=> $redirectButtons,
-		));
+		$this->assign(['message'			=> $message, 'redirectButtons'	=> $redirectButtons]);
 
 		if(isset($redirect)) {
 			$this->tplObj->gotoside($redirect[0], $redirect[1]);
@@ -225,7 +189,7 @@ abstract class AbstractGamePage
 		$this->tplObj->assign_vars($array, $nocache);
 	}
 
-	protected function display($file) {
+	protected function display(string $file) {
 		global $THEME, $LNG;
 
 		$this->save();
@@ -234,17 +198,9 @@ abstract class AbstractGamePage
 			$this->getPageData();
 		}
 
-		$this->assign(array(
-			'lang'    		=> $LNG->getLanguage(),
-			'dpath'			=> $THEME->getTheme(),
-			'scripts'		=> $this->tplObj->jsscript,
-			'execscript'	=> implode("\n", $this->tplObj->script),
-			'basepath'		=> PROTOCOL.HTTP_HOST.HTTP_BASE,
-		));
+		$this->assign(['lang'    		=> $LNG->getLanguage(), 'dpath'			=> $THEME->getTheme(), 'scripts'		=> $this->tplObj->jsscript, 'execscript'	=> implode("\n", $this->tplObj->script), 'basepath'		=> PROTOCOL.HTTP_HOST.HTTP_BASE]);
 
-		$this->assign(array(
-			'LNG'			=> $LNG,
-		), false);
+		$this->assign(['LNG'			=> $LNG], false);
 
 		$this->tplObj->display('extends:layout.'.$this->getWindow().'.tpl|'.$file);
 		exit;
@@ -256,7 +212,7 @@ abstract class AbstractGamePage
 		exit;
 	}
 
-	protected function redirectTo($url) {
+	protected function redirectTo(string $url) {
 		$this->save();
 		HTTP::redirectTo($url);
 		exit;

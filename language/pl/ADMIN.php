@@ -304,7 +304,7 @@ $LNG['ma_none']					= 'Wiadomość ogólna';
 $LNG['ma_message']				= 'Wiadomość';
 $LNG['ma_mode']					= 'Wyślij w';
 $LNG['ma_all']					= 'Wszystko';
-$LNG['ma_modes']				= array('Wiadomość w grze', 'Wiadomość na e-mail', 'W grze &amp; emailt');
+$LNG['ma_modes']				= ['Wiadomość w grze', 'Wiadomość na e-mail', 'W grze &amp; emailt'];
 //###########################################################//
 
 //---------------	PÁGINA DE INICIO - OVERVIEW	 - PODGLĄD------------------------//

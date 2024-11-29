@@ -21,7 +21,7 @@
  *
  * @return string
  */
-function smarty_modifier_replace($string, $search, $replace)
+function smarty_modifier_replace($string="", $search="nix", $replace="nix")
 {
     static $is_loaded = false;
     if (Smarty::$_MBSTRING) {

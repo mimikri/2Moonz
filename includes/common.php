@@ -80,7 +80,7 @@ if(!file_exists('includes/config.php') || filesize('includes/config.php') === 0)
 try {
     $sql	= "SELECT dbVersion FROM %%SYSTEM%%;";
 
-    $dbVersion	= Database::get()->selectSingle($sql, array(), 'dbVersion');
+    $dbVersion	= Database::get()->selectSingle($sql, [], 'dbVersion');
 
     $dbNeedsUpgrade = $dbVersion < DB_VERSION_REQUIRED;
 } catch (Exception $e) {
@@ -137,10 +137,7 @@ if (MODE === 'INGAME' || MODE === 'ADMIN' || MODE === 'CRON')
 	WHERE user.id = :userId
 	GROUP BY message.message_owner;";
 	
-	$USER	= $db->selectSingle($sql, array(
-		':unread'	=> 1,
-		':userId'	=> $session->userId
-	));
+	$USER	= $db->selectSingle($sql, [':unread'	=> 1, ':userId'	=> $session->userId]);
 	
 	if(empty($USER))
 	{
@@ -148,7 +145,7 @@ if (MODE === 'INGAME' || MODE === 'ADMIN' || MODE === 'CRON')
 	}
 	
 	$LNG	= new Language($USER['lang']);
-	$LNG->includeData(array('L18N', 'INGAME', 'TECH', 'CUSTOM'));
+	$LNG->includeData(['L18N', 'INGAME', 'TECH', 'CUSTOM']);
 	$THEME->setUserTheme($USER['dpath']);
 	
 	if($config->game_disable == 0 && $USER['authlevel'] == AUTH_USR) {
@@ -170,16 +167,12 @@ if (MODE === 'INGAME' || MODE === 'ADMIN' || MODE === 'CRON')
 		$session->selectActivePlanet();
 
 		$sql	= "SELECT * FROM %%PLANETS%% WHERE id = :planetId;";
-		$PLANET	= $db->selectSingle($sql, array(
-			':planetId'	=> $session->planetId,
-		));
+		$PLANET	= $db->selectSingle($sql, [':planetId'	=> $session->planetId]);
 
 		if(empty($PLANET))
 		{
 			$sql	= "SELECT * FROM %%PLANETS%% WHERE id = :planetId;";
-			$PLANET	= $db->selectSingle($sql, array(
-				':planetId'	=> $USER['id_planet'],
-			));
+			$PLANET	= $db->selectSingle($sql, [':planetId'	=> $USER['id_planet']]);
 			
 			if(empty($PLANET))
 			{
@@ -199,14 +192,14 @@ if (MODE === 'INGAME' || MODE === 'ADMIN' || MODE === 'CRON')
 		error_reporting(E_ERROR | E_WARNING | E_PARSE);
 		
 		$USER['rights']		= unserialize(!empty($USER['rights']) ? $USER['rights'] : 'a:0:{}');
-		$LNG->includeData(array('ADMIN', 'CUSTOM'));
+		$LNG->includeData(['ADMIN', 'CUSTOM']);
 	}
 }
 elseif(MODE === 'LOGIN')
 {
 	$LNG	= new Language();
 	$LNG->getUserAgentLanguage();
-	$LNG->includeData(array('L18N', 'INGAME', 'PUBLIC', 'CUSTOM'));
+	$LNG->includeData(['L18N', 'INGAME', 'PUBLIC', 'CUSTOM']);
 }
 elseif(MODE === 'CHAT')
 {

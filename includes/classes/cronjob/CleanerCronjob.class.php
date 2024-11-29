@@ -19,7 +19,7 @@ require_once 'includes/classes/cronjob/CronjobTask.interface.php';
 
 class CleanerCronjob implements CronjobTask
 {
-	function run()
+	function run(): void
 	{
         $config	= Config::get(ROOT_UNI);
 
@@ -37,39 +37,27 @@ class CleanerCronjob implements CronjobTask
 		}
 
 		$sql	= 'DELETE FROM %%MESSAGES%% WHERE `message_time` < :time;';
-		Database::get()->delete($sql, array(
-			':time'	=> $del_before
-		));
+		Database::get()->delete($sql, [':time'	=> $del_before]);
 
 		$sql	= 'DELETE FROM %%ALLIANCE%% WHERE `ally_members` = 0;';
 		Database::get()->delete($sql);
 
 		$sql	= 'DELETE FROM %%PLANETS%% WHERE `destruyed` < :time AND `destruyed` != 0;';
-		Database::get()->delete($sql, array(
-			':time'	=> TIMESTAMP
-		));
+		Database::get()->delete($sql, [':time'	=> TIMESTAMP]);
 
 		$sql	= 'DELETE FROM %%SESSION%% WHERE `lastonline` < :time;';
-		Database::get()->delete($sql, array(
-			':time'	=> TIMESTAMP - SESSION_LIFETIME
-		));
+		Database::get()->delete($sql, [':time'	=> TIMESTAMP - SESSION_LIFETIME]);
 
 		$sql	= 'DELETE FROM %%FLEETS_EVENT%% WHERE fleetID NOT IN (SELECT fleet_id FROM %%FLEETS%%);';
 		Database::get()->delete($sql);
 
 		$sql	= 'UPDATE %%USERS%% SET `email_2` = `email` WHERE `setmail` < :time;';
-		Database::get()->update($sql, array(
-			':time'	=> TIMESTAMP
-		));
+		Database::get()->update($sql, [':time'	=> TIMESTAMP]);
 
 		$sql	= 'SELECT `id` FROM %%USERS%% WHERE `authlevel` = :authlevel
 		AND ((`db_deaktjava` != 0 AND `db_deaktjava` < :timeDeleted) OR `onlinetime` < :timeInactive);';
 
-		$deleteUserIds = Database::get()->select($sql, array(
-			':authlevel'	=> AUTH_USR,
-			':timeDeleted'	=> $del_deleted,
-			':timeInactive'	=> $del_inactive
-		));
+		$deleteUserIds = Database::get()->select($sql, [':authlevel'	=> AUTH_USR, ':timeDeleted'	=> $del_deleted, ':timeInactive'	=> $del_inactive]);
 
 		if(!empty($deleteUserIds))
 		{
@@ -83,9 +71,7 @@ class CleanerCronjob implements CronjobTask
 		{
 			$sql	= 'SELECT units FROM %%TOPKB%% WHERE `universe` = :universe ORDER BY units DESC LIMIT 99,1;';
 
-			$battleHallLowest	= Database::get()->selectSingle($sql, array(
-				':universe'	=> $uni
-			),'units');
+			$battleHallLowest	= Database::get()->selectSingle($sql, [':universe'	=> $uni],'units');
 
 			if(!is_null($battleHallLowest))
 			{
@@ -94,21 +80,14 @@ class CleanerCronjob implements CronjobTask
 				INNER JOIN %%TOPKB_USERS%% USING (rid)
 				WHERE `universe` = :universe AND `units` < :battleHallLowest;';
 
-				Database::get()->delete($sql, array(
-					':universe'			=> $uni,
-					':battleHallLowest'	=> $battleHallLowest
-				));
+				Database::get()->delete($sql, [':universe'			=> $uni, ':battleHallLowest'	=> $battleHallLowest]);
 			}
 		}
 
 		$sql	= 'DELETE FROM %%RW%% WHERE `time` < :time AND `rid` NOT IN (SELECT `rid` FROM %%TOPKB%%);';
-		Database::get()->delete($sql, array(
-			':time'	=> $del_before
-		));
+		Database::get()->delete($sql, [':time'	=> $del_before]);
 
 		$sql	= 'DELETE FROM %%MESSAGES%% WHERE `messages_deleted` < :time;';
-		Database::get()->delete($sql, array(
-			':time'	=> $del_messages
-		));
+		Database::get()->delete($sql, [':time'	=> $del_messages]);
 	}
 }

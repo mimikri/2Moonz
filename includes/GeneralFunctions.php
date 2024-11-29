@@ -77,12 +77,9 @@ function getPlanets($USER)
 			break;
 	}
 
-	$planetsResult = Database::get()->select($sql, array(
-		':userId'		=> $USER['id'],
-		':destruyed'	=> 0
-   	));
+	$planetsResult = Database::get()->select($sql, [':userId'		=> $USER['id'], ':destruyed'	=> 0]);
 	
-	$planetsList = array();
+	$planetsList = [];
 
 	foreach($planetsResult as $planetRow) {
 		$planetsList[$planetRow['id']]	= $planetRow;
@@ -91,11 +88,14 @@ function getPlanets($USER)
 	return $planetsList;
 }
 
-function get_timezone_selector() {
+/**
+ * @return array<string, non-empty-array<(int | string), (array | string)>>
+ */
+function get_timezone_selector(): array {
 	// New Timezone Selector, better support for changes in tzdata (new russian timezones, e.g.)
 	// http://www.php.net/manual/en/datetimezone.listidentifiers.php
 	
-	$timezones = array();
+	$timezones = [];
 	$timezone_identifiers = DateTimeZone::listIdentifiers();
 
 	foreach($timezone_identifiers as $value )
@@ -110,7 +110,7 @@ function get_timezone_selector() {
 	return $timezones; 
 }
 
-function locale_date_format($format, $time, $LNG = NULL)
+function locale_date_format($format, $time, $LNG = NULL): string|array
 {
 	// Workaround for locale Names.
 
@@ -121,14 +121,14 @@ function locale_date_format($format, $time, $LNG = NULL)
 	$weekDay	= date('w',(int) $time);
 	$months		= date('n',(int) $time) - 1;
 	
-	$format     = str_replace(array('D', 'M'), array('$D$', '$M$'), $format);
-	$format		= str_replace('$D$', addcslashes($LNG['week_day'][$weekDay], 'A..z'), $format);
-	$format		= str_replace('$M$', addcslashes($LNG['months'][$months], 'A..z'), $format);
+	$format     = str_replace(['D', 'M'], ['$D$', '$M$'], $format);
+	$format		= str_replace('$D$', addcslashes((string) $LNG['week_day'][$weekDay], 'A..z'), $format);
+	$format		= str_replace('$M$', addcslashes((string) $LNG['months'][$months], 'A..z'), $format);
 	
 	return $format;
 }
 
-function _date($format, $time = null, $toTimeZone = null, $LNG = NULL)
+function _date($format, $time = null, $toTimeZone = null, $LNG = NULL): string
 {
 	if(!isset($time))
 	{
@@ -151,7 +151,7 @@ function _date($format, $time = null, $toTimeZone = null, $LNG = NULL)
 		$time	-= $date->getOffset();
 		try {
 			$date->setTimezone(new DateTimeZone($toTimeZone));
-		} catch (Exception $e) {
+		} catch (Exception) {
 			
 		}
 		$time	+= $date->getOffset();
@@ -161,7 +161,7 @@ function _date($format, $time = null, $toTimeZone = null, $LNG = NULL)
 	return date($format,(int) $time);
 }
 
-function ValidateAddress($address) {
+function ValidateAddress($address): bool|int {
 	
 	if(function_exists('filter_var')) {
 		return filter_var($address, FILTER_VALIDATE_EMAIL) !== FALSE;
@@ -170,11 +170,11 @@ function ValidateAddress($address) {
 			Regex expression from swift mailer (http://swiftmailer.org)
 			RFC 2822
 		*/
-		return preg_match('/^(?:(?:(?:(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?(?:[a-zA-Z0-9!#\$%&\'\*\+\-\/=\?\^_\{\}\|~]+(\.[a-zA-Z0-9!#\$%&\'\*\+\-\/=\?\^_\{\}\|~]+)*)+(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?)|(?:(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?"((?:(?:[ \t]*(?:\r\n))?[ \t])?(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21\x23-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])))*(?:(?:[ \t]*(?:\r\n))?[ \t])?"(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?))@(?:(?:(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?(?:[a-zA-Z0-9!#\$%&\'\*\+\-\/=\?\^_\{\}\|~]+(\.[a-zA-Z0-9!#\$%&\'\*\+\-\/=\?\^_\{\}\|~]+)*)+(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?)|(?:(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?\[((?:(?:[ \t]*(?:\r\n))?[ \t])?(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x5A\x5E-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])))*?(?:(?:[ \t]*(?:\r\n))?[ \t])?\](?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?)))$/D', $address);
+		return preg_match('/^(?:(?:(?:(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?(?:[a-zA-Z0-9!#\$%&\'\*\+\-\/=\?\^_\{\}\|~]+(\.[a-zA-Z0-9!#\$%&\'\*\+\-\/=\?\^_\{\}\|~]+)*)+(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?)|(?:(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?"((?:(?:[ \t]*(?:\r\n))?[ \t])?(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21\x23-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])))*(?:(?:[ \t]*(?:\r\n))?[ \t])?"(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?))@(?:(?:(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?(?:[a-zA-Z0-9!#\$%&\'\*\+\-\/=\?\^_\{\}\|~]+(\.[a-zA-Z0-9!#\$%&\'\*\+\-\/=\?\^_\{\}\|~]+)*)+(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?)|(?:(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?\[((?:(?:[ \t]*(?:\r\n))?[ \t])?(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x5A\x5E-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])))*?(?:(?:[ \t]*(?:\r\n))?[ \t])?\](?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))*(?:(?:(?:(?:[ \t]*(?:\r\n))?[ \t])?(\((?:(?:(?:[ \t]*(?:\r\n))?[ \t])|(?:(?:[\x01-\x08\x0B\x0C\x0E-\x19\x7F]|[\x21-\x27\x2A-\x5B\x5D-\x7E])|(?:\\[\x00-\x08\x0B\x0C\x0E-\x7F])|(?1)))*(?:(?:[ \t]*(?:\r\n))?[ \t])?\)))|(?:(?:[ \t]*(?:\r\n))?[ \t])))?)))$/D', (string) $address);
 	}
 }
 
-function message($mes, $dest = "", $time = "3", $topnav = false)
+function message($mes, $dest = "", $time = "3", $topnav = false): never
 {
 	require_once('includes/classes/class.template.php');
 	$template = new template();
@@ -182,13 +182,13 @@ function message($mes, $dest = "", $time = "3", $topnav = false)
 	exit;
 }
 
-function CalculateMaxPlanetFields($planet)
+function CalculateMaxPlanetFields(array $planet): int|float
 {
 	global $resource;
 	return $planet['field_max'] + ($planet[$resource[33]] * FIELDS_BY_TERRAFORMER) + ($planet[$resource[41]] * FIELDS_BY_MOONBASIS_LEVEL);
 }
 
-function pretty_time($seconds)
+function pretty_time($seconds): string
 {
 	global $LNG;
 	
@@ -210,7 +210,7 @@ function pretty_time($seconds)
 	);
 }
 
-function pretty_fly_time($seconds)
+function pretty_fly_time($seconds): string
 {
 	$hour	= floor($seconds / 3600);
 	$minute	= floor((int)($seconds / 60) % 60);
@@ -219,22 +219,22 @@ function pretty_fly_time($seconds)
 	return sprintf('%02d:%02d:%02d', $hour, $minute, $second);
 }
 
-function GetStartAddressLink($FleetRow, $FleetType = '')
+function GetStartAddressLink(array $FleetRow, string $FleetType = ''): string
 {
 	return '<a href="game.php?page=galaxy&amp;galaxy='.$FleetRow['fleet_start_galaxy'].'&amp;system='.$FleetRow['fleet_start_system'].'" class="'. $FleetType .'">['.$FleetRow['fleet_start_galaxy'].':'.$FleetRow['fleet_start_system'].':'.$FleetRow['fleet_start_planet'].']</a>';
 }
 
-function GetTargetAddressLink($FleetRow, $FleetType = '')
+function GetTargetAddressLink(array $FleetRow, string $FleetType = ''): string
 {
 	return '<a href="game.php?page=galaxy&amp;galaxy='.$FleetRow['fleet_end_galaxy'].'&amp;system='.$FleetRow['fleet_end_system'].'" class="'. $FleetType .'">['.$FleetRow['fleet_end_galaxy'].':'.$FleetRow['fleet_end_system'].':'.$FleetRow['fleet_end_planet'].']</a>';
 }
 
-function BuildPlanetAddressLink($CurrentPlanet)
+function BuildPlanetAddressLink(array $CurrentPlanet): string
 {
 	return '<a href="game.php?page=galaxy&amp;galaxy='.$CurrentPlanet['galaxy'].'&amp;system='.$CurrentPlanet['system'].'">['.$CurrentPlanet['galaxy'].':'.$CurrentPlanet['system'].':'.$CurrentPlanet['planet'].']</a>';
 }
 
-function pretty_number($n, $dec = 0)
+function pretty_number($n, $dec = 0): string
 {
 	return number_format(floatToString($n, $dec), $dec, ',', '.');
 }
@@ -252,23 +252,21 @@ function GetUserByID($userId, $GetInfo = "*")
 
 	$sql = 'SELECT '.$GetOnSelect.' FROM %%USERS%% WHERE id = :userId';
 
-	$User = Database::get()->selectSingle($sql, array(
-		':userId'	=> $userId
-	));
+	$User = Database::get()->selectSingle($sql, [':userId'	=> $userId]);
 
 	return $User;
 }
 
-function makebr($text)
+function makebr($text): string
 {
     // XHTML FIX for PHP 5.3.0
 	// Danke an Meikel
 	
     $BR = "<br>\n";
-    return (version_compare(PHP_VERSION, "5.3.0", ">=")) ? nl2br($text, false) : strtr($text, array("\r\n" => $BR, "\r" => $BR, "\n" => $BR)); 
+    return (version_compare(PHP_VERSION, "5.3.0", ">=")) ? nl2br((string) $text, false) : strtr($text, ["\r\n" => $BR, "\r" => $BR, "\n" => $BR]); 
 }
 
-function CheckNoobProtec($OwnerPlayer, $TargetPlayer, $Player)
+function CheckNoobProtec(array $OwnerPlayer, array $TargetPlayer, array $Player): array
 {
 	$config	= Config::get();
 	if(
@@ -278,11 +276,10 @@ function CheckNoobProtec($OwnerPlayer, $TargetPlayer, $Player)
 		|| $Player['banaday'] > TIMESTAMP
 		|| $Player['onlinetime'] < TIMESTAMP - INACTIVE
 	) {
-		return array('NoobPlayer' => false, 'StrongPlayer' => false);
+		return ['NoobPlayer' => false, 'StrongPlayer' => false];
 	}
 	
-	return array(
-		'NoobPlayer' => (
+	return ['NoobPlayer' => (
 			/* WAHR: 
 				Wenn Spieler mehr als 25000 Punkte hat UND
 				Wenn ZielSpieler weniger als 80% der Punkte des Spieler hat.
@@ -291,23 +288,21 @@ function CheckNoobProtec($OwnerPlayer, $TargetPlayer, $Player)
 			// Addional Comment: Letzteres ist eigentlich sinnfrei, bitte testen.a
 			($TargetPlayer['total_points'] <= $config->noobprotectiontime) && // Default: 25.000
 			($OwnerPlayer['total_points'] > $TargetPlayer['total_points'] * $config->noobprotectionmulti)
-		), 
-		'StrongPlayer' => (
+		), 'StrongPlayer' => (
 			/* WAHR: 
 				Wenn Spieler weniger als 5000 Punkte hat UND
 				Mehr als das funfache der eigende Punkte hat
 			*/
 			($OwnerPlayer['total_points'] < $config->noobprotectiontime) && // Default: 5.000
 			($OwnerPlayer['total_points'] * $config->noobprotectionmulti < $TargetPlayer['total_points'])
-		),
-	);
+		)];
 }
 
-function shortly_number($number, $decial = NULL)
+function shortly_number($number, $decial = NULL): string
 {
 	$negate	= $number < 0 ? -1 : 1;
 	$number	= abs($number);
-    $unit	= array("", "K", "M", "B", "T", "Q", "Q+", "S", "S+", "O", "N");
+    $unit	= ["", "K", "M", "B", "T", "Q", "Q+", "S", "S+", "O", "N"];
 	$key	= 0;
 	
 	if($number >= 1000000) {
@@ -326,11 +321,11 @@ function shortly_number($number, $decial = NULL)
 	return pretty_number($negate * $number, $decial).'&nbsp;'.$unit[$key];
 }
 
-function floatToString($number, $Pro = 0, $output = false){
+function floatToString($number, $Pro = 0, $output = false): string|array{
 	return $output ? str_replace(",",".", sprintf("%.".$Pro."f", $number)) : sprintf("%.".$Pro."f", $number);
 }
 
-function isModuleAvailable($ID)
+function isModuleAvailable($ID): bool
 {
 	global $USER;
 	$modules	= explode(';', Config::get()->moduls);
@@ -343,11 +338,11 @@ function isModuleAvailable($ID)
 	return $modules[$ID] == 1 || (isset($USER['authlevel']) && $USER['authlevel'] > AUTH_USR);
 }
 
-function ClearCache()
+function ClearCache(): void
 {
-	$DIRS	= array('cache/', 'cache/templates/');
+	$DIRS	= ['cache/', 'cache/templates/'];
 	foreach($DIRS as $DIR) {
-		$FILES = array_diff(scandir($DIR), array('..', '.', '.htaccess'));
+		$FILES = array_diff(scandir($DIR), ['..', '.', '.htaccess']);
 		foreach($FILES as $FILE) {
 			if(is_dir(ROOT_PATH.$DIR.$FILE))
 				continue;
@@ -365,9 +360,7 @@ function ClearCache()
 	Cronjob::reCalculateCronjobs();
 
 	$sql	= 'UPDATE %%PLANETS%% SET eco_hash = :ecoHash;';
-	Database::get()->update($sql, array(
-		':ecoHash'	=> ''
-	));
+	Database::get()->update($sql, [':ecoHash'	=> '']);
 	clearstatcache();
 
 	/* does no work on git.
@@ -400,13 +393,13 @@ function ClearCache()
 	
 }
 
-function allowedTo($side)
+function allowedTo($side): bool
 {
 	global $USER;
 	return ($USER['authlevel'] == AUTH_ADM || (isset($USER['rights']) && $USER['rights'][$side] == 1));
 }
 
-function isactiveDMExtra($Extra, $Time) {
+function isactiveDMExtra($Extra, $Time): bool {
 	return $Time - $Extra <= 0;
 }
 
@@ -414,16 +407,16 @@ function DMExtra($Extra, $Time, $true, $false) {
 	return isactiveDMExtra($Extra, $Time) ? $true : $false;
 }
 
-function getRandomString() {
+function getRandomString(): string {
 	return md5(uniqid());
 }
 
-function isVacationMode($USER)
+function isVacationMode(array $USER): bool
 {
 	return ($USER['urlaubs_modus'] == 1) ? true : false;
 }
 
-function clearGIF() {
+function clearGIF(): never {
 	header('Cache-Control: no-cache');
 	header('Content-type: image/gif');
 	header('Content-length: 43');
@@ -438,7 +431,7 @@ function clearGIF() {
  * @param object
  * @return Exception
  */
-function exceptionHandler($exception)
+function exceptionHandler($exception): void
 {
 	/** @var $exception ErrorException|Exception */
     if (!headers_sent()) {
@@ -455,21 +448,7 @@ function exceptionHandler($exception)
 		$errno	= E_USER_ERROR;
 	}
 	
-	$errorType = array(
-		E_ERROR				=> 'ERROR',
-		E_WARNING			=> 'WARNING',
-		E_PARSE				=> 'PARSING ERROR',
-		E_NOTICE			=> 'NOTICE',
-		E_CORE_ERROR		=> 'CORE ERROR',
-		E_CORE_WARNING   	=> 'CORE WARNING',
-		E_COMPILE_ERROR		=> 'COMPILE ERROR',
-		E_COMPILE_WARNING	=> 'COMPILE WARNING',
-		E_USER_ERROR		=> 'USER ERROR',
-		E_USER_WARNING		=> 'USER WARNING',
-		E_USER_NOTICE		=> 'USER NOTICE',
-		E_STRICT			=> 'STRICT NOTICE',
-		E_RECOVERABLE_ERROR	=> 'RECOVERABLE ERROR'
-	);
+	$errorType = ['8901' => 'unkown error',E_ERROR				=> 'ERROR', E_WARNING			=> 'WARNING', E_PARSE				=> 'PARSING ERROR', E_NOTICE			=> 'NOTICE', E_CORE_ERROR		=> 'CORE ERROR', E_CORE_WARNING   	=> 'CORE WARNING', E_COMPILE_ERROR		=> 'COMPILE ERROR', E_COMPILE_WARNING	=> 'COMPILE WARNING', E_USER_ERROR		=> 'USER ERROR', E_USER_WARNING		=> 'USER WARNING', E_USER_NOTICE		=> 'USER NOTICE', E_STRICT			=> 'STRICT NOTICE', E_RECOVERABLE_ERROR	=> 'RECOVERABLE ERROR'];
     if(!isset($errorType[$errno])){
       $errorType[$errno] = 'Error: ' . $errno;
     }
@@ -484,7 +463,7 @@ function exceptionHandler($exception)
 			$config		= Config::get();
 			$gameName	= $config->game_name;
 			$VERSION	= $config->VERSION;
-        } catch (ErrorException $e) {
+        } catch (ErrorException) {
 		}
 	}
 	
@@ -560,14 +539,14 @@ $output_error = '';
 			<b>PHP-Version: </b>'.PHP_VERSION.'<br>
 			<b>PHP-API: </b>'.php_sapi_name().'<br>
 			<b>2Moons Version: </b>'.$VERSION.'<br>
-			<b>Debug Backtrace:</b><br>'.makebr(htmlspecialchars($exception->getTraceAsString())).'
+			<b>Debug Backtrace:</b><br>'.makebr(htmlspecialchars((string) $exception->getTraceAsString())).'
 		</td>
 	</tr>
 </table>
 </body>
 </html>';
 	if(!empty($_POST['password'])){ $_POST['password'] = '*******'; }//prevent logging of passwords
-	$errorText	= date("[d-M-Y H:i:s]", TIMESTAMP).' '.$errorType[$errno].': "'.strip_tags($exception->getMessage())."\"\r\n";
+	$errorText	= date("[d-M-Y H:i:s]", TIMESTAMP).' '.$errorType[$errno].': "'.strip_tags((string) $exception->getMessage())."\"\r\n";
     $errorText	.= 'ip: ###' . $ip ."###\r\n";
     $errorText	.= isset($_SERVER['HTTP_USER_AGENT']) ? 'useragent: ' . $_SERVER['HTTP_USER_AGENT'] : 'useragent: none';
 	$errorText	.= 'File: '.$exception->getFile().' | Line: '.$exception->getLine()."\r\n";
@@ -579,7 +558,7 @@ $output_error = '';
 
 	global $USER;
 	if(isset($USER['authlevel']) && $USER['authlevel'] == 3){//don't show errors to users wich are not admins to prevent unwanted output, the errors are in the logs with name so there is no need for the user to see the exact error.
-		echo str_replace(array('\\', ROOT_PATH, substr(ROOT_PATH, 0, 15)), array('/', '/', 'FILEPATH ') , $output_error);
+		echo str_replace(['\\', ROOT_PATH, substr(ROOT_PATH, 0, 15)], ['/', '/', 'FILEPATH '] , $output_error);
 	}else{
 	  echo "error happend, administration has been notified.\r\n";
 	}
@@ -588,7 +567,7 @@ $output_error = '';
 
         if(isset($USER['username'])){
         $User =   $USER['username'];
-        $auth =  isset($USER['authlevel']) ? $USER['authlevel'] : 0;
+        $auth =  $USER['authlevel'] ?? 0;
       }else{
         $User =   'unbekannt';
         $auth =  0;
@@ -605,7 +584,7 @@ $output_error = '';
  * @return bool If its an hidden error.
  *
  */
-function errorHandler($errno, $errstr, $errfile, $errline)
+function errorHandler($errno, $errstr, $errfile, $errline): never
 {
 	/*$currentErrorLevel = error_reporting();
 if (!in_array($errno, error_reporting())) {
@@ -628,7 +607,7 @@ if (!function_exists('array_replace_recursive'))
                     // create new key in $array, if it is empty or not an array
                     if (!isset($array[$key]) || (isset($array[$key]) && !is_array($array[$key])))
                     {
-                        $array[$key] = array();
+                        $array[$key] = [];
                     }
 
                     // overwrite the value in the base array

@@ -15,10 +15,10 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FILE__))) throw new Exception("Permission error!");
+if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__))) throw new Exception("Permission error!");
 
 
-function ShowCreatorPage()
+function ShowCreatorPage(): void
 {
 	global $LNG, $USER;
 
@@ -27,7 +27,7 @@ function ShowCreatorPage()
 	switch ($get_mode)
 	{
 		case 'user':
-			$LNG->includeData(array('PUBLIC'));
+			$LNG->includeData(['PUBLIC']);
 			if ($_POST)
 			{
 				$UserName 	= HTTP::_GP('name', '', UTF8_SUPPORT);
@@ -54,7 +54,7 @@ function ShowCreatorPage()
 				if (empty($UserName))
 					$errors .= $LNG['empty_user_field'];
 										
-				if (strlen($UserPass) < 6)
+				if (strlen((string) $UserPass) < 6)
 					$errors .= $LNG['password_lenght_error'];
 					
 				if ($UserPass != $UserPass2)
@@ -95,7 +95,7 @@ function ShowCreatorPage()
 				exit;
 			}
 
-			$AUTH			= array();
+			$AUTH			= [];
 			$AUTH[AUTH_USR]	= $LNG['user_level_'.AUTH_USR];
 			
 			if($USER['authlevel'] >= AUTH_OPS)
@@ -108,23 +108,7 @@ function ShowCreatorPage()
 				$AUTH[AUTH_ADM]	= $LNG['user_level_'.AUTH_ADM];
 				
 			
-			$template->assign_vars(array(	
-				'admin_auth'			=> $USER['authlevel'],
-				'new_add_user'			=> $LNG['new_add_user'],
-				'new_creator_refresh'	=> $LNG['new_creator_refresh'],
-				'new_creator_go_back'	=> $LNG['new_creator_go_back'],
-				'universe'				=> $LNG['mu_universe'],
-				'user_reg'				=> $LNG['user_reg'],
-				'pass_reg'				=> $LNG['pass_reg'],
-				'pass2_reg'				=> $LNG['pass2_reg'],
-				'email_reg'				=> $LNG['email_reg'],
-				'email2_reg'			=> $LNG['email2_reg'],
-				'new_coord'				=> $LNG['new_coord'],
-				'new_range'				=> $LNG['new_range'],
-				'lang_reg'				=> $LNG['lang_reg'],		
-				'new_title'				=> $LNG['new_title'],
-				'Selector'				=> array('auth' => $AUTH, 'lang' => $LNG->getAllowedLangs(false)),  
-			));
+			$template->assign_vars(['admin_auth'			=> $USER['authlevel'], 'new_add_user'			=> $LNG['new_add_user'], 'new_creator_refresh'	=> $LNG['new_creator_refresh'], 'new_creator_go_back'	=> $LNG['new_creator_go_back'], 'universe'				=> $LNG['mu_universe'], 'user_reg'				=> $LNG['user_reg'], 'pass_reg'				=> $LNG['pass_reg'], 'pass2_reg'				=> $LNG['pass2_reg'], 'email_reg'				=> $LNG['email_reg'], 'email2_reg'			=> $LNG['email2_reg'], 'new_coord'				=> $LNG['new_coord'], 'new_range'				=> $LNG['new_range'], 'lang_reg'				=> $LNG['lang_reg'], 'new_title'				=> $LNG['new_title'], 'Selector'				=> ['auth' => $AUTH, 'lang' => $LNG->getAllowedLangs(false)]]);
 			$template->show('CreatePageUser.tpl');
 		break;
 		case 'moon':
@@ -158,20 +142,7 @@ function ShowCreatorPage()
 				exit;
 			}
 			
-			$template->assign_vars(array(
-				'admin_auth'			=> $USER['authlevel'],	
-				'universum'				=> $LNG['mu_universe'],
-				'po_add_moon'			=> $LNG['po_add_moon'],
-				'input_id_planet'		=> $LNG['input_id_planet'],
-				'mo_moon_name'			=> $LNG['mo_moon_name'],
-				'mo_diameter'			=> $LNG['mo_diameter'],
-				'mo_temperature'		=> $LNG['mo_temperature'],
-				'mo_fields_avaibles'	=> $LNG['mo_fields_avaibles'],
-				'button_add'			=> $LNG['button_add'],
-				'new_creator_refresh'	=> $LNG['new_creator_refresh'],
-				'mo_moon'				=> $LNG['fcm_moon'],
-				'new_creator_go_back'	=> $LNG['new_creator_go_back'],
-			));
+			$template->assign_vars(['admin_auth'			=> $USER['authlevel'], 'universum'				=> $LNG['mu_universe'], 'po_add_moon'			=> $LNG['po_add_moon'], 'input_id_planet'		=> $LNG['input_id_planet'], 'mo_moon_name'			=> $LNG['mo_moon_name'], 'mo_diameter'			=> $LNG['mo_diameter'], 'mo_temperature'		=> $LNG['mo_temperature'], 'mo_fields_avaibles'	=> $LNG['mo_fields_avaibles'], 'button_add'			=> $LNG['button_add'], 'new_creator_refresh'	=> $LNG['new_creator_refresh'], 'mo_moon'				=> $LNG['fcm_moon'], 'new_creator_go_back'	=> $LNG['new_creator_go_back']]);
 
 			$template->show('CreatePageMoon.tpl');
 		break;
@@ -216,31 +187,12 @@ function ShowCreatorPage()
 				exit;
 			}
 
-			$template->assign_vars(array(
-				'admin_auth'			=> $USER['authlevel'],
-				'po_add_planet'			=> $LNG['po_add_planet'],
-				'po_galaxy'				=> $LNG['po_galaxy'],
-				'po_system'				=> $LNG['po_system'],
-				'po_planet'				=> $LNG['po_planet'],
-				'input_id_user'			=> $LNG['input_id_user'],
-				'new_creator_coor'		=> $LNG['new_creator_coor'],
-				'po_name_planet'		=> $LNG['po_name_planet'],
-				'po_fields_max'			=> $LNG['po_fields_max'],
-				'button_add'			=> $LNG['button_add'],
-				'po_colony'				=> $LNG['fcp_colony'],
-				'new_creator_refresh'	=> $LNG['new_creator_refresh'],
-				'new_creator_go_back'	=> $LNG['new_creator_go_back'],
-			));
+			$template->assign_vars(['admin_auth'			=> $USER['authlevel'], 'po_add_planet'			=> $LNG['po_add_planet'], 'po_galaxy'				=> $LNG['po_galaxy'], 'po_system'				=> $LNG['po_system'], 'po_planet'				=> $LNG['po_planet'], 'input_id_user'			=> $LNG['input_id_user'], 'new_creator_coor'		=> $LNG['new_creator_coor'], 'po_name_planet'		=> $LNG['po_name_planet'], 'po_fields_max'			=> $LNG['po_fields_max'], 'button_add'			=> $LNG['button_add'], 'po_colony'				=> $LNG['fcp_colony'], 'new_creator_refresh'	=> $LNG['new_creator_refresh'], 'new_creator_go_back'	=> $LNG['new_creator_go_back']]);
 			
 			$template->show('CreatePagePlanet.tpl');
 		break;
 		default:
-			$template->assign_vars(array(	
-				'new_creator_title_u'	=> $LNG['new_creator_title_u'],
-				'new_creator_title_p'	=> $LNG['new_creator_title_p'],
-				'new_creator_title_l'	=> $LNG['new_creator_title_l'],
-				'new_creator_title'		=> $LNG['new_creator_title'],
-			));
+			$template->assign_vars(['new_creator_title_u'	=> $LNG['new_creator_title_u'], 'new_creator_title_p'	=> $LNG['new_creator_title_p'], 'new_creator_title_l'	=> $LNG['new_creator_title_l'], 'new_creator_title'		=> $LNG['new_creator_title']]);
 			
 			$template->show('CreatePage.tpl');
 		break;	

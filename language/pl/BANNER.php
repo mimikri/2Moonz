@@ -14,7 +14,7 @@
  * @version 1.8.0
  * @link https://github.com/jkroepke/2Moons
  */
- 
+
 $LNG['ub_points']		= 'Punkty';
 $LNG['ub_fleets']		= 'Flota';
 $LNG['ub_researh']		= 'Badania';

@@ -20,7 +20,7 @@ if ($USER['authlevel'] == AUTH_USR)
 	throw new PagePermissionException("Permission error!");
 }
 
-function ShowLoginPage()
+function ShowLoginPage(): void
 {
 	global $USER;
 	
@@ -42,9 +42,6 @@ function ShowLoginPage()
 
 	$template	= new template();
 
-	$template->assign_vars(array(	
-		'bodyclass'	=> 'standalone',
-		'username'	=> $USER['username']
-	));
+	$template->assign_vars(['bodyclass'	=> 'standalone', 'username'	=> $USER['username']]);
 	$template->show('LoginPage.tpl');
 }

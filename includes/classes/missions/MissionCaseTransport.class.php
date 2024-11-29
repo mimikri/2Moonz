@@ -21,17 +21,13 @@ class MissionCaseTransport extends MissionFunctions implements Mission
 		$this->_fleet	= $Fleet;
 	}
 	
-	function TargetEvent()
+	function TargetEvent(): void
 	{
 		$sql = 'SELECT name FROM %%PLANETS%% WHERE `id` = :planetId;';
 
-		$startPlanetName	= Database::get()->selectSingle($sql, array(
-			':planetId'	=> $this->_fleet['fleet_start_id']
-		), 'name');
+		$startPlanetName	= Database::get()->selectSingle($sql, [':planetId'	=> $this->_fleet['fleet_start_id']], 'name');
 
-		$targetPlanetName	= Database::get()->selectSingle($sql, array(
-			':planetId'	=> $this->_fleet['fleet_end_id']
-		), 'name');
+		$targetPlanetName	= Database::get()->selectSingle($sql, [':planetId'	=> $this->_fleet['fleet_end_id']], 'name');
 		
 		$LNG			= $this->getLanguage(NULL, $this->_fleet['fleet_owner']);
 
@@ -65,18 +61,16 @@ class MissionCaseTransport extends MissionFunctions implements Mission
 		$this->SaveFleet();
 	}
 	
-	function EndStayEvent()
+	function EndStayEvent(): void
 	{
 		return;
 	}
 	
-	function ReturnEvent()
+	function ReturnEvent(): void
 	{
 		$LNG		= $this->getLanguage(NULL, $this->_fleet['fleet_owner']);
 		$sql		= 'SELECT name FROM %%PLANETS%% WHERE id = :planetId;';
-		$planetName	= Database::get()->selectSingle($sql, array(
-			':planetId'	=> $this->_fleet['fleet_start_id'],
-		), 'name');
+		$planetName	= Database::get()->selectSingle($sql, [':planetId'	=> $this->_fleet['fleet_start_id']], 'name');
 
 		$Message	= sprintf($LNG['sys_tran_mess_back'], $planetName, GetStartAddressLink($this->_fleet, ''));
 

@@ -5,8 +5,8 @@
  * classes.
  */
 
-spl_autoload_register(function ($class) {
-    if (substr($class, 0, 10) !== 'ReCaptcha\\') {
+spl_autoload_register(function ($class): void {
+    if (!str_starts_with((string) $class, 'ReCaptcha\\')) {
       /* If the class does not lie under the "ReCaptcha" namespace,
        * then we can exit immediately.
        */
@@ -23,7 +23,7 @@ spl_autoload_register(function ($class) {
      * we look here first, so that we don't waste time searching for
      * test classes in the common case.
      */
-    $path = dirname(__FILE__).'/'.$class.'.php';
+    $path = __DIR__.'/'.$class.'.php';
     if (is_readable($path)) {
         require_once $path;
     }
@@ -31,7 +31,7 @@ spl_autoload_register(function ($class) {
     /* If we didn't find what we're looking for already, maybe it's
      * a test class?
      */
-    $path = dirname(__FILE__).'/../tests/'.$class.'.php';
+    $path = __DIR__.'/../tests/'.$class.'.php';
     if (is_readable($path)) {
         require_once $path;
     }

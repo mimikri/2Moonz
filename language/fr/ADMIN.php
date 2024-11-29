@@ -301,7 +301,7 @@ $LNG['ma_none']						= 'Message global';
 $LNG['ma_message']					= 'Message';
 $LNG['ma_mode']					= 'Comme d\'expédition';
 $LNG['ma_all']					= 'Tous';
-$LNG['ma_modes']				= array('INGAME Message', 'E-Mail Message', 'INGAME & E-Mail Message');
+$LNG['ma_modes']				= ['INGAME Message', 'E-Mail Message', 'INGAME & E-Mail Message'];
 //###########################################################//
 
 //---------------	OVERVIEW	------------------------//

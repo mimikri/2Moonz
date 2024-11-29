@@ -22,13 +22,13 @@ class MissionCaseMIP extends MissionFunctions implements Mission
 		$this->_fleet	= $Fleet;
 	}
 	
-	function TargetEvent()
+	function TargetEvent(): void
 	{
 		global $resource, $reslist;
 
 		$db	= Database::get();
 
-		$sqlFields	= array();
+		$sqlFields	= [];
 		$elementIDs	= array_merge($reslist['defense'], $reslist['missile']);
 
 		foreach($elementIDs as $elementID)
@@ -42,22 +42,16 @@ class MissionCaseMIP extends MissionFunctions implements Mission
 		INNER JOIN %%USERS%% ON id_owner = %%USERS%%.id
 		WHERE %%PLANETS%%.id = :planetId;';
 
-		$targetData	= $db->selectSingle($sql, array(
-			':planetId'	=> $this->_fleet['fleet_end_id']
-		));
+		$targetData	= $db->selectSingle($sql, [':planetId'	=> $this->_fleet['fleet_end_id']]);
 
 		if($this->_fleet['fleet_end_type'] == 3)
 		{
 			$sql	= 'SELECT '.$resource[502].' FROM %%PLANETS%% WHERE id_luna = :moonId;';
-			$targetData[$resource[502]]	= $db->selectSingle($sql, array(
-				':moonId'	=> $this->_fleet['fleet_end_id']
-			), $resource[502]);
+			$targetData[$resource[502]]	= $db->selectSingle($sql, [':moonId'	=> $this->_fleet['fleet_end_id']], $resource[502]);
 		}
 
 		$sql		= 'SELECT lang, military_tech FROM %%USERS%% WHERE id = :userId;';
-		$senderData	= $db->selectSingle($sql, array(
-			':userId'	=> $this->_fleet['fleet_owner']
-		));
+		$senderData	= $db->selectSingle($sql, [':userId'	=> $this->_fleet['fleet_owner']]);
 
 		if(!in_array($this->_fleet['fleet_target_obj'], array_merge($reslist['defense'], $reslist['missile']))
 			|| $this->_fleet['fleet_target_obj'] == 502
@@ -70,7 +64,7 @@ class MissionCaseMIP extends MissionFunctions implements Mission
 			$primaryTarget	= $this->_fleet['fleet_target_obj'];
 		}
 
-        $targetDefensive    = array();
+        $targetDefensive    = [];
 
 		foreach($elementIDs as $elementID)	
 		{
@@ -79,7 +73,7 @@ class MissionCaseMIP extends MissionFunctions implements Mission
 		
 		unset($targetDefensive[502]);
 
-		$LNG	= $this->getLanguage(Config::get($this->_fleet['fleet_universe'])->lang, array('L18N', 'FLEET', 'TECH'));
+		$LNG	= $this->getLanguage(Config::get($this->_fleet['fleet_universe'])->lang, ['L18N', 'FLEET', 'TECH']);
 				
 		if ($targetData[$resource[502]] >= $this->_fleet['fleet_amount'])
 		{
@@ -88,10 +82,7 @@ class MissionCaseMIP extends MissionFunctions implements Mission
 			
 			$sql		= 'UPDATE %%PLANETS%% SET '.$resource[502].' = '.$resource[502].' - :amount WHERE '.$where.' = :planetId;';
 
-			$db->update($sql, array(
-				':amount'	=> $this->_fleet['fleet_amount'],
-				':planetId'	=> $targetData['id']
-			));
+			$db->update($sql, [':amount'	=> $this->_fleet['fleet_amount'], ':planetId'	=> $targetData['id']]);
 		}
 		else
 		{
@@ -100,10 +91,7 @@ class MissionCaseMIP extends MissionFunctions implements Mission
 				$where 	= $this->_fleet['fleet_end_type'] == 3 ? 'id_luna' : 'id';
 				$sql	= 'UPDATE %%PLANETS%% SET '.$resource[502].' = :amount WHERE '.$where.' = :planetId;';
 
-				$db->update($sql, array(
-					':amount'	=> 0,
-					':planetId'	=> $targetData['id']
-				));
+				$db->update($sql, [':amount'	=> 0, ':planetId'	=> $targetData['id']]);
 			}
 			
 			$targetDefensive = array_filter($targetDefensive);
@@ -125,10 +113,7 @@ class MissionCaseMIP extends MissionFunctions implements Mission
 					$message .= sprintf('%s (- %d)<br>', $LNG['tech'][$Element], $destroy);
 
 					$sql	= 'UPDATE %%PLANETS%% SET '.$resource[$Element].' = '.$resource[$Element].' - :amount WHERE id = :planetId;';
-					$db->update($sql, array(
-						':planetId' => $targetData['id'],
-						':amount'	=> $destroy
-					));
+					$db->update($sql, [':planetId' => $targetData['id'], ':amount'	=> $destroy]);
 				}
 			}
 			else
@@ -138,9 +123,7 @@ class MissionCaseMIP extends MissionFunctions implements Mission
 		}
 
 		$sql		= 'SELECT name FROM %%PLANETS%% WHERE id = :planetId;';
-		$planetName	= Database::get()->selectSingle($sql, array(
-			':planetId'	=> $this->_fleet['fleet_start_id'],
-		), 'name');
+		$planetName	= Database::get()->selectSingle($sql, [':planetId'	=> $this->_fleet['fleet_start_id']], 'name');
 
 		$ownerLink			= $planetName." ".GetStartAddressLink($this->_fleet);
 		$targetLink 		= $targetData['name']." ".GetTargetAddressLink($this->_fleet);
@@ -155,12 +138,12 @@ class MissionCaseMIP extends MissionFunctions implements Mission
 		$this->KillFleet();
 	}
 	
-	function EndStayEvent()
+	function EndStayEvent(): void
 	{
 		return;
 	}
 	
-	function ReturnEvent()
+	function ReturnEvent(): void
 	{
 		return;
 	}

@@ -24,20 +24,20 @@ class ShowQuestionsPage extends AbstractGamePage
 		parent::__construct();
 	}
 	
-	function show()
+	function show(): void
 	{
 		global $LNG;
 		
-		$LNG->includeData(array('FAQ'));
+		$LNG->includeData(['FAQ']);
 		
 		$this->display('page.questions.default.tpl');
 	}
 	
-	function single()
+	function single(): void
 	{
 		global $LNG;
 		
-		$LNG->includeData(array('FAQ'));
+		$LNG->includeData(['FAQ']);
 		
 		$categoryID	= HTTP::_GP('categoryID', 0);
 		$questionID	= HTTP::_GP('questionID', 0);
@@ -46,9 +46,7 @@ class ShowQuestionsPage extends AbstractGamePage
 			HTTP::redirectTo('game.php?page=questions');
 		}
 		
-		$this->assign(array(
-			'questionRow'	=> $LNG['questions'][$categoryID][$questionID],
-		));
+		$this->assign(['questionRow'	=> $LNG['questions'][$categoryID][$questionID]]);
 		$this->display('page.questions.single.tpl');
 	}
 }

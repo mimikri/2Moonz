@@ -26,13 +26,7 @@ class SupportTickets
 		subject		= :subject,
 		time		= :time;';
 
-		Database::get()->insert($sql, array(
-			':ownerId'		=> $ownerID,
-			':universe'		=> Universe::current(),
-			':categoryId'	=> $categoryID,
-			':subject'		=> $subject,
-			':time'			=> TIMESTAMP
-		));
+		Database::get()->insert($sql, [':ownerId'		=> $ownerID, ':universe'		=> Universe::current(), ':categoryId'	=> $categoryID, ':subject'		=> $subject, ':time'			=> TIMESTAMP]);
 		
 		return Database::get()->lastInsertId();
 	}
@@ -47,33 +41,26 @@ class SupportTickets
 		message		= :message,
 		time		= :time;';
 
-		Database::get()->insert($sql, array(
-			':ticketId'		=> $ticketID,
-			':ownerId'		=> $ownerID,
-			':ownerName'	=> $ownerName,
-			':subject'		=> $subject,
-			':message'		=> $message,
-			':time'			=> TIMESTAMP
-		));
+		Database::get()->insert($sql, [':ticketId'		=> $ticketID, ':ownerId'		=> $ownerID, ':ownerName'	=> $ownerName, ':subject'		=> $subject, ':message'		=> $message, ':time'			=> TIMESTAMP]);
 
 		$answerId = Database::get()->lastInsertId();
 
 		$sql	= 'UPDATE %%TICKETS%% SET status = :status WHERE ticketID = :ticketId;';
 
-		Database::get()->update($sql, array(
-			':status'	=> $status,
-			':ticketId'	=> $ticketID
-		));
+		Database::get()->update($sql, [':status'	=> $status, ':ticketId'	=> $ticketID]);
 		
 		return $answerId;
 	}
 
-	public function getCategoryList()
+	/**
+  * @return mixed[]
+  */
+ public function getCategoryList(): array
 	{
 		$sql	= 'SELECT * FROM %%TICKETS_CATEGORY%%;';
 
 		$categoryResult		= Database::get()->select($sql);
-		$categoryList		= array();
+		$categoryList		= [];
 
 		foreach($categoryResult as $categoryRow)
 		{

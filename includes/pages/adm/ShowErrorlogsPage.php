@@ -1,9 +1,9 @@
 <?php
 
 
-if (!allowedTo(str_replace(array(dirname(__FILE__), '\\', '/', '.php'), '', __FILE__))) throw new Exception("Permission error!");
+if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__))) throw new Exception("Permission error!");
 
-function ShowErrorlogsPage()
+function ShowErrorlogsPage(): void
 {
   echo '
 	<style>
@@ -29,13 +29,13 @@ max-width: 97vw;
   if(!isset($_GET['pah'])){
   echo '<table style="word-wrap: break-word;"><tr><td>game-errorlogs</td></tr><tr><td>';
   $file = file('./includes/error.log');
-$output = array('');
+$output = [''];
 $count = 0;
 $count1 = 0;
 $count2 = 0;
 foreach($file as $f){
 
-  if(strpos($f,'{main}') !== false){
+  if(str_contains($f,'{main}')){
 
     $output[$count] =  $output[$count] .'<code>' . htmlspecialchars($f) .  "</code></div></td></tr><tr><td>";
     $count++;
@@ -44,7 +44,7 @@ foreach($file as $f){
   }else{
     if($output[$count] === '<div onclick="document.getElementById(\'f' . $count. '\').style.display = \'block\';">'){
 
-      if(strpos($f, 'JsFehler') !== false){
+      if(str_contains($f, 'JsFehler')){
         $output[$count] = '<div class="jsfehler" style="display:none;" onclick="document.getElementById(\'f' . $count. '\').style.display = \'block\';">';
       }else{
         $count1++;
@@ -60,17 +60,17 @@ foreach($file as $f){
 
 }
 $output = array_reverse($output);
-echo implode($output);
+echo implode('', $output);
 echo '</td></tr></table>';
 }elseif(isset($_GET['erlog'])){
   $dir = "/var/log/nginx";
-  $output = array();
+  $output = [];
   chdir($dir);
 $logs = file('error.log');
 $logs = array_reverse($logs);
 echo '<table>';
 foreach($logs as $f => $f1){
-echo '<tr><td><code>'. str_replace(' -','</code></td><td><code>',htmlspecialchars($f1)) .'</code></td></tr>';
+echo '<tr><td><code>'. str_replace(' -','</code></td><td><code>',htmlspecialchars((string) $f1)) .'</code></td></tr>';
 
 }
 echo '</table>';

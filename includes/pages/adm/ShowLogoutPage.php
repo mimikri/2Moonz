@@ -20,7 +20,7 @@ if ($USER['authlevel'] == AUTH_USR)
     throw new PagePermissionException("Permission error!");
 }
 
-function ShowLogoutPage()
+function ShowLogoutPage(): void
 {
 	$session	= Session::create();
 	$session->adminAccess	= 0;

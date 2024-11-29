@@ -22,12 +22,10 @@ class MissionCaseStay extends MissionFunctions implements Mission
 		$this->_fleet	= $Fleet;
 	}
 	
-	function TargetEvent()
+	function TargetEvent(): void
 	{
 		$sql				= 'SELECT * FROM %%USERS%% WHERE id = :userId;';
-		$senderUser			= Database::get()->selectSingle($sql, array(
-			':userId'	=> $this->_fleet['fleet_owner']
-		));
+		$senderUser			= Database::get()->selectSingle($sql, [':userId'	=> $this->_fleet['fleet_owner']]);
 
 		$senderUser['factor']	= getFactors($senderUser, 'basic', $this->_fleet['fleet_start_time']);
 		
@@ -36,8 +34,8 @@ class MissionCaseStay extends MissionFunctions implements Mission
 
 		$SpeedFactor    	= FleetFunctions::GetGameSpeedFactor();
 		$distance			= FleetFunctions::GetTargetDistance(
-			array($this->_fleet['fleet_start_galaxy'], $this->_fleet['fleet_start_system'], $this->_fleet['fleet_start_planet']),
-			array($this->_fleet['fleet_end_galaxy'], $this->_fleet['fleet_end_system'], $this->_fleet['fleet_end_planet'])
+			[$this->_fleet['fleet_start_galaxy'], $this->_fleet['fleet_start_system'], $this->_fleet['fleet_start_planet']],
+			[$this->_fleet['fleet_end_galaxy'], $this->_fleet['fleet_end_system'], $this->_fleet['fleet_end_planet']]
 		);
 		
 		$consumption   		= FleetFunctions::GetFleetConsumption($fleetArray, $duration, $distance, $senderUser, $SpeedFactor);
@@ -54,12 +52,12 @@ class MissionCaseStay extends MissionFunctions implements Mission
 		$this->RestoreFleet(false);
 	}
 	
-	function EndStayEvent()
+	function EndStayEvent(): void
 	{
 		return;
 	}
 	
-	function ReturnEvent()
+	function ReturnEvent(): void
 	{
 		$LNG				= $this->getLanguage(NULL, $this->_fleet['fleet_owner']);
 

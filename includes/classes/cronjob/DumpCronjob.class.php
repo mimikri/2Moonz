@@ -19,15 +19,15 @@ require_once 'includes/classes/cronjob/CronjobTask.interface.php';
 
 class DumpCronjob implements CronjobTask
 {
-	function run()
+	function run(): void
 	{
-		$prefixCounts	= strlen(DB_PREFIX);
-		$dbTables		= array();
+		$prefixCounts	= strlen((string) DB_PREFIX);
+		$dbTables		= [];
 		$tableNames		= Database::get()->nativeQuery('SHOW TABLE STATUS FROM '.DB_NAME.';');
 
 		foreach($tableNames as $table)
 		{
-			if(DB_PREFIX == substr($table['Name'], 0, $prefixCounts))
+			if(DB_PREFIX == substr((string) $table['Name'], 0, $prefixCounts))
 			{
 				$dbTables[]	= $table['Name'];
 			}

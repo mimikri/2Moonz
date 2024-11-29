@@ -25,7 +25,7 @@ class ShowBoardPage extends AbstractGamePage
 		parent::__construct();
 	}
 	
-	function show() 
+	function show(): void 
 	{
 		global $LNG;
 		$boardUrl	= Config::get()->forum_url;

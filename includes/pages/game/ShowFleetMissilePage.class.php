@@ -24,7 +24,7 @@ class ShowFleetMissilePage extends AbstractGamePage
 		parent::__construct();
 	}
 	
-	public function show()
+	public function show(): void
 	{	
 		global $USER, $PLANET, $LNG, $reslist, $resource;
 		
@@ -42,13 +42,7 @@ class ShowFleetMissilePage extends AbstractGamePage
         WHERE universe = :universe AND galaxy = :targetGalaxy
         AND `system` = :targetSystem AND planet = :targetPlanet AND planet_type = :targetType;";
 
-        $target = $db->selectSingle($sql, array(
-            ':universe' => Universe::current(),
-            ':targetGalaxy' => $targetGalaxy,
-            ':targetSystem' => $targetSystem,
-            ':targetPlanet' => $targetPlanet,
-            ':targetType'   => $targetType
-        ));
+        $target = $db->selectSingle($sql, [':universe' => Universe::current(), ':targetGalaxy' => $targetGalaxy, ':targetSystem' => $targetSystem, ':targetPlanet' => $targetPlanet, ':targetType'   => $targetType]);
 
         $Range				= FleetFunctions::GetMissileRange($USER[$resource[117]]);
 		$systemMin			= $PLANET['system'] - $Range;
@@ -73,7 +67,7 @@ class ShowFleetMissilePage extends AbstractGamePage
 		elseif ($anz <= 0)
 			$error = $LNG['ma_add_missile_number'];
 
-		$targetUser	   	= GetUserByID($target['id_owner'], array('onlinetime', 'banaday', 'urlaubs_modus', 'authattack'));
+		$targetUser	   	= GetUserByID($target['id_owner'], ['onlinetime', 'banaday', 'urlaubs_modus', 'authattack']);
 		
 		if (Config::get()->adm_attack == 1 && $targetUser['authattack'] > $USER['authlevel'])
 			$error = $LNG['fl_admin_attack'];	
@@ -81,18 +75,13 @@ class ShowFleetMissilePage extends AbstractGamePage
 			$error = $LNG['fl_in_vacation_player'];
 			
 		$sql = "SELECT total_points FROM %%STATPOINTS%% WHERE stat_type = '1' AND id_owner = :ownerId;";
-        $User2Points = $db->selectSingle($sql, array(
-            ':ownerId'  => $target['id_owner']
-        ));
+        $User2Points = $db->selectSingle($sql, [':ownerId'  => $target['id_owner']]);
 
 		$sql	= 'SELECT total_points
 		FROM %%STATPOINTS%%
 		WHERE id_owner = :userId AND stat_type = :statType';
 
-		$USER	+= Database::get()->selectSingle($sql, array(
-			':userId'	=> $USER['id'],
-			':statType'	=> 1
-		));
+		$USER	+= Database::get()->selectSingle($sql, [':userId'	=> $USER['id'], ':statType'	=> 1]);
 
         $IsNoobProtec	= CheckNoobProtec($USER, $User2Points, $targetUser);
 			
@@ -110,17 +99,13 @@ class ShowFleetMissilePage extends AbstractGamePage
 
 		$DefenseLabel 	= ($primaryTarget == 0) ? $LNG['ma_all'] : $LNG['tech'][$primaryTarget];
 
-		$fleetArray		= array(503 => $anz);
+		$fleetArray		= [503 => $anz];
 		
 		$fleetStartTime	= TIMESTAMP + $Duration;
 		$fleetStayTime	= $fleetStartTime;
 		$fleetEndTime	= $fleetStartTime;
 		
-		$fleetResource	= array(
-			901	=> 0,
-			902	=> 0,
-			903	=> 0,
-		);
+		$fleetResource	= [901	=> 0, 902	=> 0, 903	=> 0];
 		
 		FleetFunctions::sendFleet($fleetArray, 10, $USER['id'], $PLANET['id'], $PLANET['galaxy'], $PLANET['system'],
 			$PLANET['planet'], $PLANET['planet_type'], $target['id_owner'], $target['id'], $targetGalaxy, $targetSystem,

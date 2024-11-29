@@ -17,7 +17,7 @@
  
 class Log
 {
-	private $data	= array();
+	private array $data	= [];
 
 	function __construct($mode) {
 		$this->data['mode']		= $mode;
@@ -33,8 +33,8 @@ class Log
 	public function __isset($key){
         return isset($this->data[$key]);
     }
-	function save() {
-		$data = serialize(array($this->data['old'], $this->data['new']));
+	function save(): void {
+		$data = serialize([$this->data['old'], $this->data['new']]);
 		$uni = (empty($this->data['universe']) ? $this->data['uni'] : $this->data['universe']);
 		$GLOBALS['DATABASE']->query("INSERT INTO ".LOG." (`id`,`mode`,`admin`,`target`,`time`,`data`,`universe`) VALUES 
 		(NULL , ".$GLOBALS['DATABASE']->sql_escape($this->data['mode']).", ".$GLOBALS['DATABASE']->sql_escape($this->data['admin']).", '".$GLOBALS['DATABASE']->sql_escape($this->data['target'])."', ".TIMESTAMP." , '".$GLOBALS['DATABASE']->sql_escape($data)."', '".$uni."');");

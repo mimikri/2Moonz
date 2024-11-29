@@ -22,15 +22,13 @@ class MissionCaseColonisation extends MissionFunctions implements Mission
 		$this->_fleet	= $Fleet;
 	}
 	
-	function TargetEvent()
+	function TargetEvent(): void
 	{
 		$db		= Database::get();
 
 		$sql	= 'SELECT * FROM %%USERS%% WHERE `id` = :userId;';
 
-		$senderUser		= $db->selectSingle($sql, array(
-			':userId'	=> $this->_fleet['fleet_owner'],
-		));
+		$senderUser		= $db->selectSingle($sql, [':userId'	=> $this->_fleet['fleet_owner']]);
 
 		$senderUser['factor']	= getFactors($senderUser, 'basic', $this->_fleet['fleet_start_time']);
 
@@ -60,11 +58,7 @@ class MissionCaseColonisation extends MissionFunctions implements Mission
 				AND `planet_type`	= :type
 				AND `destruyed`		= :destroyed;';
 
-				$currentPlanetCount	= $db->selectSingle($sql, array(
-					':userId'		=> $this->_fleet['fleet_owner'],
-					':type'			=> 1,
-					':destroyed'	=> 0
-				), 'state');
+				$currentPlanetCount	= $db->selectSingle($sql, [':userId'		=> $this->_fleet['fleet_owner'], ':type'			=> 1, ':destroyed'	=> 0], 'state');
 
 				$maxPlanetCount		= PlayerUtil::maxPlanetCount($senderUser);
 
@@ -91,7 +85,7 @@ class MissionCaseColonisation extends MissionFunctions implements Mission
 						if ($this->_fleet['fleet_amount'] == 1) {
 							$this->KillFleet();
 						} else {
-							$CurrentFleet = explode(";", $this->_fleet['fleet_array']);
+							$CurrentFleet = explode(";", (string) $this->_fleet['fleet_array']);
 							$NewFleet     = '';
 							foreach ($CurrentFleet as $Group)
 							{
@@ -122,12 +116,12 @@ class MissionCaseColonisation extends MissionFunctions implements Mission
 		$this->SaveFleet();
 	}
 	
-	function EndStayEvent()
+	function EndStayEvent(): void
 	{
 		return;
 	}
 	
-	function ReturnEvent()
+	function ReturnEvent(): void
 	{
 		$this->RestoreFleet();
 	}

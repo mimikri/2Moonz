@@ -9,7 +9,7 @@ class ShowJserrorPage extends AbstractGamePage
 		parent::__construct();
 	}
 
-	function show()
+	function show(): void
 	{
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -23,7 +23,7 @@ class ShowJserrorPage extends AbstractGamePage
 if(empty($_GET['message'])){ die(); }
     $errorText	= date("[d-M-Y H:i:s]", TIMESTAMP) . 'JsFehler: "' . $_GET['message'] . "\"\r\n";
     $errorText	.= 'ip: ###' . $ip ."###\r\n";
-    $errorText .= isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'none';
+    $errorText .= $_SERVER['HTTP_USER_AGENT'] ?? 'none';
     $errorText	.= 'get: '. print_r($_GET,true)."\r\n";
     $errorText	.= 'post: '.print_r($_POST,true)."\r\n";
   $errorText	.= '{main}' . "\r\n";

@@ -10,16 +10,17 @@
 // Class to perform SQL (MySQLi) queries:
 class AJAXChatMySQLiQuery {
 
-	var $_connectionID;
-	var $_sql = '';
-	var $_result = 0;
-	var $_errno = 0;
-	var $_error = '';
+	/**
+  * @var string
+  */
+ public $_sql = '';
+	public $_result = 0;
+	public $_errno = 0;
+	public $_error = '';
 
 	// Constructor:
-	function __construct($sql, $connectionID) {
-		$this->_sql = trim($sql);
-		$this->_connectionID = $connectionID;
+	function __construct($sql, public $_connectionID) {
+		$this->_sql = trim((string) $sql);
 		$this->_result = $this->_connectionID->query($this->_sql);
 		if(!$this->_result) {
 			$this->_errno = $this->_connectionID->errno;
@@ -28,13 +29,13 @@ class AJAXChatMySQLiQuery {
 	}
 
 	// Returns true if an error occured:
-	function error() {
+	function error(): bool {
 		// Returns true if the Result-ID is valid:
 		return !(bool)($this->_result);
 	}
 
 	// Returns an Error-String:
-	function getError() {
+	function getError(): string {
 		if($this->error()) {
 			$str  = 'Query: '	 .$this->_sql  ."\n";
 			$str .= 'Error-Report: '	.$this->_error."\n";
@@ -73,7 +74,7 @@ class AJAXChatMySQLiQuery {
 	}
 
 	// Frees the memory:
-	function free() {
+	function free(): void {
 		$this->_result->free();
 	}
 	

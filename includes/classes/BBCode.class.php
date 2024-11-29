@@ -17,7 +17,7 @@
 
 class BBCode
 {
-	static public function parse($sText)
+	static public function parse($sText): string|array|null
 	{
 		$sText = empty($sText) ? '' : $sText;
 		// Convert Windows (\r\n) to Unix (\n)

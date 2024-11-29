@@ -24,7 +24,7 @@ class ShowFleetStep1Page extends AbstractGamePage
 		parent::__construct();
 	}
 	
-	public function show()
+	public function show(): void
 	{
 		global $USER, $PLANET, $pricelist, $reslist, $LNG;
 		
@@ -35,7 +35,7 @@ class ShowFleetStep1Page extends AbstractGamePage
 		
 		$mission				= HTTP::_GP('target_mission', 0);
 				
-		$Fleet		= array();
+		$Fleet		= [];
 		$FleetRoom	= 0;
 		foreach ($reslist['fleet'] as $id => $ShipID)
 		{
@@ -52,23 +52,11 @@ class ShowFleetStep1Page extends AbstractGamePage
 		if (empty($Fleet))
 			FleetFunctions::GotoFleetPage();
 	
-		$FleetData	= array(
-			'fleetroom'			=> floatToString($FleetRoom),
-			'gamespeed'			=> FleetFunctions::GetGameSpeedFactor(),
-			'fleetspeedfactor'	=> max(0, 1 + $USER['factor']['FlyTime']),
-			'planet'			=> array('galaxy' => $PLANET['galaxy'], 'system' => $PLANET['system'], 'planet' => $PLANET['planet'], 'planet_type' => $PLANET['planet_type']),
-			'maxspeed'			=> FleetFunctions::GetFleetMaxSpeed($Fleet, $USER),
-			'ships'				=> FleetFunctions::GetFleetShipInfo($Fleet, $USER),
-			'fleetMinDuration'	=> MIN_FLEET_TIME,
-		);
+		$FleetData	= ['fleetroom'			=> floatToString($FleetRoom), 'gamespeed'			=> FleetFunctions::GetGameSpeedFactor(), 'fleetspeedfactor'	=> max(0, 1 + $USER['factor']['FlyTime']), 'planet'			=> ['galaxy' => $PLANET['galaxy'], 'system' => $PLANET['system'], 'planet' => $PLANET['planet'], 'planet_type' => $PLANET['planet_type']], 'maxspeed'			=> FleetFunctions::GetFleetMaxSpeed($Fleet, $USER), 'ships'				=> FleetFunctions::GetFleetShipInfo($Fleet, $USER), 'fleetMinDuration'	=> MIN_FLEET_TIME];
 		
 		$token		= getRandomString();
 		
-		$_SESSION['fleet'][$token]	= array(
-			'time'		=> TIMESTAMP,
-			'fleet'		=> $Fleet,
-			'fleetRoom'	=> $FleetRoom,
-		);
+		$_SESSION['fleet'][$token]	= ['time'		=> TIMESTAMP, 'fleet'		=> $Fleet, 'fleetRoom'	=> $FleetRoom];
 
 		$shortcutList	= $this->GetUserShotcut();
 		$colonyList 	= $this->GetColonyList();
@@ -82,26 +70,12 @@ class ShowFleetStep1Page extends AbstractGamePage
 		
 		$this->tplObj->loadscript('flotten.js');
 		$this->tplObj->execscript('updateVars();FleetTime();window.setInterval("FleetTime()", 1000);');
-		$this->assign(array(
-			'token'			=> $token,
-			'mission'		=> $mission,
-			'shortcutList'	=> $shortcutList,
-			'shortcutMax'	=> $shortcutAmount,
-			'colonyList' 	=> $colonyList,
-			'ACSList' 		=> $ACSList,
-			'galaxy' 		=> $targetGalaxy,
-			'system' 		=> $targetSystem,
-			'planet' 		=> $targetPlanet,
-			'type'			=> $targetType,
-			'speedSelect'	=> FleetFunctions::$allowedSpeed,
-			'typeSelect'   	=> array(1 => $LNG['type_planet_1'], 2 => $LNG['type_planet_2'], 3 => $LNG['type_planet_3']),
-			'fleetdata'		=> $FleetData,
-		));
+		$this->assign(['token'			=> $token, 'mission'		=> $mission, 'shortcutList'	=> $shortcutList, 'shortcutMax'	=> $shortcutAmount, 'colonyList' 	=> $colonyList, 'ACSList' 		=> $ACSList, 'galaxy' 		=> $targetGalaxy, 'system' 		=> $targetSystem, 'planet' 		=> $targetPlanet, 'type'			=> $targetType, 'speedSelect'	=> FleetFunctions::$allowedSpeed, 'typeSelect'   	=> [1 => $LNG['type_planet_1'], 2 => $LNG['type_planet_2'], 3 => $LNG['type_planet_3']], 'fleetdata'		=> $FleetData]);
 		
 		$this->display('page.fleetStep1.default.tpl');
 	}
 	
-	public function saveShortcuts()
+	public function saveShortcuts(): void
 	{
 		global $USER, $LNG;
 		
@@ -120,34 +94,16 @@ class ShowFleetStep1Page extends AbstractGamePage
 				}
 
                 $sql = "INSERT INTO %%SHORTCUTS%% SET ownerID = :userID, `name` = :name, galaxy = :galaxy, `system` = :system, planet = :planet, `type` = :type;";
-                $db->insert($sql, array(
-                    ':userID'   => $USER['id'],
-                    ':name'     => $planetData['name'],
-                    ':galaxy'   => $planetData['galaxy'],
-                    ':system'   => $planetData['system'],
-                    ':planet'   => $planetData['planet'],
-                    ':type'     => $planetData['type']
-                ));
+                $db->insert($sql, [':userID'   => $USER['id'], ':name'     => $planetData['name'], ':galaxy'   => $planetData['galaxy'], ':system'   => $planetData['system'], ':planet'   => $planetData['planet'], ':type'     => $planetData['type']]);
 			} elseif(empty($planetData['name'])) {
 				$sql = "DELETE FROM %%SHORTCUTS%% WHERE shortcutID = :shortcutID AND ownerID = :userID;";
-                $db->delete($sql, array(
-                    ':shortcutID'   => $ID,
-                    ':userID'       => $USER['id']
-                ));
+                $db->delete($sql, [':shortcutID'   => $ID, ':userID'       => $USER['id']]);
             } else {
 				$planetData['ownerID']		= $USER['id'];
 				$planetData['shortcutID']		= $ID;
 				if($planetData != $ShortcutUser[$ID]) {
                     $sql = "UPDATE %%SHORTCUTS%% SET `name` = :name, galaxy = :galaxy, `system` = :system, planet = :planet, `type` = :type WHERE shortcutID = :shortcutID AND ownerID = :userID;";
-                    $db->update($sql, array(
-                        ':userID'   => $USER['id'],
-                        ':name'     => $planetData['name'],
-                        ':galaxy'   => $planetData['galaxy'],
-                        ':system'   => $planetData['system'],
-                        ':planet'   => $planetData['planet'],
-                        ':type'     => $planetData['type'],
-                        ':shortcutID'   => $ID
-                    ));
+                    $db->update($sql, [':userID'   => $USER['id'], ':name'     => $planetData['name'], ':galaxy'   => $planetData['galaxy'], ':system'   => $planetData['system'], ':planet'   => $planetData['planet'], ':type'     => $planetData['type'], ':shortcutID'   => $ID]);
                 }
 			}
 		}
@@ -155,44 +111,42 @@ class ShowFleetStep1Page extends AbstractGamePage
 		$this->sendJSON($LNG['fl_shortcut_saved']);
 	}
 	
-	private function GetColonyList()
+	/**
+  * @return array<mixed, array<'galaxy'|'name'|'planet'|'system'|'type', mixed>>
+  */
+ private function GetColonyList(): array
 	{
 		global $PLANET, $USER;
 		
-		$ColonyList	= array();
+		$ColonyList	= [];
 		
 		foreach($USER['PLANETS'] as $CurPlanetID => $CurPlanet)
 		{
 			if ($PLANET['id'] == $CurPlanet['id'])
 				continue;
 			
-			$ColonyList[] = array(
-				'name'		=> $CurPlanet['name'],
-				'galaxy'	=> $CurPlanet['galaxy'],
-				'system'	=> $CurPlanet['system'],
-				'planet'	=> $CurPlanet['planet'],
-				'type'		=> $CurPlanet['planet_type'],
-			);	
+			$ColonyList[] = ['name'		=> $CurPlanet['name'], 'galaxy'	=> $CurPlanet['galaxy'], 'system'	=> $CurPlanet['system'], 'planet'	=> $CurPlanet['planet'], 'type'		=> $CurPlanet['planet_type']];	
 		}
 			
 		return $ColonyList;
 	}
 	
-	private function GetUserShotcut()
+	/**
+  * @return mixed[]
+  */
+ private function GetUserShotcut(): array
 	{
 		global $USER;
 		
 		if (!isModuleAvailable(MODULE_SHORTCUTS))
-			return array();
+			return [];
 
         $db = Database::get();
 
         $sql = "SELECT * FROM %%SHORTCUTS%% WHERE ownerID = :userID;";
-        $ShortcutResult = $db->select($sql, array(
-            ':userID'   => $USER['id']
-        ));
+        $ShortcutResult = $db->select($sql, [':userID'   => $USER['id']]);
 
-        $ShortcutList	= array();
+        $ShortcutList	= [];
 
 		foreach($ShortcutResult as $ShortcutRow) {
 			$ShortcutList[$ShortcutRow['shortcutID']] = $ShortcutRow;
@@ -201,7 +155,10 @@ class ShowFleetStep1Page extends AbstractGamePage
 		return $ShortcutList;
 	}
 	
-	private function GetAvalibleACS()
+	/**
+  * @return mixed[]
+  */
+ private function GetAvalibleACS(): array
 	{
 		global $USER;
 		
@@ -212,12 +169,9 @@ class ShowFleetStep1Page extends AbstractGamePage
 		INNER JOIN %%AKS%% acs ON acsID = acs.id
 		INNER JOIN %%PLANETS%% planet ON planet.id = acs.target
 		WHERE userID = :userID AND :maxFleets > (SELECT COUNT(*) FROM %%FLEETS%% WHERE fleet_group = acsID);";
-        $ACSResult = $db->select($sql, array(
-            ':userID'       => $USER['id'],
-            ':maxFleets'    => Config::get()->max_fleets_per_acs,
-        ));
+        $ACSResult = $db->select($sql, [':userID'       => $USER['id'], ':maxFleets'    => Config::get()->max_fleets_per_acs]);
 
-        $ACSList	= array();
+        $ACSList	= [];
 		
 		foreach ($ACSResult as $ACSRow) {
 			$ACSList[]	= $ACSRow;
@@ -226,7 +180,7 @@ class ShowFleetStep1Page extends AbstractGamePage
 		return $ACSList;
 	}
 	
-	function checkTarget()
+	function checkTarget(): void
 	{
 		global $PLANET, $LNG, $USER, $resource;
 
@@ -254,13 +208,7 @@ class ShowFleetStep1Page extends AbstractGamePage
                 p.planet_type = :targetType AND
                 u.id = p.id_owner;";
 
-			$planetData = $db->selectSingle($sql, array(
-                ':universe'     => Universe::current(),
-                ':targetGalaxy' => $targetGalaxy,
-                ':targetSystem' => $targetSystem,
-                ':targetPlanet' => $targetPlanet,
-                ':targetType' => (($targetPlanetType == 2) ? 1 : $targetPlanetType),
-            ));
+			$planetData = $db->selectSingle($sql, [':universe'     => Universe::current(), ':targetGalaxy' => $targetGalaxy, ':targetSystem' => $targetSystem, ':targetPlanet' => $targetPlanet, ':targetType' => (($targetPlanetType == 2) ? 1 : $targetPlanetType)]);
 			
             if ($targetPlanetType == 3 && !isset($planetData))
 			{
@@ -294,10 +242,7 @@ class ShowFleetStep1Page extends AbstractGamePage
 					(SELECT COUNT(*) FROM %%MULTI%% WHERE userID = :dataID)
 				) as count;';
 
-				$multiCount	= $db->selectSingle($sql ,array(
-					':userID' => $USER['id'],
-					':dataID' => $planetData['id']
-				), 'count');
+				$multiCount	= $db->selectSingle($sql ,[':userID' => $USER['id'], ':dataID' => $planetData['id']], 'count');
 
 				if(ENABLE_MULTIALERT && $USER['id'] != $planetData['id'] && $USER['authlevel'] != AUTH_ADM && $USER['user_lastip'] == $planetData['user_lastip'] && $multiCount != 2)
 				{

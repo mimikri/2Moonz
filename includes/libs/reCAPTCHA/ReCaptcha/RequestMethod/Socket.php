@@ -63,7 +63,7 @@ class Socket
      * @param int $length
      * @return int | bool
      */
-    public function fwrite($string, $length = null)
+    public function fwrite($string, $length = null): int|false
     {
         return fwrite($this->handle, $string, (is_null($length) ? strlen($string) : $length));
     }
@@ -75,7 +75,7 @@ class Socket
      * @param int $length
      * @return string
      */
-    public function fgets($length = null)
+    public function fgets($length = null): string|false
     {
         return fgets($this->handle, $length);
     }
@@ -86,7 +86,7 @@ class Socket
      * @see http://php.net/feof
      * @return bool
      */
-    public function feof()
+    public function feof(): bool
     {
         return feof($this->handle);
     }
@@ -97,7 +97,7 @@ class Socket
      * @see http://php.net/fclose
      * @return bool
      */
-    public function fclose()
+    public function fclose(): bool
     {
         return fclose($this->handle);
     }

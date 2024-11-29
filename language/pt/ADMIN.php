@@ -318,7 +318,7 @@ $LNG['ma_none']							= 'Noticias Globais';
 $LNG['ma_message']						= 'Mensagem';
 $LNG['ma_mode']                         = 'como de transporte';
 $LNG['ma_all']                          = 'Todos';
-$LNG['ma_modes']                = array('Mensagem no jogo', 'Mensagem pelo mail', 'Mensagem pelo Jogo &amp; pelo EMail');
+$LNG['ma_modes']                = ['Mensagem no jogo', 'Mensagem pelo mail', 'Mensagem pelo Jogo &amp; pelo EMail'];
 //###########################################################//
 
 //---------------	Pagina Inicial	------------------------//

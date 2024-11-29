@@ -24,7 +24,7 @@ class ShowBuildingsPage extends AbstractGamePage
 		parent::__construct();
 	}
 	
-	private function CancelBuildingFromQueue()
+	private function CancelBuildingFromQueue(): bool
 	{
 		global $PLANET, $USER, $resource;
 		$CurrentQueue  = unserialize($PLANET['b_building_id']);
@@ -51,7 +51,7 @@ class ShowBuildingsPage extends AbstractGamePage
 			$PLANET['b_building_id'] 	= '';
 		} else {
 			$BuildEndTime	= TIMESTAMP;
-			$NewQueueArray	= array();
+			$NewQueueArray	= [];
 			foreach($CurrentQueue as $ListIDArray) {
 				if($Element == $ListIDArray[0])
 					continue;
@@ -66,7 +66,7 @@ class ShowBuildingsPage extends AbstractGamePage
 				$PLANET['b_building_id'] 	= serialize($NewQueueArray);
 				$this->ecoObj->setData($USER, $PLANET);
 				$this->ecoObj->SetNextQueueElementOnTop();
-				list($USER, $PLANET)		= $this->ecoObj->getData();
+				[$USER, $PLANET]		= $this->ecoObj->getData();
 			} else {
 				$PLANET['b_building']    	= 0;
 				$PLANET['b_building_id'] 	= '';
@@ -98,7 +98,7 @@ class ShowBuildingsPage extends AbstractGamePage
 
 		$BuildEndTime	= $CurrentQueue[$QueueID - 2][3];
 		unset($CurrentQueue[$QueueID - 1]);
-		$NewQueueArray	= array();
+		$NewQueueArray	= [];
 		foreach($CurrentQueue as $ID => $ListIDArray)
 		{				
 			if ($ID < $QueueID - 1) {
@@ -121,7 +121,7 @@ class ShowBuildingsPage extends AbstractGamePage
         return true;
 	}
 
-	private function AddBuildingToQueue($Element, $AddMode = true)
+	private function AddBuildingToQueue($Element, bool $AddMode = true): void
 	{
 		global $PLANET, $USER, $resource, $reslist, $pricelist;
 		
@@ -139,7 +139,7 @@ class ShowBuildingsPage extends AbstractGamePage
 		if (!empty($CurrentQueue)) {
 			$ActualCount	= count($CurrentQueue);
 		} else {
-			$CurrentQueue	= array();
+			$CurrentQueue	= [];
 			$ActualCount	= 0;
 		}
 		
@@ -174,7 +174,7 @@ class ShowBuildingsPage extends AbstractGamePage
 			$elementTime    			= BuildFunctions::getBuildingTime($USER, $PLANET, $Element, $costResources);
 			$BuildEndTime				= TIMESTAMP + $elementTime;
 			
-			$PLANET['b_building_id']	= serialize(array(array($Element, $BuildLevel, $elementTime, $BuildEndTime, $BuildMode)));
+			$PLANET['b_building_id']	= serialize([[$Element, $BuildLevel, $elementTime, $BuildEndTime, $BuildMode]]);
 			$PLANET['b_building']		= $BuildEndTime;
 			
 		} else {
@@ -200,21 +200,21 @@ class ShowBuildingsPage extends AbstractGamePage
 				
 			$elementTime    			= BuildFunctions::getBuildingTime($USER, $PLANET, $Element, NULL, !$AddMode, $BuildLevel);
 			$BuildEndTime				= $CurrentQueue[$ActualCount - 1][3] + $elementTime;
-			$CurrentQueue[]				= array($Element, $BuildLevel, $elementTime, $BuildEndTime, $BuildMode);
+			$CurrentQueue[]				= [$Element, $BuildLevel, $elementTime, $BuildEndTime, $BuildMode];
 			$PLANET['b_building_id']	= serialize($CurrentQueue);		
 		}
 
 	}
 
-	private function getQueueData()
+	private function getQueueData(): array
 	{
 		global $LNG, $PLANET, $USER;
 		
-		$scriptData		= array();
-		$quickinfo		= array();
+		$scriptData		= [];
+		$quickinfo		= [];
 		
 		if ($PLANET['b_building'] == 0 || $PLANET['b_building_id'] == "")
-			return array('queue' => $scriptData, 'quickinfo' => $quickinfo);
+			return ['queue' => $scriptData, 'quickinfo' => $quickinfo];
 		
 		$buildQueue		= unserialize($PLANET['b_building_id']);
 		
@@ -224,21 +224,13 @@ class ShowBuildingsPage extends AbstractGamePage
 			
 			$quickinfo[$BuildArray[0]]	= $BuildArray[1];
 			
-			$scriptData[] = array(
-				'element'	=> $BuildArray[0], 
-				'level' 	=> $BuildArray[1], 
-				'time' 		=> $BuildArray[2], 
-				'resttime' 	=> ($BuildArray[3] - TIMESTAMP), 
-				'destroy' 	=> ($BuildArray[4] == 'destroy'), 
-				'endtime' 	=> _date('U', $BuildArray[3], $USER['timezone']),
-				'display' 	=> _date($LNG['php_tdformat'], $BuildArray[3], $USER['timezone']),
-			);
+			$scriptData[] = ['element'	=> $BuildArray[0], 'level' 	=> $BuildArray[1], 'time' 		=> $BuildArray[2], 'resttime' 	=> ($BuildArray[3] - TIMESTAMP), 'destroy' 	=> ($BuildArray[4] == 'destroy'), 'endtime' 	=> _date('U', $BuildArray[3], $USER['timezone']), 'display' 	=> _date($LNG['php_tdformat'], $BuildArray[3], $USER['timezone'])];
 		}
 		
-		return array('queue' => $scriptData, 'quickinfo' => $quickinfo);
+		return ['queue' => $scriptData, 'quickinfo' => $quickinfo];
 	}
 
-	public function show()
+	public function show(): void
 	{
 		global $ProdGrid, $LNG, $resource, $reslist, $PLANET, $USER, $pricelist;
 		
@@ -282,7 +274,7 @@ class ShowBuildingsPage extends AbstractGamePage
 		$BuildLevelFactor   = 10;
 		$BuildTemp          = $PLANET['temp_max'];
 
-        $BuildInfoList      = array();
+        $BuildInfoList      = [];
 
 		$Elements			= $reslist['allow'][$PLANET['planet_type']];
 		
@@ -328,19 +320,7 @@ class ShowBuildingsPage extends AbstractGamePage
 			$destroyOverflow	= BuildFunctions::getRestPrice($USER, $PLANET, $Element, $destroyResources);
 			$buyable			= $QueueCount != 0 || BuildFunctions::isElementBuyable($USER, $PLANET, $Element, $costResources);
 
-			$BuildInfoList[$Element]	= array(
-				'level'				=> $PLANET[$resource[$Element]],
-				'maxLevel'			=> $pricelist[$Element]['max'],
-				'infoEnergy'		=> $infoEnergy,
-				'costResources'		=> $costResources,
-				'costOverflow'		=> $costOverflow,
-				'elementTime'    	=> $elementTime,
-				'destroyResources'	=> $destroyResources,
-				'destroyTime'		=> $destroyTime,
-				'destroyOverflow'	=> $destroyOverflow,
-				'buyable'			=> $buyable,
-				'levelToBuild'		=> $levelToBuild,
-			);
+			$BuildInfoList[$Element]	= ['level'				=> $PLANET[$resource[$Element]], 'maxLevel'			=> $pricelist[$Element]['max'], 'infoEnergy'		=> $infoEnergy, 'costResources'		=> $costResources, 'costOverflow'		=> $costOverflow, 'elementTime'    	=> $elementTime, 'destroyResources'	=> $destroyResources, 'destroyTime'		=> $destroyTime, 'destroyOverflow'	=> $destroyOverflow, 'buyable'			=> $buyable, 'levelToBuild'		=> $levelToBuild];
 		}
 
 		
@@ -348,14 +328,7 @@ class ShowBuildingsPage extends AbstractGamePage
 			$this->tplObj->loadscript('buildlist.js');
 		}
 		
-		$this->assign(array(
-			'BuildInfoList'		=> $BuildInfoList,
-			'CanBuildElement'	=> $CanBuildElement,
-			'RoomIsOk'			=> $RoomIsOk,
-			'Queue'				=> $Queue,
-			'isBusy'			=> array('shipyard' => !empty($PLANET['b_hangar_id']), 'research' => $USER['b_tech_planet'] != 0),
-			'HaveMissiles'		=> (bool) $PLANET[$resource[503]] + $PLANET[$resource[502]],
-		));
+		$this->assign(['BuildInfoList'		=> $BuildInfoList, 'CanBuildElement'	=> $CanBuildElement, 'RoomIsOk'			=> $RoomIsOk, 'Queue'				=> $Queue, 'isBusy'			=> ['shipyard' => !empty($PLANET['b_hangar_id']), 'research' => $USER['b_tech_planet'] != 0], 'HaveMissiles'		=> (bool) $PLANET[$resource[503]] + $PLANET[$resource[502]]]);
 			
 		$this->display('page.buildings.default.tpl');
 	}

@@ -17,28 +17,28 @@
 
 class VarsBuildCache implements BuildCache
 {
-	function buildCache()
+	function buildCache(): array
 	{
-		$resource		= array();
-		$requeriments	= array();
-		$pricelist		= array();
-		$CombatCaps		= array();
-		$reslist		= array();
-		$ProdGrid		= array();
+		$resource		= [];
+		$requeriments	= [];
+		$pricelist		= [];
+		$CombatCaps		= [];
+		$reslist		= [];
+		$ProdGrid		= [];
 
-		$reslist['prod']		= array();
-		$reslist['storage']		= array();
-		$reslist['bonus']		= array();
-		$reslist['one']			= array();
-		$reslist['build']		= array();
-		$reslist['allow'][1]	= array();
-		$reslist['allow'][3]	= array();
-		$reslist['tech']		= array();
-		$reslist['fleet']		= array();
-		$reslist['defense']		= array();
-		$reslist['missile']		= array();
-		$reslist['officier']	= array();
-		$reslist['dmfunc']		= array();
+		$reslist['prod']		= [];
+		$reslist['storage']		= [];
+		$reslist['bonus']		= [];
+		$reslist['one']			= [];
+		$reslist['build']		= [];
+		$reslist['allow'][1]	= [];
+		$reslist['allow'][3]	= [];
+		$reslist['tech']		= [];
+		$reslist['fleet']		= [];
+		$reslist['defense']		= [];
+		$reslist['missile']		= [];
+		$reslist['officier']	= [];
+		$reslist['dmfunc']		= [];
 		
 		$db	= Database::get();
 		
@@ -52,62 +52,13 @@ class VarsBuildCache implements BuildCache
 		foreach($varsResult as $varsRow)
 		{
 			$resource[$varsRow['elementID']]	= $varsRow['name'];
-			$CombatCaps[$varsRow['elementID']]	= array(
-				'attack'	=> $varsRow['attack'],
-				'shield'	=> $varsRow['defend'],
-			);
+			$CombatCaps[$varsRow['elementID']]	= ['attack'	=> $varsRow['attack'], 'shield'	=> $varsRow['defend']];
 			
-			$pricelist[$varsRow['elementID']]	= array(
-				'cost'		=> array(
-					901	=> $varsRow['cost901'],
-					902	=> $varsRow['cost902'],
-					903	=> $varsRow['cost903'],
-					911	=> $varsRow['cost911'],
-					921	=> $varsRow['cost921'],
-				),
-				'factor'		=> $varsRow['factor'],
-				'max'			=> $varsRow['maxLevel'],
-				'consumption'	=> $varsRow['consumption1'],
-				'consumption2'	=> $varsRow['consumption2'],
-				'speed'			=> $varsRow['speed1'],
-				'speed2'		=> $varsRow['speed2'],
-				'capacity'		=> $varsRow['capacity'],
-				'tech'			=> $varsRow['speedTech'],
-				'time'			=> $varsRow['timeBonus'],
-				'bonus'			=> array(
-					'Attack'			=> array($varsRow['bonusAttack'], $varsRow['bonusAttackUnit']),
-					'Defensive'			=> array($varsRow['bonusDefensive'], $varsRow['bonusDefensiveUnit']),
-					'Shield'			=> array($varsRow['bonusShield'], $varsRow['bonusShieldUnit']),
-					'BuildTime'			=> array($varsRow['bonusBuildTime'], $varsRow['bonusBuildTimeUnit']),
-					'ResearchTime'		=> array($varsRow['bonusResearchTime'], $varsRow['bonusResearchTimeUnit']),
-					'ShipTime'			=> array($varsRow['bonusShipTime'], $varsRow['bonusShipTimeUnit']),
-					'DefensiveTime'		=> array($varsRow['bonusDefensiveTime'], $varsRow['bonusDefensiveTimeUnit']),
-					'Resource'			=> array($varsRow['bonusResource'], $varsRow['bonusResourceUnit']),
-					'Energy'			=> array($varsRow['bonusEnergy'], $varsRow['bonusEnergyUnit']),
-					'ResourceStorage'	=> array($varsRow['bonusResourceStorage'], $varsRow['bonusResourceStorageUnit']),
-					'ShipStorage'		=> array($varsRow['bonusShipStorage'], $varsRow['bonusShipStorageUnit']),
-					'FlyTime'			=> array($varsRow['bonusFlyTime'], $varsRow['bonusFlyTimeUnit']),
-					'FleetSlots'		=> array($varsRow['bonusFleetSlots'], $varsRow['bonusFleetSlotsUnit']),
-					'Planets'			=> array($varsRow['bonusPlanets'], $varsRow['bonusPlanetsUnit']),
-					'SpyPower'			=> array($varsRow['bonusSpyPower'], $varsRow['bonusSpyPowerUnit']),
-					'Expedition'		=> array($varsRow['bonusExpedition'], $varsRow['bonusExpeditionUnit']),
-					'GateCoolTime'		=> array($varsRow['bonusGateCoolTime'], $varsRow['bonusGateCoolTimeUnit']),
-					'MoreFound'			=> array($varsRow['bonusMoreFound'], $varsRow['bonusMoreFoundUnit']),
-				),
-			);
+			$pricelist[$varsRow['elementID']]	= ['cost'		=> [901	=> $varsRow['cost901'], 902	=> $varsRow['cost902'], 903	=> $varsRow['cost903'], 911	=> $varsRow['cost911'], 921	=> $varsRow['cost921']], 'factor'		=> $varsRow['factor'], 'max'			=> $varsRow['maxLevel'], 'consumption'	=> $varsRow['consumption1'], 'consumption2'	=> $varsRow['consumption2'], 'speed'			=> $varsRow['speed1'], 'speed2'		=> $varsRow['speed2'], 'capacity'		=> $varsRow['capacity'], 'tech'			=> $varsRow['speedTech'], 'time'			=> $varsRow['timeBonus'], 'bonus'			=> ['Attack'			=> [$varsRow['bonusAttack'], $varsRow['bonusAttackUnit']], 'Defensive'			=> [$varsRow['bonusDefensive'], $varsRow['bonusDefensiveUnit']], 'Shield'			=> [$varsRow['bonusShield'], $varsRow['bonusShieldUnit']], 'BuildTime'			=> [$varsRow['bonusBuildTime'], $varsRow['bonusBuildTimeUnit']], 'ResearchTime'		=> [$varsRow['bonusResearchTime'], $varsRow['bonusResearchTimeUnit']], 'ShipTime'			=> [$varsRow['bonusShipTime'], $varsRow['bonusShipTimeUnit']], 'DefensiveTime'		=> [$varsRow['bonusDefensiveTime'], $varsRow['bonusDefensiveTimeUnit']], 'Resource'			=> [$varsRow['bonusResource'], $varsRow['bonusResourceUnit']], 'Energy'			=> [$varsRow['bonusEnergy'], $varsRow['bonusEnergyUnit']], 'ResourceStorage'	=> [$varsRow['bonusResourceStorage'], $varsRow['bonusResourceStorageUnit']], 'ShipStorage'		=> [$varsRow['bonusShipStorage'], $varsRow['bonusShipStorageUnit']], 'FlyTime'			=> [$varsRow['bonusFlyTime'], $varsRow['bonusFlyTimeUnit']], 'FleetSlots'		=> [$varsRow['bonusFleetSlots'], $varsRow['bonusFleetSlotsUnit']], 'Planets'			=> [$varsRow['bonusPlanets'], $varsRow['bonusPlanetsUnit']], 'SpyPower'			=> [$varsRow['bonusSpyPower'], $varsRow['bonusSpyPowerUnit']], 'Expedition'		=> [$varsRow['bonusExpedition'], $varsRow['bonusExpeditionUnit']], 'GateCoolTime'		=> [$varsRow['bonusGateCoolTime'], $varsRow['bonusGateCoolTimeUnit']], 'MoreFound'			=> [$varsRow['bonusMoreFound'], $varsRow['bonusMoreFoundUnit']]]];
 			
-			$ProdGrid[$varsRow['elementID']]['production']	= array(
-				901	=> $varsRow['production901'],
-				902	=> $varsRow['production902'],
-				903	=> $varsRow['production903'],
-				911	=> $varsRow['production911'],
-			);
+			$ProdGrid[$varsRow['elementID']]['production']	= [901	=> $varsRow['production901'], 902	=> $varsRow['production902'], 903	=> $varsRow['production903'], 911	=> $varsRow['production911']];
 			
-			$ProdGrid[$varsRow['elementID']]['storage']	= array(
-				901	=> $varsRow['storage901'],
-				902	=> $varsRow['storage902'],
-				903	=> $varsRow['storage903'],
-			);
+			$ProdGrid[$varsRow['elementID']]['storage']	= [901	=> $varsRow['storage901'], 902	=> $varsRow['storage902'], 903	=> $varsRow['storage903']];
 			
 			if(array_filter($ProdGrid[$varsRow['elementID']]['production']))
 				$reslist['prod'][]		= $varsRow['elementID'];
@@ -129,7 +80,7 @@ class VarsBuildCache implements BuildCache
 			switch($varsRow['class']) {
 				case 0: 
 					$reslist['build'][]	= $varsRow['elementID'];
-					$tmp	= explode(',', $varsRow['onPlanetType']);
+					$tmp	= explode(',', (string) $varsRow['onPlanetType']);
 					foreach($tmp as $type) 
 						$reslist['allow'][$type][]	= $varsRow['elementID'];
 				break;
@@ -160,13 +111,6 @@ class VarsBuildCache implements BuildCache
 			$CombatCaps[$rapidRow['elementID']]['sd'][$rapidRow['rapidfireID']]	= $rapidRow['shoots'];
 		}
 		
-		return array(
-			'reslist'		=> $reslist,
-			'ProdGrid'		=> $ProdGrid,
-			'CombatCaps'	=> $CombatCaps,
-			'resource'		=> $resource,
-			'pricelist'		=> $pricelist,
-			'requeriments'	=> $requeriments,
-		);
+		return ['reslist'		=> $reslist, 'ProdGrid'		=> $ProdGrid, 'CombatCaps'	=> $CombatCaps, 'resource'		=> $resource, 'pricelist'		=> $pricelist, 'requeriments'	=> $requeriments];
 	}
 }

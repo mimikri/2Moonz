@@ -15,7 +15,7 @@ class AJAXChatEncoding {
 		static $specialChars;
 		if(!$specialChars) {
 			// As &apos; is not supported by IE, we use &#39; as replacement for "'":
-			$specialChars = array('&'=>'&amp;', '<'=>'&lt;', '>'=>'&gt;', "'"=>'&#39;', '"'=>'&quot;');	
+			$specialChars = ['&'=>'&amp;', '<'=>'&lt;', '>'=>'&gt;', "'"=>'&#39;', '"'=>'&quot;'];	
 		}
 		return $specialChars;
 	}
@@ -35,84 +35,121 @@ class AJAXChatEncoding {
 			return mb_convert_encoding($str, $charsetTo, $charsetFrom);
 		}
 		if(function_exists('iconv')) {
-			return iconv($charsetFrom, $charsetTo, $str);
+			return iconv((string) $charsetFrom, (string) $charsetTo, (string) $str);
 		}
 		if(($charsetFrom == 'UTF-8') && ($charsetTo == 'ISO-8859-1')) {
-			return utf8_decode($str);
+			return mb_convert_encoding($str, 'ISO-8859-1');
 		}
 		if(($charsetFrom == 'ISO-8859-1') && ($charsetTo == 'UTF-8')) {
-			return utf8_encode($str);
+			return mb_convert_encoding($str, 'UTF-8', 'ISO-8859-1');
 		}
 		return $str;
 	}
 
 	public static function htmlEncode($str, $contentCharset='UTF-8') {
-		switch($contentCharset) {
-			case 'UTF-8':
-				// Encode only special chars (&, <, >, ', ") as entities:
-				return AJAXChatEncoding::encodeSpecialChars($str);
-				break;
-			case 'ISO-8859-1':
-			case 'ISO-8859-15':
-				// Encode special chars and all extended characters above ISO-8859-1 charset as entities, then convert to content charset:
-				return AJAXChatEncoding::convertEncoding(AJAXChatEncoding::encodeEntities($str, 'UTF-8', array(
-					0x26, 0x26, 0, 0xFFFF,	// &
-					0x3C, 0x3C, 0, 0xFFFF,	// <
-					0x3E, 0x3E, 0, 0xFFFF,	// >
-					0x27, 0x27, 0, 0xFFFF,	// '
-					0x22, 0x22, 0, 0xFFFF,	// "
-					0x100, 0x2FFFF, 0, 0xFFFF	// above ISO-8859-1
-				)), 'UTF-8', $contentCharset);
-				break;
-			default:
-				// Encode special chars and all characters above ASCII charset as entities, then convert to content charset:
-				return AJAXChatEncoding::convertEncoding(AJAXChatEncoding::encodeEntities($str, 'UTF-8', array(
-					0x26, 0x26, 0, 0xFFFF,	// &
-					0x3C, 0x3C, 0, 0xFFFF,	// <
-					0x3E, 0x3E, 0, 0xFFFF,	// >
-					0x27, 0x27, 0, 0xFFFF,	// '
-					0x22, 0x22, 0, 0xFFFF,	// "
-					0x80, 0x2FFFF, 0, 0xFFFF	// above ASCII
-				)), 'UTF-8', $contentCharset);
-		}
+		return match ($contentCharset) {
+      'UTF-8' => AJAXChatEncoding::encodeSpecialChars($str),
+      'ISO-8859-1', 'ISO-8859-15' => AJAXChatEncoding::convertEncoding(AJAXChatEncoding::encodeEntities($str, 'UTF-8', [
+          0x26,
+          0x26,
+          0,
+          0xFFFF,
+          // &
+          0x3C,
+          0x3C,
+          0,
+          0xFFFF,
+          // <
+          0x3E,
+          0x3E,
+          0,
+          0xFFFF,
+          // >
+          0x27,
+          0x27,
+          0,
+          0xFFFF,
+          // '
+          0x22,
+          0x22,
+          0,
+          0xFFFF,
+          // "
+          0x100,
+          0x2FFFF,
+          0,
+          0xFFFF,
+      ]), 'UTF-8', $contentCharset),
+      default => AJAXChatEncoding::convertEncoding(AJAXChatEncoding::encodeEntities($str, 'UTF-8', [
+          0x26,
+          0x26,
+          0,
+          0xFFFF,
+          // &
+          0x3C,
+          0x3C,
+          0,
+          0xFFFF,
+          // <
+          0x3E,
+          0x3E,
+          0,
+          0xFFFF,
+          // >
+          0x27,
+          0x27,
+          0,
+          0xFFFF,
+          // '
+          0x22,
+          0x22,
+          0,
+          0xFFFF,
+          // "
+          0x80,
+          0x2FFFF,
+          0,
+          0xFFFF,
+      ]), 'UTF-8', $contentCharset),
+  };
 	}
 
-	public static function encodeSpecialChars($str) {
+	public static function encodeSpecialChars($str): string {
 		return strtr($str, AJAXChatEncoding::getSpecialChars());
 	}
 
-	public static function decodeSpecialChars($str) {
+	public static function decodeSpecialChars($str): string {
 		return strtr($str, array_flip(AJAXChatEncoding::getSpecialChars()));
 	}
 
-	public static function encodeEntities($str, $encoding='UTF-8', $convmap=null) {
+	public static function encodeEntities($str, $encoding='UTF-8', $convmap=null): string {
 		if($convmap && function_exists('mb_encode_numericentity')) {
-			return mb_encode_numericentity($str, $convmap, $encoding);
+			return mb_encode_numericentity((string) $str, $convmap, $encoding);
 		}
-		return htmlentities($str, ENT_QUOTES, $encoding);
+		return htmlentities((string) $str, ENT_QUOTES, $encoding);
 	}
 
-	public static function decodeEntities($str, $encoding='UTF-8', $htmlEntitiesMap=null) {
+	public static function decodeEntities($str, $encoding='UTF-8', $htmlEntitiesMap=null): string {
 		// Due to PHP bug #25670, html_entity_decode does not work with UTF-8 for PHP versions < 5:
 		if(function_exists('html_entity_decode') && version_compare(phpversion(), 5, '>=')) {
 			// Replace numeric and literal entities:
-			$str = html_entity_decode($str, ENT_QUOTES, $encoding);
+			$str = html_entity_decode((string) $str, ENT_QUOTES, $encoding);
 			// Replace additional literal HTML entities if an HTML entities map is given:
 			if($htmlEntitiesMap) {
 				$str = strtr($str, $htmlEntitiesMap);
 			}
 		} else {
 			// Replace numeric entities:
-			$str = preg_replace('~&#([0-9]+);~e', 'AJAXChatEncoding::unicodeChar("\\1")', $str);
-			$str = preg_replace('~&#x([0-9a-f]+);~ei', 'AJAXChatEncoding::unicodeChar(hexdec("\\1"))', $str);
+			$str = preg_replace_callback('~&#([0-9]+);~', fn($matches) => AJAXChatEncoding::unicodeChar("\x01"), (string) $str);
+			$str = preg_replace_callback('~&#x([0-9a-f]+);~i', fn($matches) => AJAXChatEncoding::unicodeChar(hexdec("\x01")), $str);
 			// Replace literal entities:
-			$htmlEntitiesMap = $htmlEntitiesMap ? $htmlEntitiesMap : array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES));
+			$htmlEntitiesMap = $htmlEntitiesMap ?: array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES));
 			$str = strtr($str, $htmlEntitiesMap);
 		}
 		return $str;
 	}
 
-	public static function unicodeChar($c) {
+	public static function unicodeChar($c): ?string {
 		if($c <= 0x7F) {
 			return chr($c);
 		} else if($c <= 0x7FF) {
@@ -129,9 +166,9 @@ class AJAXChatEncoding {
 		}
 	}
 
-	public static function removeUnsafeCharacters($str) {
+	public static function removeUnsafeCharacters($str): string|array|null {
 		// Remove NO-WS-CTL, non-whitespace control characters (RFC 2822), decimal 1–8, 11–12, 14–31, and 127:
-		return preg_replace(AJAXChatEncoding::getRegExp_NO_WS_CTL(), '', $str);
+		return preg_replace(AJAXChatEncoding::getRegExp_NO_WS_CTL(), '', (string) $str);
 	}
 
 }

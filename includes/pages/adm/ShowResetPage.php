@@ -17,7 +17,7 @@
 
 if ($USER['id'] != ROOT_USER || $_GET['sid'] != session_id()) exit;
 
-function ShowResetPage()
+function ShowResetPage(): void
 {
 	global $LNG, $reslist, $resource;
 	$template	= new template();
@@ -148,41 +148,7 @@ function ShowResetPage()
 		exit;
 	}
 
-	$template->assign_vars(array(	
-		'button_submit'						=> $LNG['button_submit'],
-		're_reset_universe_confirmation'	=> $LNG['re_reset_universe_confirmation'],
-		're_reset_all'						=> $LNG['re_reset_all'],
-		're_reset_all'						=> $LNG['re_reset_all'],
-		're_defenses_and_ships'				=> $LNG['re_defenses_and_ships'],
-		're_reset_buldings'					=> $LNG['re_reset_buldings'],
-		're_buildings_lu'					=> $LNG['re_buildings_lu'],
-		're_buildings_pl'					=> $LNG['re_buildings_pl'],
-		're_buldings'						=> $LNG['re_buldings'],
-		're_reset_hangar'					=> $LNG['re_reset_hangar'],
-		're_ships'							=> $LNG['re_ships'],
-		're_defenses'						=> $LNG['re_defenses'],
-		're_resources_met_cry'				=> $LNG['re_resources_met_cry'],
-		're_resources_dark'					=> $LNG['re_resources_dark'],
-		're_resources'						=> $LNG['re_resources'],
-		're_reset_invest'					=> $LNG['re_reset_invest'],
-		're_investigations'					=> $LNG['re_investigations'],
-		're_ofici'							=> $LNG['re_ofici'],
-		're_inve_ofis'						=> $LNG['re_inve_ofis'],
-		're_reset_statpoints'				=> $LNG['re_reset_statpoints'],
-		're_reset_messages'					=> $LNG['re_reset_messages'],
-		're_reset_banned'					=> $LNG['re_reset_banned'],
-		're_reset_errors'					=> $LNG['re_reset_errors'],
-		're_reset_fleets'					=> $LNG['re_reset_fleets'],
-		're_reset_allys'					=> $LNG['re_reset_allys'],
-		're_reset_buddies'					=> $LNG['re_reset_buddies'],
-		're_reset_rw'						=> $LNG['re_reset_rw'],
-		're_reset_notes'					=> $LNG['re_reset_notes'],
-		're_reset_moons'					=> $LNG['re_reset_moons'],
-		're_reset_planets'					=> $LNG['re_reset_planets'],
-		're_reset_player'					=> $LNG['re_reset_player'],
-		're_player_and_planets'				=> $LNG['re_player_and_planets'],
-		're_general'						=> $LNG['re_general'],
-	));
+	$template->assign_vars(['button_submit'						=> $LNG['button_submit'], 're_reset_universe_confirmation'	=> $LNG['re_reset_universe_confirmation'], 're_reset_all'						=> $LNG['re_reset_all'], 're_reset_all'						=> $LNG['re_reset_all'], 're_defenses_and_ships'				=> $LNG['re_defenses_and_ships'], 're_reset_buldings'					=> $LNG['re_reset_buldings'], 're_buildings_lu'					=> $LNG['re_buildings_lu'], 're_buildings_pl'					=> $LNG['re_buildings_pl'], 're_buldings'						=> $LNG['re_buldings'], 're_reset_hangar'					=> $LNG['re_reset_hangar'], 're_ships'							=> $LNG['re_ships'], 're_defenses'						=> $LNG['re_defenses'], 're_resources_met_cry'				=> $LNG['re_resources_met_cry'], 're_resources_dark'					=> $LNG['re_resources_dark'], 're_resources'						=> $LNG['re_resources'], 're_reset_invest'					=> $LNG['re_reset_invest'], 're_investigations'					=> $LNG['re_investigations'], 're_ofici'							=> $LNG['re_ofici'], 're_inve_ofis'						=> $LNG['re_inve_ofis'], 're_reset_statpoints'				=> $LNG['re_reset_statpoints'], 're_reset_messages'					=> $LNG['re_reset_messages'], 're_reset_banned'					=> $LNG['re_reset_banned'], 're_reset_errors'					=> $LNG['re_reset_errors'], 're_reset_fleets'					=> $LNG['re_reset_fleets'], 're_reset_allys'					=> $LNG['re_reset_allys'], 're_reset_buddies'					=> $LNG['re_reset_buddies'], 're_reset_rw'						=> $LNG['re_reset_rw'], 're_reset_notes'					=> $LNG['re_reset_notes'], 're_reset_moons'					=> $LNG['re_reset_moons'], 're_reset_planets'					=> $LNG['re_reset_planets'], 're_reset_player'					=> $LNG['re_reset_player'], 're_player_and_planets'				=> $LNG['re_player_and_planets'], 're_general'						=> $LNG['re_general']]);
 	
 	$template->show('ResetPage.tpl');
 }

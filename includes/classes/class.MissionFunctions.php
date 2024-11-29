@@ -18,17 +18,17 @@
 class MissionFunctions
 {	
 	public $kill	= 0;
-	public $_fleet	= array();
-	public $_upd	= array();
+	public $_fleet	= [];
+	public $_upd	= [];
 	public $eventTime	= 0;
 	
-	function UpdateFleet($Option, $Value)
+	function UpdateFleet($Option, $Value): void
 	{
 		$this->_fleet[$Option] = $Value;
 		$this->_upd[$Option] = $Value;
 	}
 
-	function setState($Value)
+	function setState($Value): void
 	{
 		$this->_fleet['fleet_mess'] = $Value;
 		$this->_upd['fleet_mess']	= $Value;
@@ -47,14 +47,14 @@ class MissionFunctions
 		}
 	}
 	
-	function SaveFleet()
+	function SaveFleet(): void
 	{
 		if($this->kill == 1)
 			return;
 			
-		$param	= array();
+		$param	= [];
 
-		$updateQuery	= array();
+		$updateQuery	= [];
 
 		foreach($this->_upd as $Opt => $Val)
 		{
@@ -69,28 +69,19 @@ class MissionFunctions
 			Database::get()->update($sql, $param);
 
 			$sql	= 'UPDATE %%FLEETS_EVENT%% SET time = :time WHERE `fleetID` = :fleetId;';
-			Database::get()->update($sql, array(
-				':time'		=> $this->eventTime,
-				':fleetId'	=> $this->_fleet['fleet_id']
-			));
+			Database::get()->update($sql, [':time'		=> $this->eventTime, ':fleetId'	=> $this->_fleet['fleet_id']]);
 		}
 	}
 		
-	function RestoreFleet($onStart = true)
+	function RestoreFleet($onStart = true): void
 	{
 		global $resource;
 
 		$fleetData		= FleetFunctions::unserialize($this->_fleet['fleet_array']);
 
-		$updateQuery	= array();
+		$updateQuery	= [];
 
-		$param	= array(
-			':metal'		=> $this->_fleet['fleet_resource_metal'],
-			':crystal'		=> $this->_fleet['fleet_resource_crystal'],
-			':deuterium'	=> $this->_fleet['fleet_resource_deuterium'],
-			':darkmatter'	=> $this->_fleet['fleet_resource_darkmatter'],
-			':planetId'		=> $onStart == true ? $this->_fleet['fleet_start_id'] : $this->_fleet['fleet_end_id']
-		);
+		$param	= [':metal'		=> $this->_fleet['fleet_resource_metal'], ':crystal'		=> $this->_fleet['fleet_resource_crystal'], ':deuterium'	=> $this->_fleet['fleet_resource_deuterium'], ':darkmatter'	=> $this->_fleet['fleet_resource_darkmatter'], ':planetId'		=> $onStart == true ? $this->_fleet['fleet_start_id'] : $this->_fleet['fleet_end_id']];
 
 		foreach ($fleetData as $shipId => $shipAmount)
 		{
@@ -111,7 +102,7 @@ class MissionFunctions
 		$this->KillFleet();
 	}
 	
-	function StoreGoodsToPlanet($onStart = false)
+	function StoreGoodsToPlanet($onStart = false): void
 	{
 		$sql  = 'UPDATE %%PLANETS%% as p, %%USERS%% as u SET
 		`metal`			= `metal` + :metal,
@@ -120,43 +111,33 @@ class MissionFunctions
 		`darkmatter`	= `darkmatter` + :darkmatter
 		WHERE p.`id` = :planetId AND u.id = p.id_owner;';
 
-		Database::get()->update($sql, array(
-			':metal'		=> $this->_fleet['fleet_resource_metal'],
-			':crystal'		=> $this->_fleet['fleet_resource_crystal'],
-			':deuterium'	=> $this->_fleet['fleet_resource_deuterium'],
-			':darkmatter'	=> $this->_fleet['fleet_resource_darkmatter'],
-		 	':planetId'		=> ($onStart == true ? $this->_fleet['fleet_start_id'] : $this->_fleet['fleet_end_id'])
-		));
+		Database::get()->update($sql, [':metal'		=> $this->_fleet['fleet_resource_metal'], ':crystal'		=> $this->_fleet['fleet_resource_crystal'], ':deuterium'	=> $this->_fleet['fleet_resource_deuterium'], ':darkmatter'	=> $this->_fleet['fleet_resource_darkmatter'], ':planetId'		=> ($onStart == true ? $this->_fleet['fleet_start_id'] : $this->_fleet['fleet_end_id'])]);
 
 		$this->UpdateFleet('fleet_resource_metal', '0');
 		$this->UpdateFleet('fleet_resource_crystal', '0');
 		$this->UpdateFleet('fleet_resource_deuterium', '0');
 	}
 	
-	function KillFleet()
+	function KillFleet(): void
 	{
 		$this->kill	= 1;
 		$sql	= 'DELETE %%FLEETS%%, %%FLEETS_EVENT%%
 		FROM %%FLEETS%% LEFT JOIN %%FLEETS_EVENT%% on fleet_id = fleetId
 		WHERE `fleet_id` = :fleetId';
 
-		Database::get()->delete($sql, array(
-			':fleetId'	=> $this->_fleet['fleet_id']
-		));
+		Database::get()->delete($sql, [':fleetId'	=> $this->_fleet['fleet_id']]);
 	}
 	
-	function getLanguage($language = NULL, $userID = NULL)
+	function getLanguage($language = NULL, $userID = NULL): \Language
 	{
 		if(is_null($language) && !is_null($userID))
 		{
 			$sql		= 'SELECT lang FROM %%USERS%% WHERE id = :userId;';
-			$language	= Database::get()->selectSingle($sql, array(
-				':userId' => $this->_fleet['fleet_owner']
-			), 'lang');
+			$language	= Database::get()->selectSingle($sql, [':userId' => $this->_fleet['fleet_owner']], 'lang');
 		}
 		
 		$LNG		= new Language($language);
-		$LNG->includeData(array('L18N', 'FLEET', 'TECH', 'CUSTOM'));
+		$LNG->includeData(['L18N', 'FLEET', 'TECH', 'CUSTOM']);
 		return $LNG;
 	}
 }

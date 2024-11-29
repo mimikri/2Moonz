@@ -22,7 +22,7 @@ class ShowBoardPage extends AbstractLoginPage
 		parent::__construct();
 	}
 
-	function show()
+	function show(): void
 	{
 		global $LNG;
 		$boardUrl	= Config::get()->forum_url;

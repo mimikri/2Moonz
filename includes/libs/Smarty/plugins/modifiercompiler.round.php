@@ -18,6 +18,6 @@
  *
  * @return string with compiled code
  */
-function smarty_modifiercompiler_round($params) {
+function smarty_modifiercompiler_round($params): string {
     return 'round((float) ' . $params[0] . ', (int) ' . ($params[1] ?? 0) . ', (int) ' . ($params[2] ?? PHP_ROUND_HALF_UP) . ')';
 }

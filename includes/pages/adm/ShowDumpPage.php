@@ -20,13 +20,13 @@ if ($USER['authlevel'] == AUTH_USR)
 	throw new PagePermissionException("Permission error!");
 }
 
-function ShowDumpPage()
+function ShowDumpPage(): void
 {
 	global $LNG;
 	switch(empty($_REQUEST['action']) ? '' : $_REQUEST['action'])
 	{
 		case 'dump':
-			$dbTables	= HTTP::_GP('dbtables', array());
+			$dbTables	= HTTP::_GP('dbtables', []);
 			if(empty($dbTables)) {
 				$template	= new template();
 				$template->message($LNG['du_not_tables_selected']);
@@ -47,16 +47,16 @@ function ShowDumpPage()
 		default:
 			$dumpData['perRequest']		= 100;
 
-			$dumpData		= array();
+			$dumpData		= [];
 
-			$prefixCounts	= strlen(DB_PREFIX);
+			$prefixCounts	= strlen((string) DB_PREFIX);
 
-			$dumpData['sqlTables']	= array();
+			$dumpData['sqlTables']	= [];
 			$sqlTableRaw			= $GLOBALS['DATABASE']->query("SHOW TABLE STATUS FROM `".DB_NAME."`;");
 
 			while($table = $GLOBALS['DATABASE']->fetchArray($sqlTableRaw))
 			{
-				if(DB_PREFIX == substr($table['Name'], 0, $prefixCounts))
+				if(DB_PREFIX == substr((string) $table['Name'], 0, $prefixCounts))
 				{
 					$dumpData['sqlTables'][]	= $table['Name'];
 				}
@@ -64,9 +64,7 @@ function ShowDumpPage()
 
 			$template	= new template();
 
-			$template->assign_vars(array(	
-				'dumpData'	=> $dumpData,
-			));
+			$template->assign_vars(['dumpData'	=> $dumpData]);
 			
 			$template->show('DumpPage.tpl');
 		break;

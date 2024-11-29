@@ -39,7 +39,44 @@ define("CYTS_BUILD", "DELTA");
  * @package CYTS-DELTA
  */
 class cyts {
-/**
+public $sCon;
+ public $debug;
+ /**
+  * @var false
+  */
+ public $server;
+ /**
+  * @var bool|int
+  */
+ public $tcp;
+ /**
+  * @var false
+  */
+ public $udp;
+ /**
+  * @var false
+  */
+ public $isAdmin;
+ /**
+  * @var false
+  */
+ public $user;
+ /**
+  * @var false
+  */
+ public $pass;
+ /**
+  * @var false
+  */
+ public $isSAdmin;
+ public $wiCookie;
+ /**
+  * @var false
+  */
+ public $wiPort;
+ public $uList;
+ public $cList;
+ /**
   * connect: Connects to a given TS-Server
   *
   * @author     Steven Barth
@@ -51,10 +88,10 @@ class cyts {
   * @param		integer $sTimeout Socket timeout in seconds
   * @return     boolean status
   */
-	function connect($sIP, $sTCP, $sUDP = false, $sTimeout = 3) {
+	function connect($sIP, $sTCP, $sUDP = false, $sTimeout = 3): bool {
 		$this->__construct();
 		if (!$this->sCon = @fsockopen($sIP, $sTCP, $errNo, $errStr, $sTimeout)) {
-			$this->debug[] = array("cmd" => "", "rpl" => $errStr);
+			$this->debug[] = ["cmd" => "", "rpl" => $errStr];
 			return false;
 		}
 		
@@ -81,7 +118,7 @@ class cyts {
   * @version    2.0
   * @access		public
   */
-	function disconnect() {
+	function disconnect(): void {
 		if (is_resource($this->sCon))
 			fclose($this->sCon);
 		$this->__construct();
@@ -97,7 +134,7 @@ class cyts {
   * @param		string $sPass		Password
   * @return		boolean success
   */	
-	function login($sUser, $sPass) {
+	function login($sUser, $sPass): bool {
 		if ($this->_fastcall("LOGIN $sUser $sPass") != CYTS_OK)
 			return false;
 		if ($this->_fastcall("REMOVECLIENT") == CYTS_INVALID_PARAM)
@@ -119,7 +156,7 @@ class cyts {
   * @param		string $sPass		Password
   * @return		boolean success
   */	
-	function slogin($sUser, $sPass) {
+	function slogin($sUser, $sPass): bool {
 		if ($this->_fastcall("SLOGIN $sUser $sPass") != CYTS_OK)
 			return false;
 		$this->isAdmin  = true;
@@ -138,11 +175,11 @@ class cyts {
   * @param		string $wiPort		WebInterface-Port
   * @return		boolean success
   */	
-	function wi_login($wiPort=14534, $sTimeout=3) {
+	function wi_login($wiPort=14534, $sTimeout=3): bool {
 		if ($this->isSAdmin) {
 			$this->wiCookie = false;
 			$this->wiPort   = $wiPort;
-			$sRet = $this->_wipost("/login.tscmd", array("username" => $this->user, "password" => $this->pass, "superadmin" => 1), $sTimeout);
+			$sRet = $this->_wipost("/login.tscmd", ["username" => $this->user, "password" => $this->pass, "superadmin" => 1], $sTimeout);
 			if (!$sRet || !isset($sRet[0]["Location"]) || $sRet[0]["Location"] != "index.html" || !isset($sRet[0]["Set-Cookie"])) {
 				$this->wiPort = false;
 				return false;
@@ -156,7 +193,7 @@ class cyts {
 		} elseif ($this->isAdmin) {
 			$this->wiCookie = false;
 			$this->wiPort   = $wiPort;
-			$sRet = $this->_wipost("/login.tscmd", array("username" => $this->user, "password" => $this->pass, "serverport" => $this->udp), $sTimeout);
+			$sRet = $this->_wipost("/login.tscmd", ["username" => $this->user, "password" => $this->pass, "serverport" => $this->udp], $sTimeout);
 			if (!$sRet || !isset($sRet[0]["Location"]) || $sRet[0]["Location"] != "index.html" || !isset($sRet[0]["Set-Cookie"])) {
 				$this->wiPort = false;
 				return false;
@@ -248,7 +285,7 @@ class cyts {
   * @param 		integer $sUDP	The subserver UDP-Port
   * @return		boolean success
   */
-  	function select($sUDP) {
+  	function select($sUDP): bool {
 		if ($this->_extendcall("SEL $sUDP") == CYTS_OK) {
 			$this->udp = $sUDP;
 			return true;
@@ -284,14 +321,14 @@ class cyts {
   * @access		public
   * @return     array multi-dimensional array with player data
   */
-	function info_playerList() {
+	function info_playerList(): array|false {
 		if (is_array($this->uList)) return $this->uList;
 		if (!$sRes = $this->_fastcall("PL")) return false;
 		if ($sRes == CYTS_INVALID_PARAM) return false;
 		$sList = explode("\r\n", $sRes); 
 		array_shift($sList);
-		$uList = array();
-		$uKeys = array('unparsed', 'p_id', 'c_id', 'ps', 'bs', 'pr', 'br', 'pl', 'ping', 'logintime', 'idletime', 'cprivs', 'pprivs', 'pflags', 'ip', 'nick', 'loginname');
+		$uList = [];
+		$uKeys = ['unparsed', 'p_id', 'c_id', 'ps', 'bs', 'pr', 'br', 'pl', 'ping', 'logintime', 'idletime', 'cprivs', 'pprivs', 'pflags', 'ip', 'nick', 'loginname'];
 		foreach ($sList as $row)
 			if (strstr($row, "\t")) {
 				$res = explode("\t", $row);
@@ -320,7 +357,7 @@ class cyts {
   */
 	function info_playerNameList() {
 		if (!$pList = $this->info_playerList()) return false;
-		$nList = array();
+		$nList = [];
 		foreach ($pList as $player) {
 			$pID = $player[1];
 			$pNAME = $player[15];
@@ -350,14 +387,14 @@ class cyts {
   * @see		info_getCodec(), for getting a codecs name by its id
   * @return     array multi-dimensional array with channel data
   */
-	function info_channelList() {
+	function info_channelList(): array|false {
 		if (is_array($this->cList)) return $this->cList;
 		if (!$sRes = $this->_fastcall("CL")) return false;
 		if ($sRes == CYTS_INVALID_PARAM) return false;
 		$sList = explode("\r\n", $sRes);
 		array_shift($sList);
-		$cList = array();
-		$cKeys = array('unparsed', 'id', 'codec', 'parent', 'order', 'maxusers', 'name', 'flags', 'password', 'topic');
+		$cList = [];
+		$cKeys = ['unparsed', 'id', 'codec', 'parent', 'order', 'maxusers', 'name', 'flags', 'password', 'topic'];
 		foreach ($sList as $row)
 			if (strstr($row, "\t")) {
 				$res = explode("\t", $row);
@@ -385,7 +422,7 @@ class cyts {
   */
 	function info_channelNameList() {
 		if (!$cList = $this->info_channelList()) return false;
-		$nList = array();
+		$nList = [];
 		foreach ($cList as $channel) {
 			$cID = $channel[1];
 			$cNAME = $channel[6];
@@ -473,7 +510,7 @@ class cyts {
   * @param      integer	$pID	The Player ID 
   * @return     away, sndmuted, micmuted, chancmd, player or false at failure
   */
-	function info_playerImage($pID) {
+	function info_playerImage($pID): false|string {
 		if (!$pList = $this->info_playerList()) return false;
 		$pPFlag = false;
 		foreach ($pList as $player)
@@ -504,7 +541,7 @@ class cyts {
   * @return     codecname or false at failure
   */
 	function info_getCodec($cID) {
-		$codec = array();
+		$codec = [];
 		$codec[] = "CELP 5.1 Kbit";
 		$codec[] = "CELP 6.3 Kbit";
 		$codec[] = "GSM 14.8 Kbit";
@@ -530,10 +567,10 @@ class cyts {
   * @access		public
   * @return		array server list, false at failure
   */
-  	function info_serverList() {  
+  	function info_serverList(): false|array {  
 		if (!$sRead = $this->_fastcall("SL")) return false;
 		$sRead = explode("\r\n", $sRead);
-		$sList = array();
+		$sList = [];
 		foreach ($sRead as $rLine) {
 			if (preg_match('/([0-9]+)/', $rLine, $match)) {
 				$sID = $match[1];
@@ -555,7 +592,7 @@ class cyts {
 		if (!$sList = $this->info_serverList()) return false;
 		if ($this->udp)
 			$sUDP = $this->udp;
-		$sData = array();
+		$sData = [];
 		$sQry  = '';
 		foreach ($sList as $sID) {
 			$this->select($sID);
@@ -597,11 +634,11 @@ class cyts {
   * @access		public
   * @return     array serverinformation
   */
-	function info_serverInfo() {
+	function info_serverInfo(): false|array {
 		if (!$sRead = $this->_fastcall("SI")) return false;
 		$sRead .= $this->_fastcall("GAPL");
 		$sRead = explode("\r\n", $sRead);
-		$sInfo = array();
+		$sInfo = [];
 		foreach ($sRead as $rLine) {
 			if (strstr($rLine, "=")) {
 				$match = explode("=", trim($rLine), 2);
@@ -641,10 +678,10 @@ class cyts {
   * @access		public
   * @return     array serverinformation
   */
-	function info_globalInfo() {
+	function info_globalInfo(): false|array {
 		if (!$sRead = $this->_fastcall("GI")) return false;
 		$sRead = explode("\r\n", $sRead);
-		$sInfo = array();
+		$sInfo = [];
 		foreach ($sRead as $line) {
 			if (preg_match('/([a-z_]+)=(.*)/', $line, $match)) {
 				$key = $match[1];
@@ -682,9 +719,9 @@ class cyts {
   * @see		getPlayers(), for an array description
   * @return     array user list, false at failure
   */	
-	function info_channelUser($cID) {
+	function info_channelUser($cID): false|array {
 		if (!$pList = $this->info_playerList()) return false;
-		$cList = array();
+		$cList = [];
 		foreach ($pList as $user) {
 			if ($user[2] == $cID) $cList[] = $user;
 		}
@@ -702,16 +739,16 @@ class cyts {
   * @param		boolean $oStr	Output as a string, if not as an array
   * @return     array array flags, false at failure
   */	
-	function info_translateFlag($vFlag, $fType = 1, $oStr = false) {
+	function info_translateFlag($vFlag, $fType = 1, $oStr = false): false|array|string {
 		if ($fType != 1 && $fType != 2 && $fType != 3 && $fType != 4 && $fType != 5) return false;
-		$decode = array();
-		$decode[1] = array("CA", "O", "V", "AO", "AV");							//1 - See getPlayers() [11]
-		$decode[2] = array("SA", "AR", "R", "", "ST");							//2 - See getPlayers() [12]
-		$decode[3] = array("CC", "VR", "NW", "AW", "MM", "SM", "RC");			//3 - See getPlayers() [13]
-		$decode[4] = array("U", "M", "P", "S", "D");							//4 - See getChannels() [7]
-		$decode[5] = array("UU", "RU", "UC", "RC");								//5 - Internal for KickIdler
+		$decode = [];
+		$decode[1] = ["CA", "O", "V", "AO", "AV"];							//1 - See getPlayers() [11]
+		$decode[2] = ["SA", "AR", "R", "", "ST"];							//2 - See getPlayers() [12]
+		$decode[3] = ["CC", "VR", "NW", "AW", "MM", "SM", "RC"];			//3 - See getPlayers() [13]
+		$decode[4] = ["U", "M", "P", "S", "D"];							//4 - See getChannels() [7]
+		$decode[5] = ["UU", "RU", "UC", "RC"];								//5 - Internal for KickIdler
 		$uDec = $decode[$fType];
-		$cFlags = array();
+		$cFlags = [];
 		$cnt = 0;
 		while ($vFlag > 0) {
 			$nKey = $uDec[$cnt];
@@ -728,7 +765,7 @@ class cyts {
 		if (!$oStr)
 			return $cFlags;
 		
-		$rFlag = array();
+		$rFlag = [];
 		if ($fType == 4 && !$cFlags["U"])
 			$rFlag[] = "R";
 		foreach ($cFlags as $key => $val) {
@@ -764,7 +801,7 @@ class cyts {
   * @see		info_getPlayerByName(), to get a player's id from its username
   * @return     boolean True at success, False at failure
   */
-	function admin_kick($pID, $reason="") {
+	function admin_kick($pID, $reason=""): bool {
 		return ($this->_extendcall("KICK $pID $reason") == CYTS_OK);
 	}
 	
@@ -778,7 +815,7 @@ class cyts {
   * @see		info_getPlayerByName(), to get a player's id from its username
   * @return     boolean True at success, False at failure
   */
-	function admin_remove($pID) {
+	function admin_remove($pID): bool {
 		return ($this->_extendcall("REMOVECLIENT $pID") == CYTS_OK);
 	}
 	
@@ -794,7 +831,7 @@ class cyts {
   * @see		info_getChannelByName(), to get a channel's id from its name
   * @return     boolean True at success, False at failure
   */
-	function admin_move($pID, $cID) {
+	function admin_move($pID, $cID): bool {
 		return ($this->_extendcall("MPTC $cID $pID") == CYTS_OK);
 	}
 	
@@ -810,7 +847,7 @@ class cyts {
   * @see		info_getChannelByName(), to get a channel's id from its name
   * @return		boolean success
   */
-	function admin_clearChannel($cID, $kMode = 1, $param = NULL) {
+	function admin_clearChannel($cID, $kMode = 1, mixed $param = NULL) {
 		$cList = $this->info_channelUser($cID);
 		if ((!$param || !is_array($this->info_channelUser($param))) && $kMode == 1) {
 			if (!$param = $this->info_defaultChannel()) return false; //Use the default channel if $param is invalid
@@ -845,7 +882,7 @@ class cyts {
   * @param      mixed	$param	The target channel ID if $kMode = 1 or the reason if $kMode = 2
   * @return		integer affected users, 0 at failure
   */
-	function admin_kickIdler($tIdle, $tFlag, $kMode = 1, $param = NULL) {
+	function admin_kickIdler($tIdle, $tFlag, $kMode = 1, mixed $param = NULL): false|int {
 		if (!$uList = $this->info_playerList()) return false;
 		
 		if ((!$param || !$this->info_channelInfo($param)) && $kMode == CYTS_MOVE) {
@@ -896,11 +933,11 @@ class cyts {
   * @access		public
   * @return     array user list
   */	
-	function admin_dbUserList() {
+	function admin_dbUserList(): false|array {
 		if (!$uRead = $this->_fastcall("DBUSERLIST")) return false;
 		$uPattern = '/^([0-9]+)\t(.*)\t(.*)\t(.*)\t"(.*)"$/';
 		$uRead = explode("\r\n", $uRead);
-		$cList = array();
+		$cList = [];
 		foreach ($uRead as $row) {
 			if (preg_match($uPattern, $row, $match))
 				$cList[] = $match;
@@ -953,7 +990,7 @@ class cyts {
   * @param		boolean	$lSA	Server Admin
   * @return     boolean success
   */	
-	function admin_dbUserAdd($lName, $lPass, $lSA = false) {
+	function admin_dbUserAdd($lName, $lPass, $lSA = false): bool {
 		$lSA = ($lSA) ? 1 : 0;
 		return ($this->_fastcall("DBUSERADD $lName $lPass $lPass $lSA") == CYTS_OK);
 	}
@@ -967,7 +1004,7 @@ class cyts {
   * @param		integer	$uID	UserID
   * @return     boolean success
   */	
-	function admin_dbUserDel($uID) {
+	function admin_dbUserDel($uID): bool {
 		return ($this->_fastcall("DBUSERDEL $uID") == CYTS_OK);
 	}
 	
@@ -981,7 +1018,7 @@ class cyts {
   * @param		string	$uPW	User password
   * @return     boolean success
   */	
-	function admin_dbUserChangePW($uID, $uPW) {
+	function admin_dbUserChangePW($uID, $uPW): bool {
 		return ($this->_fastcall("DBUSERCHANGEPW $uID $uPW $uPW") == CYTS_OK);
 	}
 
@@ -996,7 +1033,7 @@ class cyts {
   * @param		boolean	$uSA	Server admin status (1 - True, 0 - False)
   * @return     boolean success
   */	
-	function admin_dbUserChangeSA($uID, $uSA = false) {
+	function admin_dbUserChangeSA($uID, $uSA = false): bool {
 		$uSA = ($uSA) ? 1 : 0;
 		return ($this->_fastcall("DBUSERCHANGEATTRIBS $uID $uSA") == CYTS_OK);
 	}
@@ -1015,11 +1052,11 @@ class cyts {
   * @access		public
   * @return     array user list
   */	
-	function sadmin_dbSUserList() {
+	function sadmin_dbSUserList(): false|array {
 		if (!$uRead = $this->_fastcall("DBSUSERLIST")) return false;
 		$uPattern = '/^([0-9]+)\t(.*)\t(.*)\t"(.*)"$/';
 		$uRead = explode("\r\n", $uRead);
-		$cList = array();
+		$cList = [];
 		foreach ($uRead as $row) {
 			if (preg_match($uPattern, $row, $match))
 				$cList[] = $match;
@@ -1072,7 +1109,7 @@ class cyts {
   * @param		boolean	$lSA	Server Admin
   * @return     boolean success
   */	
-	function sadmin_dbSUserAdd($lName, $lPass) {
+	function sadmin_dbSUserAdd($lName, $lPass): bool {
 		return ($this->_fastcall("DBSUSERADD $lName $lPass $lPass") == CYTS_OK);
 	}
 	
@@ -1085,7 +1122,7 @@ class cyts {
   * @param		integer	$uID	UserID
   * @return     boolean success
   */	
-	function sadmin_dbSUserDel($uID) {
+	function sadmin_dbSUserDel($uID): bool {
 		return ($this->_fastcall("DBSUSERDEL $uID") == CYTS_OK);
 	}
 	
@@ -1099,7 +1136,7 @@ class cyts {
   * @param		string	$uPW	User password
   * @return     boolean success
   */	
-	function sadmin_dbSUserChangePW($uID, $uPW) {
+	function sadmin_dbSUserChangePW($uID, $uPW): bool {
 		return ($this->_fastcall("DBSUSERCHANGEPW $uID $uPW $uPW") == CYTS_OK);
 	}
 	
@@ -1114,7 +1151,7 @@ class cyts {
   * @param		boolean	$uHide	Hide Loginname
   * @return     boolean success
   */	
-	function sadmin_messageServer($sMsg, $uHide = false) {
+	function sadmin_messageServer($sMsg, $uHide = false): bool {
 		$sMsg = ($uHide) ? "@".$sMsg : $sMsg;
 		return ($this->_fastcall("MSG $sMsg") == CYTS_OK);
 	}
@@ -1131,7 +1168,7 @@ class cyts {
   * @param		boolean	$uHide	Hide Loginname
   * @return     boolean success
   */	
-	function sadmin_messageUser($uID, $sMsg, $uHide = false) {
+	function sadmin_messageUser($uID, $sMsg, $uHide = false): bool {
 		$sMsg = ($uHide) ? "@".$sMsg : $sMsg;
 		return ($this->_fastcall("MSGU $uID $sMsg") == CYTS_OK);
 	}
@@ -1147,7 +1184,7 @@ class cyts {
   * @param		boolean	$uHide	Hide Loginname
   * @return     boolean success
   */	
-	function sadmin_messageAll($sMsg, $uHide = false) {
+	function sadmin_messageAll($sMsg, $uHide = false): bool {
 		$sMsg = ($uHide) ? "@".$sMsg : $sMsg;
 		return ($this->_fastcall("MSGALL $sMsg") == CYTS_OK);
 	}
@@ -1162,11 +1199,11 @@ class cyts {
   * @param		string	$sQuery	Suchstring
   * @return     array search matches
   */	
-	function sadmin_findChannel($sQuery) {
+	function sadmin_findChannel($sQuery): false|array {
 		if (!$uRead = $this->_fastcall("FC $sQuery")) return false;
 		$uPattern = '/^([0-9]+)\t([0-9]+)\t(.*)$/';
 		$uRead = explode("\r\n", $uRead);
-		$cList = array();
+		$cList = [];
 		foreach ($uRead as $row) {
 			if (preg_match($uPattern, $row, $match))
 				$cList[] = $match;
@@ -1184,11 +1221,11 @@ class cyts {
   * @param		string	$sQuery	Suchstring
   * @return     array search matches
   */	
-	function sadmin_findPlayer($sQuery) {
+	function sadmin_findPlayer($sQuery): false|array {
 		if (!$uRead = $this->_fastcall("FP $sQuery")) return false;
 		$uPattern = '/^([0-9]+)\t([0-9]+)\t([0-9]+)\t"(.*)"\t"(.*)"\t"(.*)"\t$/';
 		$uRead = explode("\r\n", $uRead);
-		$cList = array();
+		$cList = [];
 		foreach ($uRead as $row) {
 			if (preg_match($uPattern, $row, $match))
 				$cList[] = $match;
@@ -1238,14 +1275,14 @@ class cyts {
   * @param		integer	$cID	Channel ID
   * @return     array channel information
   */	
-	function sadmin_channelInfo($cID) {
+	function sadmin_channelInfo($cID): false|array {
 		if (!$uRead = $this->_fastcall("CI $cID")) return false;
 		$cPattern = '/^([0-9]+)\t(.*)\t([0-9]+)\t"(.*)"\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t(.*)\t"(.*)"\t"(.*)"\t$/';
 		$uPattern = '/^([0-9]+)\t"(.*)"\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t$/';
-		$cKeys = array('unparsed', 'c_id', 'c_pid', 'c_dbid', 'c_name', 'c_fU', 'c_fM', 'c_fP', 'c_fH', 'c_fD', 'c_codec', 'c_order', 'c_maxusers', 'c_created', 'c_topic', 'c_description');
-		$uKeys = array('unparsed', 'p_id', 'p_nick', 'sa', 'ca', 'o', 'ao', 'v', 'av', 'cst', 'reg');
+		$cKeys = ['unparsed', 'c_id', 'c_pid', 'c_dbid', 'c_name', 'c_fU', 'c_fM', 'c_fP', 'c_fH', 'c_fD', 'c_codec', 'c_order', 'c_maxusers', 'c_created', 'c_topic', 'c_description'];
+		$uKeys = ['unparsed', 'p_id', 'p_nick', 'sa', 'ca', 'o', 'ao', 'v', 'av', 'cst', 'reg'];
 		$uRead = explode("\r\n", $uRead);
-		$cList = array();
+		$cList = [];
 		foreach ($uRead as $row) {
 			if (preg_match($cPattern, $row, $match)) {
 				foreach ($match as $key => $val)
@@ -1294,14 +1331,14 @@ class cyts {
   * @param		integer	$cID	Channel ID
   * @return     array channel information
   */	
-	function sadmin_playerInfo($cID) {
+	function sadmin_playerInfo($cID): false|array {
 		if (!$uRead = $this->_fastcall("PI $cID")) return false;
 		$uPattern = '/^([0-9]+)\t([0-9]+)\t([0-9]+)\t"(.*)"\t"(.*)"\t([0-9]+)\t([0-9]+)\t"(.*)"\t$/';
-		$uKeys = array('unparsed', 'p_id', 'p_dbid', 'c_id', 'nickname', 'loginname', 'sa', 'st', 'ip');
+		$uKeys = ['unparsed', 'p_id', 'p_dbid', 'c_id', 'nickname', 'loginname', 'sa', 'st', 'ip'];
 		$cPattern = '/^([0-9]+)\t"(.*)"\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t$/';
-		$cKeys = array('unparsed', 'p_id', 'p_nick', 'sa', 'ca', 'o', 'ao', 'v', 'av');
+		$cKeys = ['unparsed', 'p_id', 'p_nick', 'sa', 'ca', 'o', 'ao', 'v', 'av'];
 		$uRead = explode("\r\n", $uRead);
-		$cList = array();
+		$cList = [];
 		foreach ($uRead as $row) {
 			if (preg_match($cPattern, $row, $match)) {
 				foreach ($match as $key => $val)
@@ -1352,14 +1389,14 @@ class cyts {
   * @param		integer	$cID	Channel Database ID
   * @return     array channel information
   */	
-	function sadmin_dbChannelInfo($cID) {
+	function sadmin_dbChannelInfo($cID): false|array {
 		if (!$uRead = $this->_fastcall("DBCI $cID")) return false;
 		$cPattern = '/^([0-9]+)\t(.*)\t"(.*)"\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t(.*)\t"(.*)"\t"(.*)"\t$/';
 		$uPattern = '/^([0-9]+)\t(.*)\t([0-9]+)\t([0-9]+)\t([0-9]+)$/';
-		$cKeys = array('unparsed', 'c_dbid', 'c_dbpid', 'c_name', 'c_fU', 'c_fM', 'c_fP', 'c_fH', 'c_fD', 'c_codec', 'c_order', 'c_maxusers', 'c_created', 'c_topic', 'c_description');
-		$uKeys = array('unparsed', 'p_dbid', 'loginname', 'ca', 'ao', 'av');
+		$cKeys = ['unparsed', 'c_dbid', 'c_dbpid', 'c_name', 'c_fU', 'c_fM', 'c_fP', 'c_fH', 'c_fD', 'c_codec', 'c_order', 'c_maxusers', 'c_created', 'c_topic', 'c_description'];
+		$uKeys = ['unparsed', 'p_dbid', 'loginname', 'ca', 'ao', 'av'];
 		$uRead = explode("\r\n", $uRead);
-		$cList = array();
+		$cList = [];
 		foreach ($uRead as $row) {
 			if (preg_match($cPattern, $row, $match)) {
 				foreach ($match as $key => $val)
@@ -1384,11 +1421,11 @@ class cyts {
   * @param		string	$sQuery	Suchstring
   * @return     array search matches
   */	
-	function sadmin_dbFindPlayer($sQuery) {
+	function sadmin_dbFindPlayer($sQuery): false|array {
 		if (!$uRead = $this->_fastcall("DBFP $sQuery")) return false;
 		$uPattern = '/^([0-9]+)\t"(.*)"\t(.*)\t(.*)\t(.*)$/';
 		$uRead = explode("\r\n", $uRead);
-		$cList = array();
+		$cList = [];
 		foreach ($uRead as $row) {
 			if (preg_match($uPattern, $row, $match))
 				$cList[] = $match;
@@ -1405,11 +1442,11 @@ class cyts {
   * @access		public
   * @return     array server list
   */	
-	function sadmin_dbServerList() {
+	function sadmin_dbServerList(): false|array {
 		if (!$uRead = $this->_fastcall("DBSERVERLIST")) return false;
 		$uRead = explode("\r\n", $uRead);
 		array_shift($uRead);
-		$cList = array();
+		$cList = [];
 		foreach ($uRead as $row) {
 			if (!strstr($row, "\t"))
 				continue;
@@ -1452,7 +1489,7 @@ class cyts {
   * @param		integer $sID serverid
   * @return     boolean status
   */	
-	function sadmin_serverStart($sID) {
+	function sadmin_serverStart($sID): bool {
 		return ($this->_fastcall("SERVERSTART $sID") == CYTS_OK);	
 	}
 	
@@ -1465,7 +1502,7 @@ class cyts {
   * @access		public
   * @return     boolean status
   */	
-	function sadmin_serverStop() {
+	function sadmin_serverStop(): bool {
 		return ($this->_fastcall("SERVERSTOP") == CYTS_OK);	
 	}
 	
@@ -1479,7 +1516,7 @@ class cyts {
   * @param		integer $sID serverid
   * @return     boolean status
   */	
-	function sadmin_serverDelete($sID) {
+	function sadmin_serverDelete($sID): bool {
 		return ($this->_fastcall("SERVERDEL $sID") == CYTS_OK);	
 	}
 	
@@ -1493,7 +1530,7 @@ class cyts {
   * @param		integer $sUDP udp-port
   * @return     boolean status
   */	
-	function sadmin_serverAdd($sUDP) {
+	function sadmin_serverAdd($sUDP): bool {
 		return ($this->_fastcall("SERVERADD $sUDP") == CYTS_OK);	
 	}
 	
@@ -1508,7 +1545,7 @@ class cyts {
   * @param		string $sVal config-value
   * @return     boolean status
   */	
-	function sadmin_serverSet($sVar, $sVal) {
+	function sadmin_serverSet($sVar, $sVal): bool {
 		return ($this->_fastcall("SERVERSET $sVar $sVal") == CYTS_OK);	
 	}
 	
@@ -1522,7 +1559,7 @@ class cyts {
   * @param		integer $lNum number of lines
   * @return     array logdata
   */	
-	function sadmin_logRead($lNum) {
+	function sadmin_logRead($lNum): array {
 		$log = explode("\r\n", $this->_fastcall("LOG $lNum"));	
 		array_pop($log);
 		array_pop($log);
@@ -1539,7 +1576,7 @@ class cyts {
   * @param		string $lQuery search querystring
   * @return     array logdata
   */	
-	function sadmin_logFind($lQuery) {
+	function sadmin_logFind($lQuery): array {
 		$log = explode("\r\n", $this->_fastcall("LOGFIND $lQuery"));	
 		array_pop($log);
 		array_pop($log);
@@ -1556,7 +1593,7 @@ class cyts {
   * @param		string $lLine line
   * @return     array logdata
   */	
-	function sadmin_logWrite($lLine) {
+	function sadmin_logWrite($lLine): bool {
 		return ($this->_fastcall("LOGMARK $lLine") == CYTS_OK);	
 	}
 	
@@ -1571,7 +1608,7 @@ class cyts {
   * @param		integer	$bTime	bantime in minutes
   * @return     boolean success
   */	
-	function sadmin_banPlayer($pID, $bTime) {
+	function sadmin_banPlayer($pID, $bTime): bool {
 		return ($this->_fastcall("BANPLAYER $pID $bTime") == CYTS_OK);	
 	}
 	
@@ -1586,7 +1623,7 @@ class cyts {
   * @param		integer	$bTime	bantime in minutes
   * @return     boolean success
   */	
-	function sadmin_banIP($pIP, $bTime) {
+	function sadmin_banIP($pIP, $bTime): bool {
 		return ($this->_fastcall("BANADD $pIP $bTime") == CYTS_OK);	
 	}
 	
@@ -1600,7 +1637,7 @@ class cyts {
   * @param		integer	$bID	banid
   * @return     boolean success
   */	
-	function sadmin_banDel($bID) {
+	function sadmin_banDel($bID): bool {
 		return ($this->_fastcall("BANDEL $bID") == CYTS_OK);	
 	}
 	
@@ -1614,7 +1651,7 @@ class cyts {
   * @param		integer	$bID	banid
   * @return     boolean success
   */	
-	function sadmin_banClear() {
+	function sadmin_banClear(): bool {
 		return ($this->_fastcall("BANCLEAR") == CYTS_OK);	
 	}
 	
@@ -1627,11 +1664,11 @@ class cyts {
   * @access		public
   * @return     array banlist
   */	
-	function sadmin_banList() {
+	function sadmin_banList(): false|array {
 		if (!$uRead = $this->_fastcall("BANLIST")) return false;
 		$uRead = explode("\r\n", $uRead);
 		array_shift($uRead);
-		$cList = array();
+		$cList = [];
 		foreach ($uRead as $row) {
 			if (!strstr($row, "\t"))
 				continue;
@@ -1655,7 +1692,7 @@ class cyts {
   * @param		string	$pVal	value
   * @return     boolean success
   */	
-	function sadmin_sppriv($pID, $sPriv, $pVal) {
+	function sadmin_sppriv($pID, $sPriv, $pVal): bool {
 		return ($this->_fastcall("SPPRIV $pID $sPriv $pVal") == CYTS_OK);	
 	}
 
@@ -1673,7 +1710,7 @@ class cyts {
 		$pattern = '/<input.*?name="([a-zA-Z0-9]+)".*?value="(.*?)".*?>/im';
 		$pattern2 = '/<input.*?name="serverudpport".*?value="(.*?)">*/im';
 		if (!preg_match_all($pattern, $sRead[1], $matches)) return false;
-		$data = array();
+		$data = [];
 		foreach ($matches[1] as $key => $val) {
 			if (strstr($matches[0][$key], 'type="checkbox"')) {
 				$data[$val] = (strstr($matches[0][$key], "checked")) ? 1 : 0;
@@ -1697,12 +1734,11 @@ class cyts {
   * @param		array $sData data to set [key => val]
   * @return     boolean success
   */		
-	function wi_writeServerSettings($sData = array()) {
+	function wi_writeServerSettings($sData = []): bool {
 		if (!$cData = $this->wi_readServerSettings()) return false;
 		$sData = array_merge($cData, $sData);
-		$sKeys  = array("servername", "serverwelcomemessage", "serverpassword", "servertype", "serverwebpostposturl", "serverwebpostlinkurl");
-		$ssKeys = array("servermaxusers", "CODECCelp51", "CODECSPEEX2150", "CODECCelp63", "CODECSPEEX3950", "CODECGSM148", "CODECSPEEX5950", "serverudpport",
-						"CODECGSM164", "CODECSPEEX8000", "CODECWindowsCELP52", "CODECSPEEX11000", "CODECSPEEX15000", "CODECSPEEX18200", "CODECSPEEX24600");
+		$sKeys  = ["servername", "serverwelcomemessage", "serverpassword", "servertype", "serverwebpostposturl", "serverwebpostlinkurl"];
+		$ssKeys = ["servermaxusers", "CODECCelp51", "CODECSPEEX2150", "CODECCelp63", "CODECSPEEX3950", "CODECGSM148", "CODECSPEEX5950", "serverudpport", "CODECGSM164", "CODECSPEEX8000", "CODECWindowsCELP52", "CODECSPEEX11000", "CODECSPEEX15000", "CODECSPEEX18200", "CODECSPEEX24600"];
 		foreach ($sData as $key => $val) {
 			if ((!in_array($key, $sKeys) && !in_array($key, $ssKeys) && $this->isSAdmin) || 
 				(!in_array($key, $sKeys) && !$this->isSAdmin) || !$this->isAdmin)
@@ -1725,12 +1761,12 @@ class cyts {
   * @access		public
   * @return     array server vars
   */	
-	function wi_readHostSettings() {
+	function wi_readHostSettings(): false|array {
 		if (!$sRead = $this->_wiget("/server_basic_settings.html")) return false;
 		$pattern = '/<input.*?name="([a-zA-Z0-9_]+)".*?value="(.*?)".*?>/im';
 		$pattern2 = '/<option value="(.*?)" selected>/im';
 		if (!preg_match_all($pattern, $sRead[1], $matches)) return false;
-		$data = array();
+		$data = [];
 		foreach ($matches[1] as $key => $val) {
 			if (strstr($matches[0][$key], 'type="checkbox"')) {
 				$data[$val] = (strstr($matches[0][$key], "checked")) ? 1 : 0;
@@ -1753,11 +1789,10 @@ class cyts {
   * @param		array $sData data to set [key => val]
   * @return     boolean success
   */		
-	function wi_writeHostSettings($sData = array()) {
+	function wi_writeHostSettings($sData = []): bool {
 		if (!$cData = $this->wi_readServerSettings()) return false;
 		$sData = array_merge($cData, $sData);
-		$ssKeys = array("basic_ispname", "basic_adminemail", "basic_isplinkurl", "basic_country", "basic_listpublic",
-			"webpost_posturl", "webpost_enabled", "spam_maxcommands", "spam_inseconds");
+		$ssKeys = ["basic_ispname", "basic_adminemail", "basic_isplinkurl", "basic_country", "basic_listpublic", "webpost_posturl", "webpost_enabled", "spam_maxcommands", "spam_inseconds"];
 		foreach ($sData as $key => $val) {
 			if (!in_array($key, $ssKeys))
 				unset($sData[$key]);
@@ -1780,14 +1815,14 @@ class cyts {
   * @param      string $class (sa | ca | op | v | r | u)
   * @return     array group permissions (permission => 0|1)
   */	
-	function wi_readGroupPermissions($class) {
+	function wi_readGroupPermissions($class): false|array {
 		$class = strtolower($class);
-		$classes = array('sa', 'ca', 'op', 'v', 'r', 'u');
+		$classes = ['sa', 'ca', 'op', 'v', 'r', 'u'];
 		if (!in_array($class, $classes, true)) return false;
 		if (!$sRead = $this->_wiget("/server_manager_permission_$class.html")) return false;
 		$pattern = '/<input.*?name="([a-zA-Z_]+)".*?value="1"(checked)*>/im';
 		if (!preg_match_all($pattern, $sRead[1], $matches)) return false;
-		$data = array();
+		$data = [];
 		foreach ($matches[1] as $key => $val) {
 			if ($matches[2][$key] == "checked")
 				$matches[2][$key] = 1;
@@ -1809,9 +1844,9 @@ class cyts {
   * @param      array	$sData	group permissions (permission => 0|1)
   * @return		boolean success
   */	
-	function wi_writeGroupPermissions($class, $sData = array()) {
+	function wi_writeGroupPermissions($class, array $sData = []): bool {
 		$class = strtolower($class);
-		$classes = array('sa', 'ca', 'op', 'v', 'r', 'u');
+		$classes = ['sa', 'ca', 'op', 'v', 'r', 'u'];
 		if (!in_array($class, $classes, true)) return false;
 		if (!$cData = $this->wi_readGroupPermissions($class)) return false;
 		foreach ($cData as $key => $val)
@@ -1856,7 +1891,7 @@ class cyts {
 		}
 
 		$this->sCon     = false;
-		$this->debug    = array();
+		$this->debug    = [];
 		$this->isAdmin  = false;
 		$this->isSAdmin = false;
 		$this->cList    = false;
@@ -1896,13 +1931,13 @@ class cyts {
 		if (!is_array($sCall)) {
 			fwrite($this->sCon, "$sCall\n");
 			$sRead = $this->_readcall();
-			$this->debug[] = array("cmd" => $sCall, "rpl" => $sRead);
+			$this->debug[] = ["cmd" => $sCall, "rpl" => $sRead];
 		} else {
-			$sRead = array();
+			$sRead = [];
 			foreach ($sCall as $sCmd) {
 				fwrite($this->sCon, "$sCmd\n");
 				$cRes = $this->_readcall();
-				$this->debug[] = array("cmd" => $sCmd, "rpl" => $cRes);
+				$this->debug[] = ["cmd" => $sCmd, "rpl" => $cRes];
 				$sRead[] = $cRes;
 				unset($cRes);
 			}
@@ -1934,7 +1969,7 @@ class cyts {
   * @version    2.0
   * @return     string returns the server's return data
   */ 
-	function _readcall() {
+	function _readcall(): false|string {
 		if (!is_resource($this->sCon))
 			return false;
 		$sRead = '';
@@ -1953,11 +1988,11 @@ class cyts {
   * @version    2.0
   * @return     string returns the server's return data
   */ 
-	function _wipost($sFile, $sCall=array(), $sTimeout = 3) {
+	function _wipost($sFile, $sCall=[], $sTimeout = 3): false|array {
 		if (!$this->wiPort) return false;
-		$pCall = array();
+		$pCall = [];
 		foreach ($sCall as $key => $val) {
-			$pCall[] = "$key=".urlencode($val);
+			$pCall[] = "$key=".urlencode((string) $val);
 		}
 		$sCall = implode("&", $pCall);
  		$fp = @fsockopen($this->server, $this->wiPort, $errno, $errstr, $sTimeout);
@@ -1971,7 +2006,7 @@ class cyts {
 		fputs($fp, "Connection: close\r\n\r\n");
 		fputs($fp, $sCall);
 		$hPattern = '/([A-Za-z0-9_-]+): *(.*)\r\n/i';		
-		$header = array();
+		$header = [];
 		do {
 			$cRead = fgets($fp);
 			if (preg_match($hPattern, $cRead, $content))
@@ -1992,7 +2027,7 @@ class cyts {
 				$content .= fread($fp, $dLen);
 		}
 		fclose($fp);
-		return array($header, $content);
+		return [$header, $content];
 	}
 	
 /**
@@ -2003,7 +2038,7 @@ class cyts {
   * @version    2.0
   * @return     string returns the server's return data
   */ 
-	function _wiget($sFile, $sTimeout = 3) {
+	function _wiget($sFile, $sTimeout = 3): false|array {
 		if (!$this->wiPort) return false;
  		$fp = @fsockopen($this->server, $this->wiPort, $errno, $errstr, $sTimeout);
 		if (!$fp) return false;
@@ -2013,7 +2048,7 @@ class cyts {
 			fputs($fp, "Cookie: ".$this->wiCookie."\r\n");
 		fputs($fp, "Connection: close\r\n\r\n");
 		$hPattern = '/([A-Za-z0-9_-]+): *(.*)\r\n/i';		
-		$header = array();
+		$header = [];
 		do {
 			$cRead = fgets($fp);
 			if (preg_match($hPattern, $cRead, $content))
@@ -2034,7 +2069,7 @@ class cyts {
 				$content .= fread($fp, $dLen);
 		}
 		fclose($fp);
-		return array($header, $content);
+		return [$header, $content];
 	}
 }
 ?>

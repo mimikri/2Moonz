@@ -24,7 +24,7 @@ class ShowBattleHallPage extends AbstractLoginPage
 		parent::__construct();
 	}
 	
-	function show() 
+	function show(): void 
 	{
 		global $LNG;
 		$db = Database::get();
@@ -44,28 +44,16 @@ class ShowBattleHallPage extends AbstractLoginPage
 		) as `defender`
 		FROM %%TOPKB%% WHERE `universe` = :universe ORDER BY units DESC LIMIT 100;";
 
-		$hallRaw = $db->select($sql, array(
-			':universe'	=> Universe::current(),
-		));
+		$hallRaw = $db->select($sql, [':universe'	=> Universe::current()]);
 
-		$hallList	= array();
+		$hallList	= [];
 		foreach($hallRaw as $hallRow) {
-			$hallList[]	= array(
-				'result'	=> $hallRow['result'],
-				'time'		=> _date($LNG['php_tdformat'], $hallRow['time']),
-				'units'		=> $hallRow['units'],
-				'rid'		=> $hallRow['rid'],
-				'attacker'	=> $hallRow['attacker'],
-				'defender'	=> $hallRow['defender'],
-			);
+			$hallList[]	= ['result'	=> $hallRow['result'], 'time'		=> _date($LNG['php_tdformat'], $hallRow['time']), 'units'		=> $hallRow['units'], 'rid'		=> $hallRow['rid'], 'attacker'	=> $hallRow['attacker'], 'defender'	=> $hallRow['defender']];
 		}
 
 		$universeSelect	= $this->getUniverseSelector();
 		
-		$this->assign(array(
-			'universeSelect'	=> $universeSelect,
-			'hallList'			=> $hallList,
-		));
+		$this->assign(['universeSelect'	=> $universeSelect, 'hallList'			=> $hallList]);
 		$this->display('page.battleHall.default.tpl');
 	}
 }

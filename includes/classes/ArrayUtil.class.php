@@ -17,18 +17,21 @@
 
 class ArrayUtil
 {
-	static public function combineArrayWithSingleElement($keys, $var)
+	static public function combineArrayWithSingleElement($keys, $var): array
 	{
 		if(empty($keys))
 		{
-			return array();
+			return [];
 		}
 		return array_combine($keys, array_fill(0, count($keys), $var));
 	}
 
-	static public function combineArrayWithKeyElements($keys, $var)
+	/**
+  * @return mixed[]
+  */
+ static public function combineArrayWithKeyElements($keys, $var): array
 	{
-		$temp	= array();
+		$temp	= [];
 		foreach($keys as $key)
 		{
 			if(isset($var[$key]))

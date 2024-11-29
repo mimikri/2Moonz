@@ -12,17 +12,7 @@
 // Handle incoming request if it's a script call
 if (TinyMCE_Compressor::getParam("js")) {
 	// Default settings
-	$tinyMCECompressor = new TinyMCE_Compressor(array(
-		"cache_dir" => realpath(dirname(__FILE__) . "/../../../cache"),
-	/*
-	 * Add any site-specific defaults here that you may wish to implement. For example:
-	 *
-	 * 	"languages" => "en",
-	 *  "cache_dir" => realpath(dirname(__FILE__) . "/../../_cache"),
-	 *  "files"     => "somescript,anotherscript",
-	 *  "expires"   => "1m",
-	 */
-	));
+	$tinyMCECompressor = new TinyMCE_Compressor(["cache_dir" => realpath(__DIR__ . "/../../../cache")]);
 
 	// Handle request, compress and stream to client
 	$tinyMCECompressor->handleRequest();
@@ -46,29 +36,18 @@ if (TinyMCE_Compressor::getParam("js")) {
  */
 class TinyMCE_Compressor {
 	private $files, $settings;
-	private static $defaultSettings = array(
-		"plugins"    => "",
-		"themes"     => "",
-		"languages"  => "",
-		"disk_cache" => true,
-		"expires"    => "30d",
-		"cache_dir"  => "",
-		"compress"   => true,
-		"suffix"     => "",
-		"files"      => "",
-		"source"     => false,
-	);
+	private static array $defaultSettings = ["plugins"    => "", "themes"     => "", "languages"  => "", "disk_cache" => true, "expires"    => "30d", "cache_dir"  => "", "compress"   => true, "suffix"     => "", "files"      => "", "source"     => false];
 
 	/**
 	 * Constructs a new compressor instance.
 	 *
 	 * @param Array $settings Name/value array with non-default settings for the compressor instance.
 	 */
-	public function __construct($settings = array()) {
+	public function __construct($settings = []) {
 		$this->settings = array_merge(self::$defaultSettings, $settings);
 
 		if (empty($this->settings["cache_dir"]))
-			$this->settings["cache_dir"] = dirname(__FILE__);
+			$this->settings["cache_dir"] = __DIR__;
 	}
 
 	/**
@@ -76,7 +55,7 @@ class TinyMCE_Compressor {
 	 *
 	 * @param String $path Path to the file to include in the compressed package/output.
 	 */
-	public function &addFile($file) {
+	public function &addFile(string $file): static {
 		$this->files .= ($this->files ? "," : "") . $file;
 
 		return $this;
@@ -85,27 +64,27 @@ class TinyMCE_Compressor {
 	/**
 	 * Handles the incoming HTTP request and sends back a compressed script depending on settings and client support.
 	 */
-	public function handleRequest() {
-		$files = array();
+	public function handleRequest(): void {
+		$files = [];
 		$supportsGzip = false;
 		$expiresOffset = $this->parseTime($this->settings["expires"]);
-		$tinymceDir = dirname(__FILE__);
+		$tinymceDir = __DIR__;
 
 		// Override settings with querystring params
 		$plugins = self::getParam("plugins");
 		if ($plugins)
 			$this->settings["plugins"] = $plugins;
-		$plugins = explode(',', $this->settings["plugins"]);
+		$plugins = explode(',', (string) $this->settings["plugins"]);
 
 		$themes = self::getParam("themes");
 		if ($themes)
 			$this->settings["themes"] = $themes;
-		$themes = explode(',', $this->settings["themes"]);
+		$themes = explode(',', (string) $this->settings["themes"]);
 
 		$languages = self::getParam("languages");
 		if ($languages)
 			$this->settings["languages"] = $languages;
-		$languages = explode(',', $this->settings["languages"]);
+		$languages = explode(',', (string) $this->settings["languages"]);
 
 		$tagFiles = self::getParam("files");
 		if ($tagFiles)
@@ -141,7 +120,7 @@ class TinyMCE_Compressor {
 		}
 
 		// Add any specified files.
-		$allFiles = array_merge($files, explode(',', $this->settings['files']));
+		$allFiles = array_merge($files, explode(',', (string) $this->settings['files']));
 
 		// Process source files
 		for ($i = 0; $i < count($allFiles); $i++) {
@@ -163,7 +142,7 @@ class TinyMCE_Compressor {
 
 		// Check if it supports gzip
 		$zlibOn = ini_get('zlib.output_compression') || (ini_set('zlib.output_compression', 0) === false);
-		$encodings = (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) ? strtolower($_SERVER['HTTP_ACCEPT_ENCODING']) : "";
+		$encodings = (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) ? strtolower((string) $_SERVER['HTTP_ACCEPT_ENCODING']) : "";
 		$encoding = preg_match( '/\b(x-gzip|gzip)\b/', $encodings, $match) ? $match[1] : "";
 
 		// Is northon antivirus header
@@ -191,7 +170,7 @@ class TinyMCE_Compressor {
 		}
 
 		// Set base URL for where tinymce is loaded from
-		$buffer = "var tinyMCEPreInit={base:'" . dirname($_SERVER["SCRIPT_NAME"]) . "',suffix:''};";
+		$buffer = "var tinyMCEPreInit={base:'" . dirname((string) $_SERVER["SCRIPT_NAME"]) . "',suffix:''};";
 
 		// Load all tinymce script files into buffer
 		foreach ($allFiles as $file) {
@@ -228,7 +207,7 @@ class TinyMCE_Compressor {
 		$settings = array_merge(self::$defaultSettings, $tagSettings);
 
 		if (empty($settings["cache_dir"]))
-			$settings["cache_dir"] = dirname(__FILE__);
+			$settings["cache_dir"] = __DIR__;
 
 		$scriptSrc = $settings["url"] . "?js=1";
 
@@ -282,7 +261,7 @@ class TinyMCE_Compressor {
 		if (!isset($_GET[$name]))
 			return $default;
 
-		return preg_replace("/[^0-9a-z\-_,]+/i", "", $_GET[$name]); // Sanatize for security, remove anything but 0-9,a-z,-_,
+		return preg_replace("/[^0-9a-z\-_,]+/i", "", (string) $_GET[$name]); // Sanatize for security, remove anything but 0-9,a-z,-_,
 	}
 
 	/**
@@ -291,7 +270,7 @@ class TinyMCE_Compressor {
 	 * @param String $time Time format to convert into seconds.
 	 * @return Int Number of seconds for the specified format.
 	 */
-	private function parseTime($time) {
+	private function parseTime($time): int {
 		$multipel = 1;
 
 		// Hours
@@ -316,7 +295,7 @@ class TinyMCE_Compressor {
 	 * @param String $file File to load.
 	 * @return String File contents or empty string if it doesn't exist.
 	 */
-	private function getFileContents($file) {
+	private function getFileContents(string $file): string|false {
 		$content = file_get_contents($file);
 
 		// Remove UTF-8 BOM

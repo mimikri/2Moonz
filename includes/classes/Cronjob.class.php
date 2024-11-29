@@ -22,7 +22,7 @@ class Cronjob
 		
 	}
 	
-	static function execute($cronjobID)
+	static function execute($cronjobID): void
 	{
 		$lockToken	= md5(TIMESTAMP);
 
@@ -30,10 +30,7 @@ class Cronjob
 
 		$sql = 'SELECT class FROM %%CRONJOBS%% WHERE isActive = :isActive AND cronjobID = :cronjobId AND `lock` IS NULL;';
 
-		$cronjobClassName	= $db->selectSingle($sql, array(
-			':isActive'		=> 1,
-			':cronjobId'	=> $cronjobID
-		), 'class');
+		$cronjobClassName	= $db->selectSingle($sql, [':isActive'		=> 1, ':cronjobId'	=> $cronjobID], 'class');
 
 		if(empty($cronjobClassName))
 		{
@@ -42,10 +39,7 @@ class Cronjob
 		
 		$sql = 'UPDATE %%CRONJOBS%% SET `lock` = :lock WHERE cronjobID = :cronjobId;';
 
-		$db->update($sql, array(
-			':lock'			=> $lockToken,
-			':cronjobId'	=> $cronjobID
-		));
+		$db->update($sql, [':lock'			=> $lockToken, ':cronjobId'	=> $cronjobID]);
 		
 		$cronjobPath		= 'includes/classes/cronjob/'.$cronjobClassName.'.class.php';
 		
@@ -59,32 +53,26 @@ class Cronjob
 		self::reCalculateCronjobs($cronjobID);
 		$sql = 'UPDATE %%CRONJOBS%% SET `lock` = NULL WHERE cronjobID = :cronjobId;';
 
-		$db->update($sql, array(
-			':cronjobId'	=> $cronjobID
-		));
+		$db->update($sql, [':cronjobId'	=> $cronjobID]);
 
 		$sql = 'INSERT INTO %%CRONJOBS_LOG%% SET `cronjobId` = :cronjobId,
 		`executionTime` = :executionTime, `lockToken` = :lockToken';
 
-		$db->insert($sql, array(
-			':cronjobId'		=> $cronjobID,
-			':executionTime'	=> Database::formatDate(TIMESTAMP),
-			':lockToken'		=> $lockToken
-		));
+		$db->insert($sql, [':cronjobId'		=> $cronjobID, ':executionTime'	=> Database::formatDate(TIMESTAMP), ':lockToken'		=> $lockToken]);
 	}
 	
-	static function getNeedTodoExecutedJobs()
+	/**
+  * @return mixed[]
+  */
+ static function getNeedTodoExecutedJobs(): array
 	{
 		$sql			= 'SELECT cronjobID
 		FROM %%CRONJOBS%%
 		WHERE isActive = :isActive AND nextTime < :time AND `lock` IS NULL;';
 
-		$cronjobResult	= Database::get()->select($sql, array(
-			':isActive'	=> 1,
-			':time'		=> TIMESTAMP
- 		));
+		$cronjobResult	= Database::get()->select($sql, [':isActive'	=> 1, ':time'		=> TIMESTAMP]);
 
-		$cronjobList	= array();
+		$cronjobList	= [];
 
 		foreach($cronjobResult as $cronjobRow)
 		{
@@ -94,25 +82,23 @@ class Cronjob
 		return $cronjobList;
 	}
 
-	static function getLastExecutionTime($cronjobName)
+	static function getLastExecutionTime($cronjobName): false|int
 	{
 		require_once 'includes/libs/tdcron/class.tdcron.php';
 		require_once 'includes/libs/tdcron/class.tdcron.entry.php';
 
 		$sql		= 'SELECT MAX(executionTime) as executionTime FROM %%CRONJOBS_LOG%% INNER JOIN %%CRONJOBS%% USING(cronjobId) WHERE name = :cronjobName;';
-		$lastTime	= Database::get()->selectSingle($sql, array(
-			':cronjobName' => $cronjobName
-		), 'executionTime');
+		$lastTime	= Database::get()->selectSingle($sql, [':cronjobName' => $cronjobName], 'executionTime');
 
 		if(empty($lastTime))
 		{
 			return false;
 		}
 
-		return strtotime($lastTime);
+		return strtotime((string) $lastTime);
 	}
 	
-	static function reCalculateCronjobs($cronjobID = NULL)
+	static function reCalculateCronjobs($cronjobID = NULL): void
 	{
 		require_once 'includes/libs/tdcron/class.tdcron.php';
 		require_once 'includes/libs/tdcron/class.tdcron.entry.php';
@@ -122,9 +108,7 @@ class Cronjob
 		if(!empty($cronjobID))
 		{
 			$sql			= 'SELECT cronjobID, min, hours, dom, month, dow FROM %%CRONJOBS%% WHERE cronjobID = :cronjobId;';
-			$cronjobResult	= $db->select($sql, array(
-				':cronjobId' => $cronjobID
-			));
+			$cronjobResult	= $db->select($sql, [':cronjobId' => $cronjobID]);
 		}
 		else
 		{
@@ -136,13 +120,10 @@ class Cronjob
 
 		foreach($cronjobResult as $cronjobRow)
 		{
-			$cronTabString	= implode(' ', array($cronjobRow['min'], $cronjobRow['hours'], $cronjobRow['dom'], $cronjobRow['month'], $cronjobRow['dow']));
+			$cronTabString	= implode(' ', [$cronjobRow['min'], $cronjobRow['hours'], $cronjobRow['dom'], $cronjobRow['month'], $cronjobRow['dow']]);
 			$nextTime		= tdCron::getNextOccurrence($cronTabString, TIMESTAMP + 60);
 
-			$db->update($sql, array(
-				':nextTime'		=> $nextTime,
-				':cronjobId'	=> $cronjobRow['cronjobID'],
-			));
+			$db->update($sql, [':nextTime'		=> $nextTime, ':cronjobId'	=> $cronjobRow['cronjobID']]);
 		}
 	}
 }

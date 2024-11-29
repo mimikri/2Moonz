@@ -27,20 +27,20 @@ class FlyingFleetsTable
 		
 	}
 
-	public function setUser($userId) {
+	public function setUser($userId): void {
 		$this->userId = $userId;
 	}
 
-	public function setPlanet($planetId) {
+	public function setPlanet($planetId): void {
 		$this->planetId = $planetId;
 	}
 
-	public function setPhalanxMode() {
+	public function setPhalanxMode(): void {
 		$this->IsPhalanx = true;
 	}
 
-	public function setMissions($missions) {
-		$this->missions = implode(',', array_filter(explode(',', $missions), 'is_numeric'));
+	public function setMissions($missions): void {
+		$this->missions = implode(',', array_filter(explode(',', (string) $missions), 'is_numeric'));
 	}
 	
 	private function getFleets($acsID = false) {
@@ -48,24 +48,16 @@ class FlyingFleetsTable
 			$where = '(fleet_start_id = :planetId AND fleet_start_type = 1 AND fleet_mission != 4) OR
 					  (fleet_end_id = :planetId AND fleet_end_type = 1 AND fleet_mess IN (0, 2))';
 
-			$param = array(
-				':planetId'	  => $this->planetId
-			);
+			$param = [':planetId'	  => $this->planetId];
 		} elseif(!empty($acsID)) {
 			$where	= 'fleet_group = :acsId';
-			$param = array(
-				':acsId'	=> $acsID
-			);
+			$param = [':acsId'	=> $acsID];
 		} elseif($this->missions) {
 			$where = '(fleet_owner = :userId OR fleet_target_owner = :userId) AND fleet_mission IN ('.$this->missions.')';
-			$param = array(
-				':userId'	=> $this->userId
-			);
+			$param = [':userId'	=> $this->userId];
 		} else {
 			$where  = 'fleet_owner = :userId OR (fleet_target_owner = :userId AND fleet_mission != 8)';
-			$param = array(
-				':userId'	=> $this->userId,
-			);
+			$param = [':userId'	=> $this->userId];
 		}
 
 		$sql = 'SELECT DISTINCT fleet.*, ownuser.username as own_username, targetuser.username as target_username,
@@ -80,11 +72,14 @@ class FlyingFleetsTable
 		return Database::get()->select($sql, $param);
 	}
 
-	public function renderTable()
+	/**
+  * @return mixed[]
+  */
+ public function renderTable(): array
 	{
 		$fleetResult	= $this->getFleets();
-		$ACSDone		= array();
-		$FleetData		= array();
+		$ACSDone		= [];
+		$FleetData		= [];
 		
 		foreach($fleetResult as $fleetRow)
 		{
@@ -115,7 +110,7 @@ class FlyingFleetsTable
 		return $FleetData;
 	}
 
-	private function BuildFleetEventTable($fleetRow, $FleetState)
+	private function BuildFleetEventTable(array $fleetRow, int $FleetState): array
 	{
 		$Time	= 0;
 		$Rest	= 0;
@@ -138,36 +133,19 @@ class FlyingFleetsTable
 		}
 		else
 		{
-			list($Rest, $EventString, $Time) = $this->getEventData($fleetRow, $FleetState);
+			[$Rest, $EventString, $Time] = $this->getEventData($fleetRow, $FleetState);
 		}
 		
-		return array(
-			'text'			=> $EventString,
-			'returntime'	=> $Time,
-			'resttime'		=> $Rest
-		);
+		return ['text'			=> $EventString, 'returntime'	=> $Time, 'resttime'		=> $Rest];
 	}
 	
-	public function getEventData($fleetRow, $Status)
+	public function getEventData(array $fleetRow, $Status): array
 	{
 		global $LNG;
 		$Owner			= $fleetRow['fleet_owner'] == $this->userId;
-		$FleetStyle  = array (
-			1 => 'attack',
-			2 => 'federation',
-			3 => 'transport',
-			4 => 'deploy',
-			5 => 'hold',
-			6 => 'espionage',
-			7 => 'colony',
-			8 => 'harvest',
-			9 => 'destroy',
-			10 => 'missile',
-			11 => 'transport',
-			15 => 'transport',
-		);
+		$FleetStyle  = [1 => 'attack', 2 => 'federation', 3 => 'transport', 4 => 'deploy', 5 => 'hold', 6 => 'espionage', 7 => 'colony', 8 => 'harvest', 9 => 'destroy', 10 => 'missile', 11 => 'transport', 15 => 'transport'];
 		
-	    $GoodMissions	= array(3, 5);
+	    $GoodMissions	= [3, 5];
 		$MissionType    = $fleetRow['fleet_mission'];
 
 		$FleetPrefix    = ($Owner == true) ? 'own' : '';
@@ -175,7 +153,7 @@ class FlyingFleetsTable
 		$FleetName		= (!$Owner && ($MissionType == 1 || $MissionType == 2) && $Status == FLEET_OUTWARD && $fleetRow['fleet_target_owner'] != $this->userId) ? $LNG['cff_acs_fleet'] : $LNG['ov_fleet'];
 		$FleetContent   = $this->CreateFleetPopupedFleetLink($fleetRow, $FleetName, $FleetPrefix.$FleetStyle[$MissionType]);
 		$FleetCapacity  = $this->CreateFleetPopupedMissionLink($fleetRow, $LNG['type_mission_'.$MissionType], $FleetPrefix.$FleetStyle[$MissionType]);
-		$FleetStatus    = array(0 => 'flight', 1 => 'return' , 2 => 'holding');
+		$FleetStatus    = [0 => 'flight', 1 => 'return', 2 => 'holding'];
 		$StartType		= $LNG['type_planet_'.$fleetRow['fleet_start_type']];
 		$TargetType		= $LNG['type_planet_'.$fleetRow['fleet_end_type']];
 	
@@ -232,16 +210,16 @@ class FlyingFleetsTable
 			$Time = TIMESTAMP;
 
 		$Rest	= $Time - TIMESTAMP;
-		return array($Rest, $EventString, $Time);
+		return [$Rest, $EventString, $Time];
 	}
 
-	private function BuildHostileFleetPlayerLink($fleetRow)
+	private function BuildHostileFleetPlayerLink(array $fleetRow): string
     {
 		global $LNG;
 		return $fleetRow['own_username'].' <a href="#" onclick="return Dialog.PM('.$fleetRow['fleet_owner'].')">'.$LNG['PM'].'</a>';
 	}
 
-	private function CreateFleetPopupedMissionLink($fleetRow, $Texte, $FleetType)
+	private function CreateFleetPopupedMissionLink(array $fleetRow, string $Texte, string $FleetType): string
 	{
 		global $LNG;
 		$FleetTotalC  = $fleetRow['fleet_resource_metal'] + $fleetRow['fleet_resource_crystal'] + $fleetRow['fleet_resource_deuterium'] + $fleetRow['fleet_resource_darkmatter'];
@@ -270,12 +248,12 @@ class FlyingFleetsTable
 		return $MissionPopup;
 	}
 
-	private function CreateFleetPopupedFleetLink($fleetRow, $Text, $FleetType)
+	private function CreateFleetPopupedFleetLink(array $fleetRow, string $Text, string $FleetType): string
 	{
 		global $LNG, $USER, $resource;
 		$SpyTech		= $USER[$resource[106]];
 		$Owner			= $fleetRow['fleet_owner'] == $this->userId;
-		$FleetRec		= explode(';', $fleetRow['fleet_array']);
+		$FleetRec		= explode(';', (string) $fleetRow['fleet_array']);
 		$FleetPopup		= '<a href="#" data-tooltip-content="<table style=\'width:200px\'>';
 		$textForBlind	= '';
 		if ($this->IsPhalanx || $SpyTech >= 4 || $Owner)
@@ -286,7 +264,7 @@ class FlyingFleetsTable
 				$FleetPopup		.= '<tr><td style=\'width:100%;color:white\'>'.$LNG['cff_aproaching'].$fleetRow['fleet_amount'].$LNG['cff_ships'].':</td></tr>';
 				$textForBlind	= $LNG['cff_aproaching'].$fleetRow['fleet_amount'].$LNG['cff_ships'].': ';
 			}
-			$shipsData	= array();
+			$shipsData	= [];
 			foreach($FleetRec as $Item => $Group)
 			{
 				if (empty($Group))
