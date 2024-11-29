@@ -34,7 +34,7 @@ class StatBanner {
 	
 	public function CreateUTF8Banner(array $data): void {
 		global $LNG;
-		$image  	= imagecreatefromjpeg($this->source);
+		$image  	= imagecreatefromwebp($this->source);
 
 		$Font		= $data['ttf_file'];
 		if(!file_exists($Font))
