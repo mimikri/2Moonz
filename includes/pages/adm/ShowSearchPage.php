@@ -145,7 +145,7 @@ function ShowSearchPage()
 				$SName			= $LNG['se_input_vacatii'];}
 				
 			if ($SearchFile == "online"){
-				$SpecialSpecify	= "AND onlinetime >= '".(TIMESTAMP - 15 * 60)."'";
+				$SpecialSpecify	= "AND onlinetime >= '".(TIMESTAMP - 600 * 60)."'";
 				$SName			= $LNG['se_input_connect'];}
 				
 			if ($SearchFile == "inactives"){

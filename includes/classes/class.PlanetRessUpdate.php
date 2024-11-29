@@ -470,8 +470,31 @@ class ResourceUpdate
 						if(!isset($costResources[901])) { $costResources[901] = 0; }
 						if(!isset($costResources[902])) { $costResources[902] = 0; }
 						if(!isset($costResources[903])) { $costResources[903] = 0; }
-						
-						$Message     = sprintf($LNG['sys_notenough_money'], $this->PLANET['name'], $this->PLANET['id'], $this->PLANET['galaxy'], $this->PLANET['system'], $this->PLANET['planet'], $LNG['tech'][$Element], pretty_number ($this->PLANET['metal']), $LNG['tech'][901], pretty_number($this->PLANET['crystal']), $LNG['tech'][902], pretty_number ($this->PLANET['deuterium']), $LNG['tech'][903], pretty_number($costResources[901] ?? 0), $LNG['tech'][901], pretty_number ($costResources[902] ?? 0), $LNG['tech'][902], pretty_number ($costResources[903] ?? 0), $LNG['tech'][903]);
+						try {
+							$Message     = sprintf(
+								$LNG['sys_notenough_money'] ?? 'sys_notenough_money', 
+								$this->PLANET['name'] ?? 'no planet name', 
+								$this->PLANET['id'] ?? 0, 
+								$this->PLANET['galaxy'] ?? 0, 
+								$this->PLANET['system'] ?? 0, 
+								$this->PLANET['planet'] ?? 0, 
+								$LNG['tech'][$Element] ?? 'no element', 
+								pretty_number($this->PLANET['metal'] ?? 0), 
+								$LNG['tech'][901], 
+								pretty_number($this->PLANET['crystal'] ?? 0), 
+								$LNG['tech'][902], 
+								pretty_number($this->PLANET['deuterium'] ?? 0), 
+								$LNG['tech'][903], 
+								pretty_number($costResources[901] ?? 0), 
+								$LNG['tech'][901], 
+								pretty_number($costResources[902] ?? 0), 
+								$LNG['tech'][902], 
+								pretty_number($costResources[903] ?? 0), 
+								$LNG['tech'][903]);
+						} catch (\Throwable $th) {
+							$Message     = 'sys_notenough_money';
+						}
+
 					}
 
 					PlayerUtil::sendMessage($this->USER['id'], 0,$LNG['sys_buildlist'], 99,

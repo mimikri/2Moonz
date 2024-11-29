@@ -104,7 +104,7 @@ define('MAX_ATTACK_ROUNDS'			, 6);
 define('ENABLE_SIMULATOR_LINK'		, true);
 
 // Max. User Session in Seconds
-define('SESSION_LIFETIME'			, 43200);
+define('SESSION_LIFETIME'			, 31536000);
 
 // ENABLE Mutlialert on sending fleets
 define('ENABLE_MULTIALERT'			, true);

@@ -214,6 +214,7 @@ elseif(MODE === 'CHAT')
 
 	if(!$session->isValidSession())
 	{
-		HTTP::redirectTo('index.php?code=3');
+		die('session expired');
+	//	HTTP::redirectTo('index.php?code=3');
 	}
 }

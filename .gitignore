@@ -1,7 +1,7 @@
 includes/config.php
 includes/error.log
 cache/*
-
+.vscode
 !cache/.htaccess
 
 ### JetBrains template
