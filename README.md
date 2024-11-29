@@ -6,8 +6,8 @@
 
 roadmap
 
-* updating code for php version 8.1
-* updating smarty and jquery
+* updating code for php version 8.1 - done 
+* updating smarty and jquery - done
 * fix bugs
 
 # Credits
