@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Podvučen tekst: [u]text[/u]';
 $lang['bbCodeTitleQuote'] = 'Citiran tekst: [quote]text[/quote] ili [quote=autor]text[/quote]';
 $lang['bbCodeTitleCode'] = 'Prikazivanje koda: [code]kod[/code]';
 $lang['bbCodeTitleURL'] = 'Unesi URL: [url]http://www.example.org/[/url] ili [url=http://www.example.org/]text[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Boja fonta: [color=red]text[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emocije list';
 $lang['help'] = 'Pomoć';

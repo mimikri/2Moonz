@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Text subliniat: [u]text[/u]';
 $lang['bbCodeTitleQuote'] = 'Citează text: [quote]text[/quote] or [quote=author]text[/quote]';
 $lang['bbCodeTitleCode'] = 'Scrie cod: [code]code[/code]';
 $lang['bbCodeTitleURL'] = 'Introdu URL: [url]http://example.org[/url] or [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Culoarea fontului: [color=red]text[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emoticons list';
 $lang['help'] = 'Ajutor';

@@ -135,7 +135,7 @@ function ShowAccountDataPage(): void
 			if ($alianza == 0 && $AliID == 0)
 			{
 				$alianza	= $LNG['ac_no_ally'];
-				$AllianceHave	= "<span class=\"no_moon\"><img src=\"./styles/resource/images/admin/arrowright.png\" width=\"16\" height=\"10\"/> 
+				$AllianceHave	= "<span class=\"no_moon\"><img src=\"./styles/resource/images/admin/arrowright.webp\" width=\"16\" height=\"10\"/> 
 							".$LNG['ac_alliance']."&nbsp;".$LNG['ac_no_alliance']."</span>";	
 			}
 			elseif ($alianza != NULL && $AliID != 0)
@@ -143,7 +143,7 @@ function ShowAccountDataPage(): void
 				include_once('includes/classes/BBCode.class.php');	
 				
 				$AllianceHave	= '<a href="#" onclick="$(\'#alianza\').slideToggle();return false" class="link">
-							<img src="./styles/resource/images/admin/arrowright.png" width="16" height="10"> '.$LNG['ac_alliance'].'</a>';
+							<img src="./styles/resource/images/admin/arrowright.webp" width="16" height="10"> '.$LNG['ac_alliance'].'</a>';
 										
 							
 				
@@ -275,7 +275,7 @@ function ShowAccountDataPage(): void
 						<td>".pretty_number($PlanetsWhile['diameter'])."</td>
 						<td>".pretty_number($PlanetsWhile['field_current'])." / ".pretty_number(CalculateMaxPlanetFields($PlanetsWhile))." (".pretty_number($PlanetsWhile['field_current'])." / ".pretty_number($PlanetsWhile['field_max']).")</td>
 						<td>".pretty_number($PlanetsWhile['temp_min'])." / ".pretty_number($PlanetsWhile['temp_max'])."</td>"
-						.(allowedTo('ShowQuickEditorPage') ? "<td><a href=\"javascript:openEdit('".$PlanetsWhile['id']."', 'planet');\" border=\"0\"><img src=\"./styles/resource/images/admin/GO.png\" title=".$LNG['se_search_edit']."></a></td>" : "").
+						.(allowedTo('ShowQuickEditorPage') ? "<td><a href=\"javascript:openEdit('".$PlanetsWhile['id']."', 'planet');\" border=\"0\"><img src=\"./styles/resource/images/admin/GO.webp\" title=".$LNG['se_search_edit']."></a></td>" : "").
 					"</tr>";
 					
 					
@@ -303,7 +303,7 @@ function ShowAccountDataPage(): void
 						$RES[$resource[$ID]]	.= "<td width=\"60\"><a title=\"".pretty_number($PlanetsWhile[$resource[$ID]])."\">".shortly_number($PlanetsWhile[$resource[$ID]])."</a></td>";
 					}
 					
-					$MoonHave = $MoonZ != 0 ? '<a href="#" onclick="$(\'#especiales\').slideToggle();return false" class="link"><img src="./styles/resource/images/admin/arrowright.png" width="16" height="10"/> '.$LNG['moon_build']."</a>" : "<span class=\"no_moon\"><img src=\"./styles/resource/images/admin/arrowright.png\" width=\"16\" height=\"10\"/>".$LNG['moon_build']."&nbsp;".$LNG['ac_moons_no']."</span>";					
+					$MoonHave = $MoonZ != 0 ? '<a href="#" onclick="$(\'#especiales\').slideToggle();return false" class="link"><img src="./styles/resource/images/admin/arrowright.webp" width="16" height="10"/> '.$LNG['moon_build']."</a>" : "<span class=\"no_moon\"><img src=\"./styles/resource/images/admin/arrowright.webp\" width=\"16\" height=\"10\"/>".$LNG['moon_build']."&nbsp;".$LNG['ac_moons_no']."</span>";					
 				}
 				
 				$DestruyeD	= 0;

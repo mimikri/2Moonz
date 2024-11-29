@@ -78,13 +78,13 @@
     }
 
 	.statusContainerOn {
-		background-image: url('../img/loading.png');
+		background-image: url('../img/loading.webp');
 	}
 	.statusContainerOff {
-		background-image: url('../img/loading-done.png');
+		background-image: url('../img/loading-done.webp');
 	}
 	.statusContainerAlert {
-		background-image: url('../img/loading-trouble.png');
+		background-image: url('../img/loading-trouble.webp');
 	}
 	#content #bbCodeContainer input, #content #submitButton {
 		margin:2px;
@@ -102,25 +102,25 @@
 	    border:0 none;
 	}
 	#content #optionsContainer #helpButton {
-	    background:url('../img/help.png') no-repeat;
+	    background:url('../img/help.webp') no-repeat;
 	}
 	#content #optionsContainer #settingsButton {
-	    background:url('../img/settings.png') no-repeat;
+	    background:url('../img/settings.webp') no-repeat;
 	}
 	#content #optionsContainer #onlineListButton {
-	    background:url('../img/users.png') no-repeat;
+	    background:url('../img/users.webp') no-repeat;
 	}
 	#content #optionsContainer #audioButton {
-	    background:url('../img/audio.png') no-repeat;
+	    background:url('../img/audio.webp') no-repeat;
 	}
 	#content #optionsContainer #audioButton.off {
-	    background:url('../img/audio-off.png') no-repeat;
+	    background:url('../img/audio-off.webp') no-repeat;
 	}
 	#content #optionsContainer #autoScrollButton {
-	    background:url('../img/autoscroll.png') no-repeat;
+	    background:url('../img/autoscroll.webp') no-repeat;
 	}
 	#content #optionsContainer #autoScrollButton.off {
-	    background:url('../img/autoscroll-off.png') no-repeat;
+	    background:url('../img/autoscroll-off.webp') no-repeat;
 	}
 	#content .rowEven {
 		background: transparent
@@ -151,13 +151,13 @@
 		color:#476C8E;
 	}
 	#content #chatList .delete {
-		background:url('../img/delete.png') no-repeat right;
+		background:url('../img/delete.webp') no-repeat right;
 	}
 	#content #chatList .deleteSelected {
 		border-color:red;
 	}
 	#content #onlineListContainer h3, #content #helpContainer h3, #content #settingsContainer h3 {
-		background:url(../../styles/theme/gow/img/bkd_title.png);
+		background:url(../../styles/theme/gow/img/bkd_title.webp);
 		color:#FFF;
 		font-weight:700;
 		height:22px;
@@ -168,7 +168,7 @@
 		padding:2px 3px;
 	}
 	#content #settingsContainer > #settingsList input.playback {
-	    background:url('../img/playback.png') no-repeat;
+	    background:url('../img/playback.webp') no-repeat;
 	}
 	#content #settingsContainer,
 	#content #helpContainer {

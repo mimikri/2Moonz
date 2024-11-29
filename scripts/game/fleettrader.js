@@ -1,7 +1,7 @@
 function updateVars()
 {	
 	var shipID 	= $('#shipID').val();
-	$('#img').attr('src', $('#img').data('src')+shipID+'.gif');
+	$('#img').attr('src', $('#img').data('src')+shipID+'.webp');
 	$('#metal').text(NumberGetHumanReadable(CostInfo[shipID][2][901] * (1 - Charge / 100)));
 	$('#crystal').text(NumberGetHumanReadable(CostInfo[shipID][2][902] * (1 - Charge / 100)));
 	$('#deuterium').text(NumberGetHumanReadable(CostInfo[shipID][2][903] * (1 - Charge / 100)));

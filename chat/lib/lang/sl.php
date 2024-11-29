@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Podčrtano besedilo: [u]besedilo[/u]';
 $lang['bbCodeTitleQuote'] = 'Citirano besedilo: [quote]besedilo[/quote] ali [quote=autor]besedilo[/quote]';
 $lang['bbCodeTitleCode'] = 'Prikazovanje kode: [code]koda[/code]';
 $lang['bbCodeTitleURL'] = 'Vnesi URL: [url]http://www.primer.org/[/url] ali [url=http://www.primer.org/]besedilo[/url]';
-$lang['bbCodeTitleImg'] = 'Vstavi sliko: [img]http://priemr.org/slika.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Vstavi sliko: [img]http://priemr.org/slika.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Barva črk: [color=red]besedilo[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smeške seznam';
 $lang['help'] = 'Pomoč';

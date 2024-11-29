@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'نص تحته خط: [u]نص[/u]';
 $lang['bbCodeTitleQuote'] = 'نص مقتبس: [quote]نص[/quote] او [quote=الكاتب]نص[/quote]';
 $lang['bbCodeTitleCode'] = 'عرض الكود: [code]كود[/code]';
 $lang['bbCodeTitleURL'] = 'ادحال رابط: [url]http://example.org[/url] او [url=http://example.org]نص[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'لون النص: [color=red]نص[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emoticons list';
 $lang['help'] = 'مساعدة';

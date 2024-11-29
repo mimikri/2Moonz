@@ -42,7 +42,7 @@ $lang['bbCodeTitleUnderline'] = 'Alleviivattu teksti: [u]teksti[/u]';
 $lang['bbCodeTitleQuote'] = 'Lainattu teksti: [quote]teksti[/quote] tai [quote=kirjoittaja]teksti[/quote]';
 $lang['bbCodeTitleCode'] = 'Koodi: [code]koodi[/code]';
 $lang['bbCodeTitleURL'] = 'Lisää linkki: [url]http://example.org[/url] tai [url=http://example.org]teksti[/url]';
-$lang['bbCodeTitleImg'] = 'Lisää kuva: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Lisää kuva: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Kirjaisimen väri: [color=red]teksti[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Hymiöt lista';
 $lang['help'] = 'Ohje';

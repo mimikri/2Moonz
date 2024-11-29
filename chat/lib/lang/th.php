@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'อักษรขีดเส้นใต้: 
 $lang['bbCodeTitleQuote'] = 'อ้างอิงข้อความ: [quote]ข้อความ[/quote] หรือ [quote=เจ้าของข้อความ]ข้อความ[/quote]';
 $lang['bbCodeTitleCode'] = 'แสดงโค๊ด: [code]โค๊ด[/code]';
 $lang['bbCodeTitleURL'] = 'แทรกลิงค์: [url]http://example.org[/url] or [url=http://example.org]ข้อความ[/url]';
-$lang['bbCodeTitleImg'] = 'แทรกภาพ: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'แทรกภาพ: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'ตัวอักษรสี: [color=red]ข้อความ[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smilies list';
 $lang['help'] = 'ช่วยเหลือ';

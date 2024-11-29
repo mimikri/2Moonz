@@ -27,10 +27,10 @@
 						{if !$requiredDarkMatter}<form action="game.php?page=trader" method="post">
 						<input type="hidden" name="mode" value="trade">
 						<input type="hidden" name="resource" value="{$resourceID}">
-						<input type="image" id="trader_metal" src="{$dpath}images/{$resource.$resourceID}.gif" title="{$LNG.tech.$resourceID}" border="0" height="32" width="52"><br>
+						<input type="image" id="trader_metal" src="{$dpath}images/{$resource.$resourceID}.webp" title="{$LNG.tech.$resourceID}" border="0" height="32" width="52"><br>
 						<label for="trader_metal">{$LNG.tech.$resourceID}</label>
 						</form>
-						{else}<img src="{$dpath}images/{$resource.$resourceID}.gif" title="{$LNG.tech.$resourceID}" border="0" height="32" width="52" style="margin: 3px;"><br>{$LNG.tech.$resourceID}{/if}
+						{else}<img src="{$dpath}images/{$resource.$resourceID}.webp" title="{$LNG.tech.$resourceID}" border="0" height="32" width="52" style="margin: 3px;"><br>{$LNG.tech.$resourceID}{/if}
 					</div>
 					{/foreach}
 				</div>

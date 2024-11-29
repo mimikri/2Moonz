@@ -40,7 +40,7 @@ $lang['bbCodeTitleUnderline'] = 'Aláhúzott szöveg: [u]szöveg[/u]';
 $lang['bbCodeTitleQuote'] = 'Idézett szöveg: [quote]szöveg[/quote] vagy [quote=szerző]szöveg[/quote]';
 $lang['bbCodeTitleCode'] = 'Kód: [code]kód[/code]';
 $lang['bbCodeTitleURL'] = 'URL beszúrása: [url]http://example.org[/url] vagy [url=http://example.org]szöveg[/url]';
-$lang['bbCodeTitleImg'] = 'Kép beszúrása: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Kép beszúrása: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Szöveg szín: [color=red]szöveg[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Hangulatjelek lista';
 $lang['help'] = 'Segítség';

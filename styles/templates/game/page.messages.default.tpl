@@ -19,7 +19,7 @@
 	</tr>
 	{foreach $OperatorList as $OperatorName => $OperatorEmail}
 	<tr>
-		<td>{$OperatorName}<a href="mailto:{$OperatorEmail}" title="{$LNG.mg_write_mail_to_ops} {{$OperatorName}}"><img src="{$dpath}img/m.gif" alt=""></a></td>
+		<td>{$OperatorName}<a href="mailto:{$OperatorEmail}" title="{$LNG.mg_write_mail_to_ops} {{$OperatorName}}"><img src="{$dpath}img/m.webp" alt=""></a></td>
 	</tr>
 	{/foreach}
 </table>

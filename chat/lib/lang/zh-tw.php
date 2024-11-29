@@ -40,7 +40,7 @@ $lang['bbCodeTitleUnderline'] = '底線： [u]文字[/u]';
 $lang['bbCodeTitleQuote'] = '引用文字： [quote]文字[/quote] 或 [quote=某人]文字[/quote]';
 $lang['bbCodeTitleCode'] = '代碼： [code]代碼[/code]';
 $lang['bbCodeTitleURL'] = '插入URL： [url]http://example.org[/url] 或 [url=http://example.org]文字[/url]';
-$lang['bbCodeTitleImg'] = '插入圖片： [img]http://example.org/image.png[/img]';
+$lang['bbCodeTitleImg'] = '插入圖片： [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = '字體顏色： [color=red]文字[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smilies list';
 $lang['help'] = '使用說明';

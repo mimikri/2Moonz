@@ -40,7 +40,7 @@ $lang['bbCodeTitleUnderline'] = 'Understreget tekst: [u]tekst[/u]';
 $lang['bbCodeTitleQuote'] = 'Citer tekst: [quote]citat[/quote] eller [quote=author]tekst[/quote]';
 $lang['bbCodeTitleCode'] = 'Vis kode: [code]kode[/code]';
 $lang['bbCodeTitleURL'] = 'Indsæt URL: [url]http://example.org[/url] eller [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = 'Indsæt image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Indsæt image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Font Farve: [color=red]tekst[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smileys list';
 $lang['help'] = 'Hjælp';

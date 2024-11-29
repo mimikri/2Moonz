@@ -42,7 +42,7 @@ $lang['bbCodeTitleUnderline'] = 'Texte souligné : [u]texte[/u]';
 $lang['bbCodeTitleQuote'] = 'Citation : [quote]texte[/quote] ou [quote=auteur]texte[/quote]';
 $lang['bbCodeTitleCode'] = 'Affichage de code : [code]code[/code]';
 $lang['bbCodeTitleURL'] = 'Insérer une URL : [url]http://example.org[/url] ou [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = 'Insérer une image : [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insérer une image : [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Couleur de la police: [color=red]texte[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Liste des émoticônes';
 $lang['help'] = 'Aide';

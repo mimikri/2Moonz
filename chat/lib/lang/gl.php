@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Texto subraiado: [u]text[/u]';
 $lang['bbCodeTitleQuote'] = 'Texto entrecomillado: [quote]text[/quote] or [quote=author]text[/quote]';
 $lang['bbCodeTitleCode'] = 'Mosrar código: [code]code[/code]';
 $lang['bbCodeTitleURL'] = 'Insertar URL: [url]http://example.org[/url] or [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = 'Insertar imaxe: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insertar imaxe: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Cor fonte: [color=red]text[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emoticonos lista';
 $lang['help'] = 'Axuda';

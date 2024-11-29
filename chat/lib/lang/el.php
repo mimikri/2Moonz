@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Υπογραμμισμένο κείμενο: [u
 $lang['bbCodeTitleQuote'] = 'Κείμενο σε παράθεση: [quote]κείμενο[/quote] ή [quote=author]κείμενο[/quote]';
 $lang['bbCodeTitleCode'] = 'Εμφάνιση κώδικα: [code]code[/code]';
 $lang['bbCodeTitleURL'] = 'Εισαγωγή URL: [url]http://example.org[/url] ή [url=http://example.org]κείμενο[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Χρώμα γραμματοσειράς: [color=red]κείμενο[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smilies list';
 $lang['help'] = 'Βοήθεια';

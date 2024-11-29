@@ -22,7 +22,7 @@
 	{if $facebookEnable}
 	<div class="rowForm">
 		<label>{$LNG.registerFacebookAccount}</label>
-		<a href="#" data-href="index.php?page=externalAuth&method=facebook" class="fb_login"><img src="styles/resource/images/facebook/fb-connect-large.png" alt=""></a>
+		<a href="#" data-href="index.php?page=externalAuth&method=facebook" class="fb_login"><img src="styles/resource/images/facebook/fb-connect-large.webp" alt=""></a>
 	</div>
 	{/if}
 	{/if}

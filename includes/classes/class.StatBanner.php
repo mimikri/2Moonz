@@ -17,7 +17,7 @@
 
 class StatBanner {
 
-	private string $source = "styles/resource/images/banner.jpg";
+	private string $source = "styles/resource/images/banner.webp";
 
 	public function GetData($id)
 	{

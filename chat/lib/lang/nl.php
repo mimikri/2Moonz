@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Onderlijnde tekst: [u]text[/u]';
 $lang['bbCodeTitleQuote'] = 'Citeer tekst: [quote]text[/quote] of [quote=author]text[/quote]';
 $lang['bbCodeTitleCode'] = 'Code ingeven: [code]code[/code]';
 $lang['bbCodeTitleURL'] = 'Voeg URL in: [url]http://example.org[/url] of [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = 'Voeg figuur toe: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Voeg figuur toe: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Kleur lettertype: [color=red]text[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emoticons list';
 $lang['help'] = 'Help';

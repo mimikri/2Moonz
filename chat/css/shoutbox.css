@@ -165,7 +165,7 @@
 	color:#1E90FF;
 }
 #ajaxChatContent #ajaxChatChatList .delete {
-	background:url('../img/delete.png') no-repeat right;
+	background:url('../img/delete.webp') no-repeat right;
 }
 #ajaxChatContent #ajaxChatChatList .deleteSelected {
 	border-color:red;

@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = '下划线：[u]文字[/u]';
 $lang['bbCodeTitleQuote'] = '引用：[quote]引用[/quote] or [quote=作者]引用[/quote]';
 $lang['bbCodeTitleCode'] = '显示代码：[code]代码[/code]';
 $lang['bbCodeTitleURL'] = '插入 URL：[url]http://example.org[/url] 或者 [url=http://example.org]文字[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = '文字颜色：[color=red]文字[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smilies list';
 $lang['help'] = '帮助';

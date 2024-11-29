@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Altçizgili text: [u]text[/u]';
 $lang['bbCodeTitleQuote'] = 'Büyük text: [quote]text[/quote] or [quote=author]text[/quote]';
 $lang['bbCodeTitleCode'] = 'Kod gösterim: [code]kod[/code]';
 $lang['bbCodeTitleURL'] = 'URL gir: [url]http://example.org[/url] veya [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = 'Resim gir: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Resim gir: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Font Rengi: [color=red]text[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emoticons list';
 $lang['help'] = 'Yardım';

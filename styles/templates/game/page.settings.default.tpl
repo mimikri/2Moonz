@@ -97,19 +97,19 @@
 			<th>{$LNG.op_show}</th>
 		</tr>
 		<tr>
-			<td><img src="{$dpath}img/e.gif" alt="">{$LNG.op_spy}</td>
+			<td><img src="{$dpath}img/e.webp" alt="">{$LNG.op_spy}</td>
 			<td><input name="galaxySpy" type="checkbox" value="1" {if $galaxySpy == 1}checked="checked"{/if}></td>
 		</tr>
 		<tr>
-			<td><img src="{$dpath}img/m.gif" alt="">{$LNG.op_write_message}</td>
+			<td><img src="{$dpath}img/m.webp" alt="">{$LNG.op_write_message}</td>
 			<td><input name="galaxyMessage" type="checkbox" value="1" {if $galaxyMessage == 1}checked="checked"{/if}></td>
 		</tr>
 		<tr>
-			<td><img src="{$dpath}img/b.gif" alt="">{$LNG.op_add_to_buddy_list}</td>
+			<td><img src="{$dpath}img/b.webp" alt="">{$LNG.op_add_to_buddy_list}</td>
 			<td><input name="galaxyBuddyList" type="checkbox" value="1" {if $galaxyBuddyList == 1}checked="checked"{/if}></td>
 		</tr>
 		<tr>
-			<td><img src="{$dpath}img/r.gif" alt="">{$LNG.op_missile_attack}</td>
+			<td><img src="{$dpath}img/r.webp" alt="">{$LNG.op_missile_attack}</td>
 			<td><input name="galaxyMissle" type="checkbox" value="1" {if $galaxyMissle == 1}checked="checked"{/if}></td>
 		</tr>
 		<tr>

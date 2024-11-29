@@ -5,7 +5,7 @@ html, body {
     padding: 0;
 }
 body {
-    background: url(../../images/login/background.jpg) repeat scroll 0 0 #000000;
+    background: url(../../images/login/background.webp) repeat scroll 0 0 #000000;
     color: #FFFFFF;
     font-family: verdana;
     font-size: 12px;
@@ -91,7 +91,7 @@ nav {
 header {
 	display: block;
 	height: 20px;
-	background: url(../../images/login/header.png) repeat-x center bottom #47494b
+	background: url(../../images/login/header.webp) repeat-x center bottom #47494b
 }
 
 ul#language, #menu {
@@ -483,34 +483,34 @@ ul#rules {
 }
 
 .de {
-	background: url(../../images/login/flags/de.png);
+	background: url(../../images/login/flags/de.webp);
 }
 .en {
-	background: url(../../images/login/flags/us.png);
+	background: url(../../images/login/flags/us.webp);
 }
 .es {
-	background: url(../../images/login/flags/es.png);
+	background: url(../../images/login/flags/es.webp);
 }
 .fr {
-	background: url(../../images/login/flags/fr.png);
+	background: url(../../images/login/flags/fr.webp);
 }
 .it {
-	background: url(../../images/login/flags/it.png);
+	background: url(../../images/login/flags/it.webp);
 }
 .pt {
-	background: url(../../images/login/flags/pt.png);
+	background: url(../../images/login/flags/pt.webp);
 }
 .ru {
-	background: url(../../images/login/flags/ru.png);
+	background: url(../../images/login/flags/ru.webp);
 }
 .si {
-	background: url(../../images/login/flags/si.png);
+	background: url(../../images/login/flags/si.webp);
 }
 .pl {
-	background: url(../../images/login/flags/pl.png);
+	background: url(../../images/login/flags/pl.webp);
 }
 .tr {
-	background: url(../../images/login/flags/tr.png);
+	background: url(../../images/login/flags/tr.webp);
 }
 
 /** FOOTER **/

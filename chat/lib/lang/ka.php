@@ -40,7 +40,7 @@ $lang['bbCodeTitleUnderline'] = 'ხაზგასმული ტექსტ�
 $lang['bbCodeTitleQuote'] = 'ციტატის ტექსტი: [quote]ტექსტი[/quote] ან [quote=ავტორი]ტექსტი[/quote]';
 $lang['bbCodeTitleCode'] = 'კოდის ჩვენება: [code]კოდი[/code]';
 $lang['bbCodeTitleURL'] = 'URL ბმულის ჩასმა: [url]http://example.org[/url] ან [url=http://example.org]ტექსტი[/url]';
-$lang['bbCodeTitleImg'] = 'ნახატის ჩასმა: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'ნახატის ჩასმა: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'შრიფტის ფერი: [color=red]ტექსტი[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smilies list';
 $lang['help'] = 'დახმარება';

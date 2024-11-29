@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'زیر خط دار: [u]متن[/u]';
 $lang['bbCodeTitleQuote'] = 'نقل قول: [quote]متن[/quote] او [quote=الكاتب]نص[/quote]';
 $lang['bbCodeTitleCode'] = 'نمایش کد: [code]code[/code]';
 $lang['bbCodeTitleURL'] = 'وارد کردن آدرس: [url]http://example.org[/url] یا [url=http://example.org]متن[/url]';
-$lang['bbCodeTitleImg'] = 'وارد کردن تصویر: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'وارد کردن تصویر: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'رنگ متن: [color=red]متن[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smilies list';
 $lang['help'] = 'کمک';

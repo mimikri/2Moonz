@@ -42,7 +42,7 @@ $lang['bbCodeTitleUnderline'] = 'Подчеркнутый текст: [u]тек�
 $lang['bbCodeTitleQuote'] = 'Цитата: [quote]текст[/quote] или [quote=автор]текст[/quote]';
 $lang['bbCodeTitleCode'] = 'Код: [code]текст[/code]';
 $lang['bbCodeTitleURL'] = 'Вставить ссылку: [url]http://example.org[/url] или [url=http://example.org]текст[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Цвет шрифта: [color=red]текст[/color]';
 $lang['bbCodeTitleEmoticon'] = 'список Смайли';
 $lang['help'] = 'Помощь';

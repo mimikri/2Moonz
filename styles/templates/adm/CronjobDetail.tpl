@@ -12,7 +12,7 @@
 <tr>
 	<td>{$LNG.cronjob_name}</td>
 	<td><input type="text" name="name" value="{$name}"></td>
-	<td><img src="./styles/resource/images/admin/i.gif" width="16" height="16" alt="" class="tooltip" data-tooltip-content="{$LNG.cronjob_desc_name}"></td>
+	<td><img src="./styles/resource/images/admin/i.webp" width="16" height="16" alt="" class="tooltip" data-tooltip-content="{$LNG.cronjob_desc_name}"></td>
 </tr>
 <tr>
 <td colspan=3>{$LNG.cronjob_desc}</td>
@@ -45,7 +45,7 @@
 <tr>
 	<td>{$LNG.cronjob_class}</td>
 	<td>{html_options name="class" output=$avalibleCrons values=$avalibleCrons selected=$class}</td>
-	<td><img src="./styles/resource/images/admin/i.gif" width="16" height="16" alt="" class="tooltip" data-tooltip-content="{$LNG.cronjob_desc_class}"></td>
+	<td><img src="./styles/resource/images/admin/i.webp" width="16" height="16" alt="" class="tooltip" data-tooltip-content="{$LNG.cronjob_desc_class}"></td>
 </tr>
 <tr>
 <td colspan=3>

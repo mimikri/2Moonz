@@ -40,7 +40,7 @@ $lang['bbCodeTitleUnderline'] = 'Unterstrichen: [u]Text[/u]';
 $lang['bbCodeTitleQuote'] = 'Zitat: [quote]Text[/quote] oder [quote=Autor]Text[/quote]';
 $lang['bbCodeTitleCode'] = 'Code anzeigen: [code]code[/code]';
 $lang['bbCodeTitleURL'] = 'Link einfügen: [url]http://example.org[/url] oder [url=http://example.org]Text[/url]';
-$lang['bbCodeTitleImg'] = 'Bild einfügen: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Bild einfügen: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Schriftfarbe: [color=red]Text[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smileys list';
 $lang['help'] = 'Hilfe';

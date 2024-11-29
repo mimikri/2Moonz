@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Подцртан текст: [u]текст[/u]'
 $lang['bbCodeTitleQuote'] = 'Цитиран текст: [quote]текст[/quote] или [quote=Автор]текст[/quote]';
 $lang['bbCodeTitleCode'] = 'Покажување на код: [code]код[/code]';
 $lang['bbCodeTitleURL'] = 'URL: [url]http://example.org[/url] или [url=http://example.org]текст[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Боја на заглавие: [color=red]текст[/color]';
 $lang['bbCodeTitleEmoticon'] = 'емоции листа';
 $lang['help'] = 'Помош';

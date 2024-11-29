@@ -192,7 +192,7 @@ TMOONS-246 - Support-Ticket kann weder gelöscht noch geschlossen werden.
 TMOONS-247 - Error in Flotten bei Mission Transport und maximalen Rohstoffen
 TMOONS-248 - Planetenauswahl zeigt immer ersten Planeten
 TMOONS-249 - Hall of Fame wird nicht angezeigt
-TMOONS-250 - Lösch-Icon /styles/resource/images/r1.png nicht vorhanden
+TMOONS-250 - Lösch-Icon /styles/resource/images/r1.webp nicht vorhanden
 TMOONS-251 - Double key
 TMOONS-254 - anflug auf Mond nicht möglich
 TMOONS-256 - User erstellen im Admin
@@ -261,7 +261,7 @@ TMOONS-345 - Cheat on the speed of the ships
 TMOONS-348 - Error.log nach login
 TMOONS-349 - SQL injection
 TMOONS-352 - SQL Error: Unknown column &#39;s.user_id&#39; in &#39;on clause&#39;
-TMOONS-353 - In Statistik ... /styles/theme/gow/img/m.gif  für Private Nachrichten nicht vorhanden
+TMOONS-353 - In Statistik ... /styles/theme/gow/img/m.webp  für Private Nachrichten nicht vorhanden
 TMOONS-359 - Plane namen ändern
 TMOONS-360 - ENABLE_INSTALL_TOOL
 TMOONS-361 - Colorful background in ACP
@@ -362,7 +362,7 @@ TMOONS-346 - The doubling of the fleet', 'v1.6.1' => 'Jan 19.11.11
 - 0000024: [Login] On email activation users cann´t register (Slaver) - resolved.
 - 0000046: [Core] referals in overview (Slaver) - resolved.
 - 0000042: [Core] referrals name (Slaver) - resolved.
-- 0000034: [Design] IE8 / IE9 changelog and menu-top.png not shown (Slaver) - resolved.
+- 0000034: [Design] IE8 / IE9 changelog and menu-top.webp not shown (Slaver) - resolved.
 - 0000030: [Core] Phalanx not work after update, says error (Slaver) - resolved.
 - 0000025: [Time (offset errors)] Timezone [not resolved 2030] (Slaver) - resolved.
 - 0000035: [Core] after last update to 2043 (Slaver) - resolved.

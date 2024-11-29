@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Understrek tekst: [u]tekst[/u]';
 $lang['bbCodeTitleQuote'] = 'Siter tekst: [quote]tekst[/quote] or [quote=author]tekst[/quote]';
 $lang['bbCodeTitleCode'] = 'Vis kode: [code]code[/code]';
 $lang['bbCodeTitleURL'] = 'Legg til url: [url]http://example.org[/url] or [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Tekst farge: [color=red]text[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emoticons list';
 $lang['help'] = 'Hjelp';

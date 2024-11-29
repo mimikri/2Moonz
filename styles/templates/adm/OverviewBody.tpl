@@ -39,11 +39,11 @@
 		<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
 		<input type="hidden" name="cmd" value="_s-xclick">
 		<input type="hidden" name="hosted_button_id" value="CM6PQFUATN7MS">
-		<input type="image" src="https://www.paypal.com/de_DE/DE/i/btn/btn_donateCC_LG.gif" name="submit" alt="Jetzt einfach, schnell und sicher online bezahlen - mit PayPal." style="background:transparent;border:0px none;">
+		<input type="image" src="https://www.paypal.com/de_DE/DE/i/btn/btn_donateCC_LG.webp" name="submit" alt="Jetzt einfach, schnell und sicher online bezahlen - mit PayPal." style="background:transparent;border:0px none;">
 		</form>
 		</td>
 		<td align="center">
-		<img src="http://www.moneybookers.com/images/logos/additional_logos/de_donatewith.gif" style="background:transparent;border:0px none;">
+		<img src="http://www.moneybookers.com/images/logos/additional_logos/de_donatewith.webp" style="background:transparent;border:0px none;">
 		<form action="https://www.moneybookers.com/app/payment.pl" target="_blank">
 		<input type="hidden" name="pay_to_email" value="slaver7@gmail.com">
 		<input type="hidden" name="recipient_description" value="Donation for 2Moons">
@@ -122,7 +122,7 @@
 									<table width="250px;">
 										<tr>
 											<td class="transparent">
-												<img src="styles/resource/images/login/flags/us.png" alt="(english)">
+												<img src="styles/resource/images/login/flags/us.webp" alt="(english)">
 											</td>
 											<td class="transparent left">
 												QwataKayean
@@ -130,7 +130,7 @@
 										</tr>
 										<tr>
 											<td class="transparent">
-												<img src="styles/resource/images/login/flags/pt.png" alt="(portuguese)">
+												<img src="styles/resource/images/login/flags/pt.webp" alt="(portuguese)">
 											</td>
 											<td class="transparent left">
 												QwataKayean
@@ -138,7 +138,7 @@
 										</tr>
 										<tr>
 											<td class="transparent">
-												<img src="styles/resource/images/login/flags/fr.png" alt="(french)">
+												<img src="styles/resource/images/login/flags/fr.webp" alt="(french)">
 											</td>
 											<td class="transparent left">
 												<a href="https://github.com/BigTwoProduction" target="_blank">BigTwoProduction</a>
@@ -146,7 +146,7 @@
 										</tr>
 										<tr>
 											<td class="transparent">
-												<img src="styles/resource/images/login/flags/ru.png" alt="(russian)">
+												<img src="styles/resource/images/login/flags/ru.webp" alt="(russian)">
 											</td>
 											<td class="transparent left">
 												InquisitorEA
@@ -154,7 +154,7 @@
 										</tr>
 										<tr>
 											<td class="transparent">
-												<img src="styles/resource/images/login/flags/es.png" alt="(spanish)">
+												<img src="styles/resource/images/login/flags/es.webp" alt="(spanish)">
 											</td>
 											<td class="transparent left">
 												Orion
@@ -162,7 +162,7 @@
 										</tr>
 										<tr>
 											<td class="transparent">
-												<img src="styles/resource/images/login/flags/tr.png" alt="(turkish)">
+												<img src="styles/resource/images/login/flags/tr.webp" alt="(turkish)">
 											</td>
 											<td class="transparent left">
 												romansmac

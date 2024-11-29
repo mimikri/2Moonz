@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Підкреслений текст: [u]тек�
 $lang['bbCodeTitleQuote'] = 'Цитований текст: [quote]текст[/quote] чи [quote=author]текст[/quote]';
 $lang['bbCodeTitleCode'] = 'Показати код: [code]код[/code]';
 $lang['bbCodeTitleURL'] = 'Показати URL: [url]http://example.org[/url] or [url=http://example.org]текст[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Колір шрифту: [color=red]текст[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smilies list';
 $lang['help'] = 'Допомога';

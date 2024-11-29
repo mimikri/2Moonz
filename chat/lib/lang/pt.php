@@ -39,7 +39,7 @@ $lang['bbCodeTitleUnderline'] = 'Underline text: [u]text[/u]';
 $lang['bbCodeTitleQuote'] = 'Quote text: [quote]text[/quote] or [quote=author]text[/quote]';
 $lang['bbCodeTitleCode'] = 'Code display: [code]code[/code]';
 $lang['bbCodeTitleURL'] = 'Insert URL: [url]http://example.org[/url] or [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Font Color: [color=red]text[/color]';
 $lang['help'] = 'Help';
 $lang['helpItemDescJoin'] = 'Join a channel:';

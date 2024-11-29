@@ -1921,7 +1921,7 @@ class ts3admin {
      * <pre>
      * $files = array();
      *
-     * $files[] = '/pic1.jpg';
+     * $files[] = '/pic1.webp';
      * $files[] = '/dokumente/test.txt';
      * $files[] = '/dokumente';
      * </pre>
@@ -2095,7 +2095,7 @@ class ts3admin {
      *  [clid] => 1
      *  [cldbid] => 2019
      *  [path] => files/virtualserver_11/channel_231
-     *  [name] => 1285412348878.png
+     *  [name] => 1285412348878.webp
      *  [size] => 1161281
      *  [sizedone] => 275888
      *  [clientftfid] => 15

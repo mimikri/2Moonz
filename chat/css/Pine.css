@@ -37,7 +37,7 @@ input, select {
 	color:#C5EBB7;
 }
 #content #chatList{
-	background: url('pine_images/chatlist.jpg') no-repeat bottom right #0a180d;
+	background: url('pine_images/chatlist.webp') no-repeat bottom right #0a180d;
 }
 #content #chatList, #content #onlineListContainer, #content #helpContainer, #content #settingsContainer{
 	box-shadow: inset 1px 1px 10px rgba(0,0,0,0.6);
@@ -71,7 +71,7 @@ input, select {
 
 /* Status Icon */
 #content #statusIconContainer {
-	background: url('../img/loading-sprite.png') no-repeat 0px 0px; 
+	background: url('../img/loading-sprite.webp') no-repeat 0px 0px; 
 }
 #content #statusIconContainer.waiting {
 	background-position: 0px -22px;

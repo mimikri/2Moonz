@@ -21,7 +21,7 @@
 	<tr>
 		<td>{$memberListRow@iteration}</td>
 		<td><a href="#" onclick="return Dialog.Playercard({$userID}, '{$memberListRow.username}');">{$memberListRow.username}</a></td>
-		<td><a href="#" onclick="return Dialog.PM({$userID});"><img src="{$dpath}img/m.gif" border="0" title="{$LNG.write_message}"></a></td>
+		<td><a href="#" onclick="return Dialog.PM({$userID});"><img src="{$dpath}img/m.webp" border="0" title="{$LNG.write_message}"></a></td>
 		<td>{$memberListRow.rankName}</td>
 		<td data-points="{$memberListRow.points}">{$memberListRow.points|number}</td>
 		<td><a href="game.php?page=galaxy&amp;galaxy={$memberListRow.galaxy}&amp;system={$memberListRow.system}" data-postion="{$memberListRow.galaxy}:{$memberListRow.system}:{$memberListRow.planet}">[{$memberListRow.galaxy}:{$memberListRow.system}:{$memberListRow.planet}]</a></td>

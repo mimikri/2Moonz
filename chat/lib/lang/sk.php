@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Podčiarknuté: [u]text[/u]';
 $lang['bbCodeTitleQuote'] = 'Citovať text: [quote]text[/quote] alebo [quote=autor]text[/quote]';
 $lang['bbCodeTitleCode'] = 'Zobraziť kód: [code]kód[/code]';
 $lang['bbCodeTitleURL'] = 'Vložiť URL: [url]http://www.example.org/[/url] alebo [url=http://www.example.org/]text[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Farba písma: [color=red]text[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emoticons list';
 $lang['help'] = 'Nápoveda';

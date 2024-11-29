@@ -40,7 +40,7 @@ $lang['bbCodeTitleUnderline'] = 'Podvučeni tekst: [u]tekst[/u]';
 $lang['bbCodeTitleQuote'] = 'Citirani tekst: [quote]tekst[/quote] ili [quote=autor]tekst[/quote]';
 $lang['bbCodeTitleCode'] = 'Prikaz kôda: [code]kôd[/code]';
 $lang['bbCodeTitleURL'] = 'Umetanje URL: [url]http://primjer.org[/url] ili [url=http://primjer.org]tekst[/url]';
-$lang['bbCodeTitleImg'] = 'Umetanje slike: [img]http://primjer.org/slika.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Umetanje slike: [img]http://primjer.org/slika.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Boja fonta: [color=red]tekst[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emotikone popis';
 $lang['help'] = 'Pomoć';

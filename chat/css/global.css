@@ -216,7 +216,7 @@ body.ajax-chat {
 	height:10px;
 	margin-top:2px;
 	padding-left:5px;
-	background:url('../img/delete.png') no-repeat right;
+	background:url('../img/delete.webp') no-repeat right;
 }
 #content #onlineListContainer #onlineList div {
 	padding: 2px 10px;
@@ -234,7 +234,7 @@ body.ajax-chat {
 
 /* Buttons */
 #content #optionsContainer input, #content #settingsContainer #settingsList input.button, #content #showChannelsButton {
-	background: url('../img/buttons-sprite.png') no-repeat;
+	background: url('../img/buttons-sprite.webp') no-repeat;
 	vertical-align:middle;
 	width:22px;
 	height:22px;

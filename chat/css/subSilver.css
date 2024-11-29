@@ -18,7 +18,7 @@
 
 	/* Status Icon */
 	#content #statusIconContainer {
-		background-image: url('../img/loading-sprite.png'); 
+		background-image: url('../img/loading-sprite.webp'); 
 	}
 	#content .statusContainerOff {
 		background-position: 0px 0px;

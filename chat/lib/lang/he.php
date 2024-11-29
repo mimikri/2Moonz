@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'טקסט מודגש קו: [u]טקסט[/u]';
 $lang['bbCodeTitleQuote'] = 'צטט טקסט: [quote]טקסט[/quote] או [quote=כותב מקורי]טקסט[/quote]';
 $lang['bbCodeTitleCode'] = 'הראה קוד: [code]קוד[/code]';
 $lang['bbCodeTitleURL'] = 'הכנס כתובת: [url]http://www.example.org[/url] או[url=http://www.example.org]טקסט[/url]';
-$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Insert image: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'צבע גופן: [color=צבע]טקסט[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emoticons list';
 $lang['help'] = 'עזרה';

@@ -40,7 +40,7 @@ $lang['bbCodeTitleUnderline'] = 'Garis Bawah: [u]kata[/u]';
 $lang['bbCodeTitleQuote'] = 'Kata Saduran: [quote]kata[/quote] or [quote=author]text[/quote]';
 $lang['bbCodeTitleCode'] = 'Code display: [code]code[/code]';
 $lang['bbCodeTitleURL'] = 'Sisip URL: [url]http://example.org[/url] or [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = 'Sisip gambar: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Sisip gambar: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Warna Huruf: [color=red]text[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emoticons list';
 $lang['help'] = 'Help';

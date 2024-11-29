@@ -40,7 +40,7 @@ $lang['bbCodeTitleUnderline'] = 'アンダーライン: [u]text[/u]';
 $lang['bbCodeTitleQuote'] = '引用: [quote]text[/quote] or [quote=author]text[/quote]';
 $lang['bbCodeTitleCode'] = 'コード表示: [code]code[/code]';
 $lang['bbCodeTitleURL'] = 'URLリンク: [url]http://example.org[/url] or [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = '画像: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = '画像: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'フォントカラー: [color=red]text[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smilies list';
 $lang['help'] = 'ヘルプ';

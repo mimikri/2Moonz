@@ -11,12 +11,12 @@
 		<td>{$LNG.al_dlte}</td>
 		<td>{$LNG.al_rank_name}</td>
 		{foreach $availableRanks as $rankName}
-		<td><img src="styles/resource/images/alliance/{$rankName}.png" alt="" width="16" height="16"></td>
+		<td><img src="styles/resource/images/alliance/{$rankName}.webp" alt="" width="16" height="16"></td>
 		{/foreach}
 	</tr>
 	{foreach $rankList as $rowId => $rankRow}
 	<tr>
-		<td><a href="game.php?page=alliance&amp;mode=admin&amp;action=permissionsSend&amp;deleteRank={$rowId}"><img src="styles/resource/images/alliance/CLOSE.png" alt="" width="16" height="16"></a></td>
+		<td><a href="game.php?page=alliance&amp;mode=admin&amp;action=permissionsSend&amp;deleteRank={$rowId}"><img src="styles/resource/images/alliance/CLOSE.webp" alt="" width="16" height="16"></a></td>
 		<td><input type="text" name="rank[{$rowId}][rankName]" value="{$rankRow.rankName}"></td>
 		{foreach $availableRanks as $rankId => $rankName}
 		<td><input type="checkbox" name="rank[{$rowId}][{$rankId}]" value="1"{if $rankRow[$rankName]} checked{/if}{if !$ownRights[$rankName]} disabled{/if}></td>
@@ -35,7 +35,7 @@
 	</tr>
 		{foreach $availableRanks as $rankName}
 	<tr>
-			<td><img src="styles/resource/images/alliance/{$rankName}.png" alt="" width="16" height="16"></td>
+			<td><img src="styles/resource/images/alliance/{$rankName}.webp" alt="" width="16" height="16"></td>
 			<td colspan="{$countRank + 1}">{$LNG.al_rank_desc[$rankName]}</td>
 	</tr>
 		{/foreach}
@@ -57,7 +57,7 @@
 			</tr>
 	{foreach $availableRanks as $rankId => $rankName}
 	<tr>
-		<td><img src="styles/resource/images/alliance/{$rankName}.png" alt="{$rankName}" width="16" height="16">&nbsp;<label for="rank_{$rankId}">{$LNG.al_rank_desc[$rankName]}</label></td>
+		<td><img src="styles/resource/images/alliance/{$rankName}.webp" alt="{$rankName}" width="16" height="16">&nbsp;<label for="rank_{$rankId}">{$LNG.al_rank_desc[$rankName]}</label></td>
 		<td><input type="checkbox" name="newrank[{$rankId}]" value="1" id="rank_{$rankId}" title="{$LNG.al_rank_desc[$rankName]}"></td>
 	</tr>
 	{/foreach}

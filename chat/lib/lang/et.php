@@ -40,7 +40,7 @@ $lang['bbCodeTitleUnderline'] = 'Underline text: [u]tekst[/u]';
 $lang['bbCodeTitleQuote'] = 'Tsiteeritud tekst: [quote]tekst[/quote] või [quote=autor]tekst[/quote]';
 $lang['bbCodeTitleCode'] = 'Koodi esitamine: [code]kood[/code]';
 $lang['bbCodeTitleURL'] = 'Lisa URL: [url]http://näide.org[/url] või [url=http://näide.org]tekst[/url]';
-$lang['bbCodeTitleImg'] = 'Lisa pilt: [img]http://näide.org/pilt.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Lisa pilt: [img]http://näide.org/pilt.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Fondi värv: [color=red]tekst[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Emotikonid nimekiri';
 $lang['help'] = 'Abi';

@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline']		= 'Understruken text: [u]text[/u]';
 $lang['bbCodeTitleQuote']		= 'Citera text: [quote]text[/quote] or [quote=author]text[/quote]';
 $lang['bbCodeTitleCode']		= 'Visa kod: [code]code[/code]';
 $lang['bbCodeTitleURL']			= 'Lägg till URL: [url]http://www.example.org/[/url] or [url=http://www.example.org/]text[/url]';
-$lang['bbCodeTitleImg']			= 'Infoga bild: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg']			= 'Infoga bild: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor']		= 'Textfärg: [color=red]text[/color]';
 $lang['bbCodeTitleEmoticon']	= 'Smileys list';
 $lang['help']				= 'Hjälp';

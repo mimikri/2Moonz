@@ -41,7 +41,7 @@ $lang['bbCodeTitleUnderline'] = 'Tanlinellu testun: [u]testun[/u]';
 $lang['bbCodeTitleQuote'] = 'Dyfynnu testun: [quote]testun[/quote] neu [quote=awdur]testun[/quote]';
 $lang['bbCodeTitleCode'] = 'Dangos cod: [code]cod[/code]';
 $lang['bbCodeTitleURL'] = 'Mewnosod URL: [url]http://example.org[/url] neu [url=http://example.org]testun[/url]';
-$lang['bbCodeTitleImg'] = 'Mewnosod delwedd: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Mewnosod delwedd: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Lliw Ffont: [color=red]testun[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Gwenogluniau list';
 $lang['help'] = 'Cymorth';

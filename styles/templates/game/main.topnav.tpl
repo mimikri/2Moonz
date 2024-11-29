@@ -4,7 +4,7 @@
 			<tbody>
 				<tr>
 					<td id="planetImage">
-                       <img src="{$dpath}planeten/small/s_{$image}.jpg" alt="">
+                       <img src="{$dpath}planeten/small/s_{$image}.webp" alt="">
 					</td>
 					<td id="planetSelectorWrapper">
                         <label for="planetSelector"></label>
@@ -17,7 +17,7 @@
 							<tbody>
 								<tr>
 									{foreach $resourceTable as $resourceID => $resourceData}
-									<td><img src="{$dpath}images/{$resourceData.name}.gif" alt=""></td>
+									<td><img src="{$dpath}images/{$resourceData.name}.webp" alt=""></td>
 									{/foreach}
 								</tr>
 								<tr>

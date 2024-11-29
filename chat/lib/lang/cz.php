@@ -40,7 +40,7 @@ $lang['bbCodeTitleUnderline'] = 'Podtržené: [u]text[/u]';
 $lang['bbCodeTitleQuote'] = 'Citace: [quote]text[/quote] nebo [quote=autor]text[/quote]';
 $lang['bbCodeTitleCode'] = 'Zobrazit kód: [code]kód[/code]';
 $lang['bbCodeTitleURL'] = 'Vložit URL: [url]http://example.org[/url] nebo [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = 'Vložit obrázek: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = 'Vložit obrázek: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = 'Barva písma: [color=red]text[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smajlíky list';
 $lang['help'] = 'Nápověda';

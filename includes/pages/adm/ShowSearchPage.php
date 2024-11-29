@@ -247,12 +247,12 @@ function MyCrazyLittleSearch(string $SpecifyItems, string $WhereItem, string $Sp
 			}
 
 			if(($Page - 1) > 0) 
-				$BEFORE	= "<a href='".$UrlForPage."&amp;side=".$BeforePage.$Minimize."'><img src=\"./styles/resource/images/admin/arrowleft.png\" title=".$LNG['se__before']." height=10 width=14></a> ";
+				$BEFORE	= "<a href='".$UrlForPage."&amp;side=".$BeforePage.$Minimize."'><img src=\"./styles/resource/images/admin/arrowleft.webp\" title=".$LNG['se__before']." height=10 width=14></a> ";
 			else
 				$BEFORE	= "";
 
 			if(($Page + 1) <= $NumberOfPages) 
-				$NEXT	= "<a href='".$UrlForPage."&amp;side=".$NextPage.$Minimize."'><img src=\"./styles/resource/images/admin/arrowright.png\" title=".$LNG['se__next']." height=10 width=14></a>";
+				$NEXT	= "<a href='".$UrlForPage."&amp;side=".$NextPage.$Minimize."'><img src=\"./styles/resource/images/admin/arrowright.webp\" title=".$LNG['se__next']." height=10 width=14></a>";
 			else
 				$NEXT	= "";
 		
@@ -321,11 +321,11 @@ function MyCrazyLittleSearch(string $SpecifyItems, string $WhereItem, string $Sp
 			if ($Table == "users")
 			{
 				if (allowedTo('ShowQuickEditorPage'))
-					$Search['LIST']	.= "<td><a href=\"javascript:openEdit('".$WhileResult[0]."', 'player');\" border=\"0\"><img title=\"".$WhileResult[1]."\" src=\"./styles/resource/images/admin/GO.png\"></a></d>";
+					$Search['LIST']	.= "<td><a href=\"javascript:openEdit('".$WhileResult[0]."', 'player');\" border=\"0\"><img title=\"".$WhileResult[1]."\" src=\"./styles/resource/images/admin/GO.webp\"></a></d>";
 			
 				if ($USER['authlevel'] == AUTH_ADM)
 				{
-					$DELETEBUTTON = $WhileResult[0] != $USER['id'] || $WhileResult[0] != ROOT_USER ? '<a href="?page=search&amp;delete=user&amp;user='.$WhileResult[0].'" border="0" onclick="return confirm(\''.$LNG['ul_sure_you_want_dlte'].' '.$WhileResult[1].'?\');"><img src="./styles/resource/images/alliance/CLOSE.png" width="16" height="16" title='.$WhileResult[1].'></a>' : '-';
+					$DELETEBUTTON = $WhileResult[0] != $USER['id'] || $WhileResult[0] != ROOT_USER ? '<a href="?page=search&amp;delete=user&amp;user='.$WhileResult[0].'" border="0" onclick="return confirm(\''.$LNG['ul_sure_you_want_dlte'].' '.$WhileResult[1].'?\');"><img src="./styles/resource/images/alliance/CLOSE.webp" width="16" height="16" title='.$WhileResult[1].'></a>' : '-';
 					
 					$Search['LIST']	.= "<td>".$DELETEBUTTON."</td>";
 				}
@@ -334,10 +334,10 @@ function MyCrazyLittleSearch(string $SpecifyItems, string $WhereItem, string $Sp
 			if ($Table == "planets p"){
 			
 				if (allowedTo('ShowQuickEditorPage'))
-					$Search['LIST']	.= "<td><a href=\"javascript:openEdit('".$WhileResult[0]."', 'planet');\" border=\"0\"><img src=\"./styles/resource/images/admin/GO.png\" title=".$LNG['se_search_edit']."></a></td>";
+					$Search['LIST']	.= "<td><a href=\"javascript:openEdit('".$WhileResult[0]."', 'planet');\" border=\"0\"><img src=\"./styles/resource/images/admin/GO.webp\" title=".$LNG['se_search_edit']."></a></td>";
 					
 				if ($USER['authlevel'] == AUTH_ADM)
-					$Search['LIST']	.= '<td><a href="?page=search&amp;delete=planet&amp;planet='.$WhileResult[0].'" border="0" onclick="return confirm(\''.$LNG['se_confirm_planet'].' '.$WhileResult[1].'\');"><img src="./styles/resource/images/alliance/CLOSE.png" width="16" height="16" title='.$LNG['button_delete'].'></a></td>';
+					$Search['LIST']	.= '<td><a href="?page=search&amp;delete=planet&amp;planet='.$WhileResult[0].'" border="0" onclick="return confirm(\''.$LNG['se_confirm_planet'].' '.$WhileResult[1].'\');"><img src="./styles/resource/images/alliance/CLOSE.webp" width="16" height="16" title='.$LNG['button_delete'].'></a></td>';
 			}
 			
 			$Search['LIST']	.= "</tr>";
@@ -352,7 +352,7 @@ function MyCrazyLittleSearch(string $SpecifyItems, string $WhereItem, string $Sp
 	}
 	else
 	{
-		$Result['LIST']	 = "<br><table border='0px' style='background:url(images/Adm/blank.gif);' width='90%'>";
+		$Result['LIST']	 = "<br><table border='0px' style='background:url(images/Adm/blank.webp);' width='90%'>";
 		$Result['LIST']	.= "<tr><td style='color:#00CC33;border: 2px red solid;' height='25px'><font color=red>".$LNG['se_no_data']."</font></td></tr>";
 		$Result['LIST']	.= "</table>";
 		return $Result;

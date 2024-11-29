@@ -40,7 +40,7 @@ $lang['bbCodeTitleUnderline'] = '밑줄: [u]내용[/u]';
 $lang['bbCodeTitleQuote'] = '따옴표: [quote]내용[/quote] 또는 [quote=문자]내용[/quote]';
 $lang['bbCodeTitleCode'] = '코드: [code]코드[/code]';
 $lang['bbCodeTitleURL'] = '주소: [url]http://example.org[/url] or [url=http://example.org]text[/url]';
-$lang['bbCodeTitleImg'] = '이미지: [img]http://example.org/image.jpg[/img]';
+$lang['bbCodeTitleImg'] = '이미지: [img]http://example.org/image.webp[/img]';
 $lang['bbCodeTitleColor'] = '글자색: [color=red]내용[/color]';
 $lang['bbCodeTitleEmoticon'] = 'Smilies list';
 $lang['help'] = '도움말';
