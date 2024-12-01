@@ -164,7 +164,7 @@ abstract class AbstractGamePage
 
 		$this->assign(['vmode'				=> $USER['urlaubs_modus'], 'authlevel'			=> $USER['authlevel'], 'userID'			=> $USER['id'], 'bodyclass'			=> $this->getWindow(), 'game_name'			=> $config->game_name, 'uni_name'			=> $config->uni_name, 'ga_active'			=> $config->ga_active, 'ga_key'			=> $config->ga_key, 'debug'				=> $config->debug, 'VERSION'			=> $config->VERSION, 'date'				=> explode("|", date('Y\|n\|j\|G\|i\|s\|Z', TIMESTAMP)), 'isPlayerCardActive' => isModuleAvailable(MODULE_PLAYERCARD), 'REV'				=> substr($config->VERSION, -4), 'Offset'			=> $dateTimeUser->getOffset() - $dateTimeServer->getOffset(), 'queryString'		=> $this->getQueryString(), 'themeSettings'		=> $THEME->getStyleSettings()]);
 	}
-	protected function printMessage($message, $redirectButtons = NULL, $redirect = NULL, $fullSide = true)
+	protected function printMessage($message, $redirectButtons = array('url' => '', 'label' => ''), $redirect = NULL, $fullSide = true)
 	{
 		$this->assign(['message'			=> $message, 'redirectButtons'	=> $redirectButtons]);
 

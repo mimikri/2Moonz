@@ -92,9 +92,12 @@ abstract class AbstractLoginPage
         $this->tplObj->assign_vars(['recaptchaEnable'		=> $config->capaktiv, 'recaptchaPublicKey'	=> $config->cappublic, 'gameName' 				=> $config->game_name, 'facebookEnable'		=> $config->fb_on, 'fb_key' 				=> $config->fb_apikey, 'mailEnable'			=> $config->mail_active, 'reg_close'				=> $config->reg_closed, 'referralEnable'		=> $config->ref_active, 'analyticsEnable'		=> $config->ga_active, 'analyticsUID'			=> $config->ga_key, 'lang'					=> $LNG->getLanguage(), 'UNI'					=> Universe::current(), 'VERSION'				=> $config->VERSION, 'REV'					=> substr($config->VERSION, -4), 'languages'				=> Language::getAllowedLangs(false)]);
 	}
 	
-	protected function printMessage($message, $redirectButtons = null, $redirect = null, $fullSide = true)
+	protected function printMessage($message, $redirectButtons = array('url' => '', 'label' => ''), $redirect = null, $fullSide = true)
 	{
-		$this->assign(['message'			=> $message, 'redirectButtons'	=> $redirectButtons]);
+		$this->assign([
+			'message'			=> $message, 
+			'redirectButtons'	=> $redirectButtons
+		]);
 		
 		if(isset($redirect)) {
 			$this->tplObj->gotoside($redirect[0], $redirect[1]);

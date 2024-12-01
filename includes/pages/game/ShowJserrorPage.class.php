@@ -3,7 +3,7 @@
 
 class ShowJserrorPage extends AbstractGamePage
 {
-    public static $requireModule = MODULE_ERROR_JS;
+    #public static $requireModule = MODULE_ERROR_JS;
 	function __construct()
 	{
 		parent::__construct();

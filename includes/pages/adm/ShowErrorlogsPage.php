@@ -6,6 +6,14 @@ if (!allowedTo(str_replace([__DIR__, '\\', '/', '.php'], '', __FILE__))) throw n
 function ShowErrorlogsPage(): void
 {
   echo '
+	<script type="text/javascript" src="./scripts/base/jquery.js?v=.git"></script>
+	<script type="text/javascript" src="./scripts/base/jquery.ui.js?v=.git"></script>
+	<script type="text/javascript" src="./scripts/base/jquery.cookie.js?v=.git"></script>
+	<script type="text/javascript" src="./scripts/base/jquery.fancybox.js?v=.git"></script>
+	<script type="text/javascript" src="./scripts/base/jquery.validationEngine.js?v=.git"></script>
+	<script type="text/javascript" src="./scripts/l18n/validationEngine/jquery.validationEngine-en.js?v=.git"></script>
+	<script type="text/javascript" src="./scripts/base/tooltip.js?v=.git"></script>
+	<script type="text/javascript" src="./scripts/game/base.js?v=.git"></script>
 	<style>
 td{
    border:.2vw solid #666;
