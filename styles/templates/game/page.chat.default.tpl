@@ -1,14 +1,18 @@
 {block name="title" prepend}{$LNG.lm_chat}{/block}
 {block name="content"}
     <div style="width:300px"><a href="?page=chat&chat_mode=0"
-            style="    width: 48%;
+            style="    width: 31%;
     display: inline-block;
     text-align: center;margin:1%;box-sizing: border-box;
     border: 1px solid #000;   {if $chat_mode == 0}background: #212428; {else} background: rgba(13, 16, 20, 0.95);{/if}  ">General</a><a href="?page=chat&chat_mode=1"
-            style="    width: 48%;
+            style="    width: 31%;
     display: inline-block;
     text-align: center; margin:1%;box-sizing: border-box;
-    border: 1px solid #000;     {if $chat_mode == 0} background:rgba(13, 16, 20, 0.95);{else} background:#212428;{/if}">Alliance</a></div>
+    border: 1px solid #000;     {if $chat_mode == 0} background:rgba(13, 16, 20, 0.95);{else} background:#212428;{/if}">Alliance</a>
+    <a href="#" onclick="return Dialog.AllianceChat();" style="width: 31%;
+    display: inline-block;
+    text-align: center; margin:1%;box-sizing: border-box;
+    border: 1px solid #000;    background:rgba(13, 16, 20, 0.95);">new window</a></div>
     <div id="chat-container" style="      width: 300px;
     background: #212423ee;
     height: 300px;

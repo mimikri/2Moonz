@@ -179,7 +179,7 @@ var Dialog	= {
 	},
 	
 	AllianceChat: function() {
-	    return OpenPopup('game.php?page=chat&chat_mode=1&popup=1', "alliance_chat", 960, 900);
+	    return OpenPopup('game.php?page=chat&chat_mode=1&popup=1', "alliance_chat", 672, 900);
 	},
 	
 	open: function(url, width, height) {
