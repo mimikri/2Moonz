@@ -51,20 +51,23 @@ class ShowChatPage extends AbstractGamePage
 	}
 	function show(): void 
 	{
-
+		$chat_mode = isset($_GET['chat_mode']) ? (int)$_GET['chat_mode'] : 0;
 global $USER;
 	/*	$action	= HTTP::_GP('action', '');
 		if($action == 'alliance') {
 			$this->setWindow('popup');
 			$this->initTemplate();
 		}
-		
+
 		$this->display('page.chat.default.tpl');*/
 		
-	
+		if(isset($_GET['popup'])){
+			$this->setWindow('popup');
+			$this->initTemplate();
+			}
 		if(isset($_POST['message'])){
 			$channel = 0;
-			$chat_mode = isset($_GET['chat_mode']) ? (int)$_GET['chat_mode'] : 0;
+			
 			if($chat_mode > 0){
 				$channel = $USER['ally_id'];
 			} 
@@ -80,7 +83,7 @@ global $USER;
 			$db->delete('delete from uni1_chat where id < :lastid and channel_id = :channel',[':lastid' => $db->lastInsertId() - 100,':channel' => $channel]);
 			die();
 		}
-		$this->assign(['ownid'	=> $USER['id'], 'chat_mode' => $_GET['chat_mode'] ?? 0]);
+		$this->assign(['ownid'	=> $USER['id'], 'chat_mode' => $chat_mode]);
 		$this->display('page.chat.default.tpl');
 		
 	
