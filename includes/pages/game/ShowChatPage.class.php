@@ -27,7 +27,8 @@ class ShowChatPage extends AbstractGamePage
 	{
 			$db = Database::get();
 			$channel = 0;
-			if((int)$_GET['chat_mode'] > 0){
+			$chat_mode = isset($_GET['chat_mode']) ? (int)$_GET['chat_mode'] : 0;
+			if($chat_mode > 0){
 				global $USER;
 				$channel = $USER['ally_id'];
 			} 
@@ -63,7 +64,8 @@ global $USER;
 	
 		if(isset($_POST['message'])){
 			$channel = 0;
-			if((int)$_GET['chat_mode'] > 0){
+			$chat_mode = isset($_GET['chat_mode']) ? (int)$_GET['chat_mode'] : 0;
+			if($chat_mode > 0){
 				$channel = $USER['ally_id'];
 			} 
 			$db = Database::get();
