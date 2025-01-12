@@ -44,9 +44,7 @@ else
 	define('HTTP_PATH'					, PROTOCOL.HTTP_HOST.HTTP_ROOT);
 }
 
-if(!defined('AJAX_CHAT_PATH')) {
-	define('AJAX_CHAT_PATH', ROOT_PATH.'chat/');
-}
+
 
 if(!defined('CACHE_PATH')) {
 	define('CACHE_PATH', ROOT_PATH.'cache/');

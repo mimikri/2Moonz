@@ -67,7 +67,6 @@ function ShowVertify(): void
 		case 'getFileList':
 			echo json_encode(array_merge(
 				dir_tree('./', $EXT, false), 
-				dir_tree('chat/', $EXT),
 				dir_tree('includes/', $EXT),
 				dir_tree('includes/', $EXT),
 				dir_tree('language/', $EXT),

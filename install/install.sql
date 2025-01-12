@@ -117,40 +117,7 @@ CREATE TABLE `%PREFIX%buddy_request` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE `%PREFIX%chat_bans` (
-  `userID` int(11) NOT NULL,
-  `userName` varchar(64) NOT NULL,
-  `dateTime` datetime NOT NULL,
-  `ip` varbinary(16) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE `%PREFIX%chat_invitations` (
-  `userID` int(11) NOT NULL,
-  `channel` int(11) NOT NULL,
-  `dateTime` datetime NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-CREATE TABLE `%PREFIX%chat_messages` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userID` int(11) NOT NULL,
-  `userName` varchar(64) NOT NULL,
-  `userRole` int(1) NOT NULL,
-  `channel` int(11) NOT NULL,
-  `dateTime` datetime NOT NULL,
-  `ip` varbinary(16) NOT NULL,
-  `text` text CHARACTER SET utf8 COLLATE utf8_bin,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
-CREATE TABLE `%PREFIX%chat_online` (
-  `userID` int(11) NOT NULL,
-  `userName` varchar(64) NOT NULL,
-  `userRole` int(1) NOT NULL,
-  `channel` int(11) NOT NULL,
-  `dateTime` datetime NOT NULL,
-  `ip` varbinary(16) NOT NULL,
-  KEY `dateTime` (`dateTime`,`channel`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `%PREFIX%config` (
   `uni` int(11) NOT NULL AUTO_INCREMENT,
@@ -228,19 +195,6 @@ CREATE TABLE `%PREFIX%config` (
   `moduls` varchar(100) NOT NULL DEFAULT '',
   `trade_allowed_ships` varchar(255) NOT NULL DEFAULT '202,401',
   `trade_charge` varchar(5) NOT NULL DEFAULT '30',
-  `chat_closed` tinyint(1) NOT NULL DEFAULT '0',
-  `chat_allowchan` tinyint(1) NOT NULL DEFAULT '1',
-  `chat_allowmes` tinyint(1) NOT NULL DEFAULT '1',
-  `chat_allowdelmes` tinyint(1) NOT NULL DEFAULT '1',
-  `chat_logmessage` tinyint(1) NOT NULL DEFAULT '1',
-  `chat_nickchange` tinyint(1) NOT NULL DEFAULT '1',
-  `chat_botname` varchar(15) NOT NULL DEFAULT '2Moons',
-  `chat_channelname` varchar(15) NOT NULL DEFAULT '2Moons',
-  `chat_socket_active` tinyint(1) NOT NULL DEFAULT '0',
-  `chat_socket_host` varchar(64) NOT NULL DEFAULT '',
-  `chat_socket_ip` varchar(40) NOT NULL DEFAULT '',
-  `chat_socket_port` smallint(5) NOT NULL DEFAULT '0',
-  `chat_socket_chatid` tinyint(1) NOT NULL DEFAULT '1',
   `max_galaxy` tinyint(3) unsigned NOT NULL DEFAULT '9',
   `max_system` smallint(5) unsigned NOT NULL DEFAULT '400',
   `max_planets` tinyint(3) unsigned NOT NULL DEFAULT '15',

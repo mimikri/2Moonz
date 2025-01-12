@@ -201,13 +201,4 @@ elseif(MODE === 'LOGIN')
 	$LNG->getUserAgentLanguage();
 	$LNG->includeData(['L18N', 'INGAME', 'PUBLIC', 'CUSTOM']);
 }
-elseif(MODE === 'CHAT')
-{
-	$session	= Session::load();
 
-	if(!$session->isValidSession())
-	{
-		die('session expired');
-	//	HTTP::redirectTo('index.php?code=3');
-	}
-}

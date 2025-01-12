@@ -23,12 +23,6 @@
 		<td style="white-space: nowrap;">{$LNG.ov_admins_online}</td>
 		<td colspan="2">{foreach $AdminsOnline as $ID => $Name}{if !$Name@first}&nbsp;&bull;&nbsp;{/if}<a href="#" onclick="return Dialog.PM({$ID})">{$Name}</a>{foreachelse}{$LNG.ov_no_admins_online}{/foreach}</td>
 	</tr>
-	{if !empty($chatOnline)}
-	<tr>
-		<td style="white-space: nowrap;">{$LNG.ov_chat_online}</td>
-		<td colspan="2">{foreach $chatOnline as $Name}{if !$Name@first},&nbsp;{/if}<a href="?page=chat">{$Name}</a>{/foreach}</td>
-	</tr>
-	{/if}
 	{if $teamspeakData !== false}
 	<tr>
 		<td>{$LNG.ov_teamspeak}</td>

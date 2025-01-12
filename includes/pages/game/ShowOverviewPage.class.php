@@ -110,7 +110,6 @@ class ShowOverviewPage extends AbstractGamePage
 		global $LNG, $PLANET, $USER;
 		
 		$AdminsOnline 	= [];
-		$chatOnline 	= [];
 		$AllPlanets		= [];
 		$Moon 			= [];
 		$RefLinks		= [];
@@ -170,12 +169,7 @@ class ShowOverviewPage extends AbstractGamePage
 			$AdminsOnline[$AdminRow['id']]	= $AdminRow['username'];
 		}
 
-        $sql = "SELECT userName FROM %%CHAT_ON%% WHERE dateTime > DATE_SUB(NOW(), interval 2 MINUTE) AND channel = 0";
-        $chatUsers = $db->select($sql);
-
-        foreach ($chatUsers as $chatRow) {
-			$chatOnline[]	= $chatRow['userName'];
-		}
+       
 
 		$Messages		= $USER['messages'];
 		
@@ -206,7 +200,7 @@ class ShowOverviewPage extends AbstractGamePage
 				$statData['total_rank'], $statData['total_rank'], $LNG['ov_of'], $config->users_amount);
 		}
 		
-		$this->assign(['rankInfo'					=> $rankInfo, 'is_news'					=> $config->OverviewNewsFrame, 'news'						=> makebr($config->OverviewNewsText), 'planetname'				=> $PLANET['name'], 'planetimage'				=> $PLANET['image'], 'galaxy'					=> $PLANET['galaxy'], 'system'					=> $PLANET['system'], 'planet'					=> $PLANET['planet'], 'planet_type'				=> $PLANET['planet_type'], 'username'					=> $USER['username'], 'userid'					=> $USER['id'], 'buildInfo'					=> $buildInfo, 'Moon'						=> $Moon, 'fleets'					=> $this->GetFleets(), 'AllPlanets'				=> $AllPlanets, 'AdminsOnline'				=> $AdminsOnline, 'teamspeakData'				=> $this->GetTeamspeakData(), 'messages'					=> ($Messages > 0) ? (($Messages == 1) ? $LNG['ov_have_new_message'] : sprintf($LNG['ov_have_new_messages'], pretty_number($Messages))): false, 'planet_diameter'			=> pretty_number($PLANET['diameter']), 'planet_field_current' 		=> $PLANET['field_current'], 'planet_field_max' 			=> CalculateMaxPlanetFields($PLANET), 'planet_temp_min' 			=> $PLANET['temp_min'], 'planet_temp_max' 			=> $PLANET['temp_max'], 'ref_active'				=> $config->ref_active, 'ref_minpoints'				=> $config->ref_minpoints, 'RefLinks'					=> $RefLinks, 'chatOnline'				=> $chatOnline, 'servertime'				=> _date("M D d H:i:s", TIMESTAMP, $USER['timezone']), 'path'						=> HTTP_PATH]);
+		$this->assign(['rankInfo'					=> $rankInfo, 'is_news'					=> $config->OverviewNewsFrame, 'news'						=> makebr($config->OverviewNewsText), 'planetname'				=> $PLANET['name'], 'planetimage'				=> $PLANET['image'], 'galaxy'					=> $PLANET['galaxy'], 'system'					=> $PLANET['system'], 'planet'					=> $PLANET['planet'], 'planet_type'				=> $PLANET['planet_type'], 'username'					=> $USER['username'], 'userid'					=> $USER['id'], 'buildInfo'					=> $buildInfo, 'Moon'						=> $Moon, 'fleets'					=> $this->GetFleets(), 'AllPlanets'				=> $AllPlanets, 'AdminsOnline'				=> $AdminsOnline, 'teamspeakData'				=> $this->GetTeamspeakData(), 'messages'					=> ($Messages > 0) ? (($Messages == 1) ? $LNG['ov_have_new_message'] : sprintf($LNG['ov_have_new_messages'], pretty_number($Messages))): false, 'planet_diameter'			=> pretty_number($PLANET['diameter']), 'planet_field_current' 		=> $PLANET['field_current'], 'planet_field_max' 			=> CalculateMaxPlanetFields($PLANET), 'planet_temp_min' 			=> $PLANET['temp_min'], 'planet_temp_max' 			=> $PLANET['temp_max'], 'ref_active'				=> $config->ref_active, 'ref_minpoints'				=> $config->ref_minpoints, 'RefLinks'					=> $RefLinks,  'servertime'				=> _date("M D d H:i:s", TIMESTAMP, $USER['timezone']), 'path'						=> HTTP_PATH]);
 		
 		$this->display('page.overview.default.tpl');
 	}

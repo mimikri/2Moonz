@@ -66,10 +66,6 @@ switch($page)
 		include_once('includes/pages/adm/ShowConfigUniPage.php');
 		ShowConfigUniPage();
 	break;
-	case 'chat':
-		include_once('includes/pages/adm/ShowChatConfigPage.php');
-		ShowChatConfigPage();
-	break;
 	case 'teamspeak':
 		include_once('includes/pages/adm/ShowTeamspeakPage.php');
 		ShowTeamspeakPage();
@@ -202,6 +198,10 @@ switch($page)
 		include_once('includes/pages/adm/ShowErrorlogsPage.php');
 		ShowErrorlogsPage();
 	break;
+	case 'EditBots':
+        include_once('includes/pages/adm/ShowEditBotsPage.php');
+        ShowEditBotsPage();
+    break;
 	default:
 		include_once('includes/pages/adm/ShowIndexPage.php');
 		ShowIndexPage();

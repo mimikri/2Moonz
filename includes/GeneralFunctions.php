@@ -1,7 +1,7 @@
 <?php
 
 /**
- *  2Moons 
+ *  2Moons
  *   by Jan-Otto Kröpke 2009-2016
  *
  * For the full copyright and license information, please view the LICENSE
@@ -13,9 +13,9 @@
  * @licence MIT
  * @version 1.8.0
  * @link https://github.com/jkroepke/2Moons
+ * @return mixed[]
  */
-
-function getFactors($USER, $Type = 'basic', $TIME = NULL) {
+function getFactors($USER, $Type = 'basic', $TIME = NULL): array {
 	global $resource, $pricelist, $reslist;
 	if(empty($TIME))
 		$TIME	= TIMESTAMP;
