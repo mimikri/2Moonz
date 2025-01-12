@@ -44,6 +44,9 @@ abstract class AbstractGamePage
 			$this->initTemplate();
 		} else {
 			$this->setWindow('ajax');
+			if(AJAX_REQUEST == 2){
+			$this->initTemplate();
+			}
 		}
 	}
 

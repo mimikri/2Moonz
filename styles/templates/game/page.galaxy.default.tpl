@@ -1,6 +1,7 @@
 {block name="title" prepend}{$LNG.lm_galaxy}{/block}
 {block name="content"}
-	<form action="?page=galaxy" method="post" id="galaxy_form">
+	<span id="galaxy_table_wrapper">
+	<form action="?page=galaxy&ajax=2" method="post" id="galaxy_form">
 	<input type="hidden" id="auto" value="dr">
 	<table style="min-width:324px;width:324px;">
 		<tr>
@@ -141,18 +142,18 @@
 			{if $currentPlanet.action}
 				{if $currentPlanet.action.esp}
 				<a href="javascript:doit(6,{$currentPlanet.planet.id},{$spyShips|json|escape:'html'})">
-					<img src="{$dpath}img/e.webp" title="{$LNG.gl_spy}" alt="">
+					<img src="{$dpath}img/e.webp" height="22" width="22" title="{$LNG.gl_spy}" alt="">
 				</a>{/if}
 				{if $currentPlanet.action.message}
 				<a href="#" onclick="return Dialog.PM({$currentPlanet.user.id})">
-					<img src="{$dpath}img/m.webp" title="{$LNG.write_message}" alt="">
+					<img src="{$dpath}img/m.webp" height="22" width="22" title="{$LNG.write_message}" alt="">
 				</a>{/if}
 				{if $currentPlanet.action.buddy}
                 <a href="#" onclick="return Dialog.Buddy({$currentPlanet.user.id})">
-					<img src="{$dpath}img/b.webp" title="{$LNG.gl_buddy_request}" alt="">
+					<img src="{$dpath}img/b.webp" height="22" width="22" title="{$LNG.gl_buddy_request}" alt="">
 				</a>{/if}
 				{if $currentPlanet.action.missle}<a href="?page=galaxy&amp;action=sendMissle&amp;galaxy={$galaxy}&amp;system={$system}&amp;planet={$planet}&amp;type=1">
-					<img src="{$dpath}img/r.webp" title="{$LNG.gl_missile_attack}" alt="">
+					<img src="{$dpath}img/r.webp" height="22" width="22" title="{$LNG.gl_missile_attack}" alt="">
 				</a>{/if}
 			{else}-{/if}
 			{if $currentPlanet.planet.phalanx}<a class="textForBlind" href="#" onclick="OpenPopup('?page=phalanx&amp;galaxy={$galaxy}&amp;system={$system}&amp;planet={$planet}&amp;planettype=1','',640,510);return false;"><span>{$LNG.gl_phalanx}</span></a>{/if}
@@ -194,4 +195,5 @@
 		status_fail		= '{$LNG.gl_ajax_status_fail}';
 		MaxFleetSetting = {$settings_fleetactions};
 	</script>
+	</span>
 {/block}

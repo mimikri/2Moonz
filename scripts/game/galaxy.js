@@ -19,7 +19,22 @@ function doit(missionID, planetID) {
 	});
 }
 
+
 function galaxy_submit(value) {
-	$('#auto').attr('name', value);
-	$('#galaxy_form').submit();
+    $('#auto').attr('name', value);
+    
+    $.ajax({
+        type: "POST",
+        url: $('#galaxy_form').attr('action'),
+        data: $('#galaxy_form').serialize(),
+        success: function(response) {
+            // Handle the response here
+			$("#galaxy_table_wrapper").html(response);
+            console.log("Form submitted successfully");
+            // You can update the page content with the response if needed
+        },
+        error: function(xhr, status, error) {
+            console.error("Error submitting form:", error);
+        }
+    });
 }

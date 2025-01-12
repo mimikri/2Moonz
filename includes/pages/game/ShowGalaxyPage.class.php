@@ -82,9 +82,16 @@ class ShowGalaxyPage extends AbstractGamePage
 		$galaxyRows->setSystem($system);
 		$Result	= $galaxyRows->getGalaxyData();
 
-        $this->tplObj->loadscript('galaxy.js');
-        $this->assign(['GalaxyRows'				=> $Result, 'planetcount'				=> sprintf($LNG['gl_populed_planets'], count(empty($Result) ? [] : $Result)), 'action'					=> $action, 'galaxy'					=> $galaxy, 'system'					=> $system, 'planet'					=> $planet, 'type'						=> $type, 'current'					=> $current, 'maxfleetcount'				=> FleetFunctions::GetCurrentFleets($USER['id']), 'fleetmax'					=> FleetFunctions::GetMaxFleetSlots($USER), 'currentmip'				=> $PLANET[$resource[503]], 'grecyclers'   				=> $PLANET[$resource[219]], 'recyclers'   				=> $PLANET[$resource[209]], 'spyprobes'   				=> $PLANET[$resource[210]], 'missile_count'				=> sprintf($LNG['gl_missil_to_launch'], $PLANET[$resource[503]]), 'spyShips'					=> [210 => $USER['spio_anz']], 'settings_fleetactions'		=> $USER['settings_fleetactions'], 'current_galaxy'			=> $PLANET['galaxy'], 'current_system'			=> $PLANET['system'], 'current_planet'			=> $PLANET['planet'], 'planet_type' 				=> $PLANET['planet_type'], 'max_planets'               => $config->max_planets, 'missileSelector'			=> $missileSelector, 'ShortStatus'				=> ['vacation'					=> $LNG['gl_short_vacation'], 'banned'					=> $LNG['gl_short_ban'], 'inactive'					=> $LNG['gl_short_inactive'], 'longinactive'				=> $LNG['gl_short_long_inactive'], 'noob'						=> $LNG['gl_short_newbie'], 'strong'					=> $LNG['gl_short_strong'], 'enemy'						=> $LNG['gl_short_enemy'], 'friend'					=> $LNG['gl_short_friend'], 'member'					=> $LNG['gl_short_member']]]);
 		
-		$this->display('page.galaxy.default.tpl');
+        
+		
+        $this->assign(['GalaxyRows'				=> $Result, 'planetcount'				=> sprintf($LNG['gl_populed_planets'], count(empty($Result) ? [] : $Result)), 'action'					=> $action, 'galaxy'					=> $galaxy, 'system'					=> $system, 'planet'					=> $planet, 'type'						=> $type, 'current'					=> $current, 'maxfleetcount'				=> FleetFunctions::GetCurrentFleets($USER['id']), 'fleetmax'					=> FleetFunctions::GetMaxFleetSlots($USER), 'currentmip'				=> $PLANET[$resource[503]], 'grecyclers'   				=> $PLANET[$resource[219]], 'recyclers'   				=> $PLANET[$resource[209]], 'spyprobes'   				=> $PLANET[$resource[210]], 'missile_count'				=> sprintf($LNG['gl_missil_to_launch'], $PLANET[$resource[503]]), 'spyShips'					=> [210 => $USER['spio_anz']], 'settings_fleetactions'		=> $USER['settings_fleetactions'], 'current_galaxy'			=> $PLANET['galaxy'], 'current_system'			=> $PLANET['system'], 'current_planet'			=> $PLANET['planet'], 'planet_type' 				=> $PLANET['planet_type'], 'max_planets'               => $config->max_planets, 'missileSelector'			=> $missileSelector, 'ShortStatus'				=> ['vacation'					=> $LNG['gl_short_vacation'], 'banned'					=> $LNG['gl_short_ban'], 'inactive'					=> $LNG['gl_short_inactive'], 'longinactive'				=> $LNG['gl_short_long_inactive'], 'noob'						=> $LNG['gl_short_newbie'], 'strong'					=> $LNG['gl_short_strong'], 'enemy'						=> $LNG['gl_short_enemy'], 'friend'					=> $LNG['gl_short_friend'], 'member'					=> $LNG['gl_short_member']]]);
+		if(AJAX_REQUEST == 2){
+			$this->display('page.galaxy.ajax.tpl');
+		}else{
+			$this->tplObj->loadscript('galaxy.js');
+			$this->display('page.galaxy.default.tpl');
+			}
+	
 	}
 }
