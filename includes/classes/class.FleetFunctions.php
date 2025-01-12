@@ -77,16 +77,15 @@ class FleetFunctions
 
 	public static function GetTargetDistance($start, $target): float|int
 	{
-		if ($start[0] != $target[0])
-			return abs($start[0] - $target[0]) * 20000;
-		
-		if ($start[1] != $target[1])
-			return abs($start[1] - $target[1]) * 95 + 2700;
-		
-		if ($start[2] != $target[2])
-			return abs($start[2] - $target[2]) * 5 + 1000;
+		$a = abs($start[0] - $target[0]) * 95 + 2700;
+		$a = $a == 2700 ? 0 : $a;
+		$b = abs($start[1] - $target[1]) * 95 + 2700;
+		$b = $b == 2700 ? 0 : $b;
+		$distance = sqrt(($a * $a) + ($b * $b));
+		$distance +=  abs($start[2] - $target[2]) * 5 + 1000;
+		$distance = $distance == 1000 ? 5 : $distance;
 
-		return 5;
+		return $distance;
 	}
 
 	public static function GetMissionDuration($SpeedFactor, $MaxFleetSpeed, $Distance, $GameSpeed, array $USER): float|int

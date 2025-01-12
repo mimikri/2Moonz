@@ -18,15 +18,16 @@ function GetDistance() {
 	var targetSystem = document.getElementsByName("system")[0].value;
 	var targetPlanet = document.getElementsByName("planet")[0].value;
 
-	if (targetGalaxy - thisGalaxy != 0) {
-		return Math.abs(targetGalaxy - thisGalaxy) * 20000;
-	} else if (targetSystem - thisSystem != 0) {
-		return Math.abs(targetSystem - thisSystem) * 5 * 19 + 2700;
-	} else if (targetPlanet - thisPlanet != 0) {
-		return Math.abs(targetPlanet - thisPlanet) * 5 + 1000;
-	} else {
-		return 5;
-	}
+
+	var a = Math.abs(targetGalaxy - thisGalaxy) * 95 + 2700;
+	a = a == 2700 ? 0 : a;
+	var b = Math.abs(targetSystem - thisSystem) * 95 + 2700;
+	b = b == 2700 ? 0 : b;
+	var distance = Math.sqrt((a * a) + (b * b));
+	distance +=  Math.abs(targetPlanet - thisPlanet) * 5 + 1000;
+	distance = distance == 1000 ? 5 : distance;
+
+	return distance;
 }
 
 function GetDuration() {
