@@ -25,7 +25,7 @@ function galaxy_submit(value) {
     
     $.ajax({
         type: "POST",
-        url: $('#galaxy_form').attr('action'),
+        url: $('#galaxy_form').attr('action') + '&ajax=2',
         data: $('#galaxy_form').serialize(),
         success: function(response) {
             // Handle the response here

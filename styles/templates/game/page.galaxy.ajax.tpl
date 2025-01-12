@@ -1,6 +1,6 @@
 {block name="title" prepend}{$LNG.lm_galaxy}{/block}
 {block name="content"}
-    <form action="?page=galaxy&ajax=2" method="post" id="galaxy_form">
+    <form action="?page=galaxy" method="post" id="galaxy_form">
         <input type="hidden" id="auto" value="dr">
         <table style="min-width:324px;width:324px;">
             <tr>
