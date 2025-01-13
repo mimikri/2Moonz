@@ -88,5 +88,5 @@
 	});
 	</script>
 </head>
-	<body id="{if empty($smarty.get.page)}overview{else}{$smarty.get.page|htmlspecialchars}{/if}" class="{$bodyclass}">
+<body id="step{if isset($smarty.get.step)}{$smarty.get.step|escape|default:'overview'}{else}overview{/if}" class="{$bodyclass}">
 	<div id="tooltip" class="tip"></div>

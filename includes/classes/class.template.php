@@ -15,13 +15,13 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-require('includes/libs/Smarty/Smarty.class.php');
+require('includes/libs/Smarty/libs/Smarty.class.php');
 		
 class template extends Smarty
 {
 	protected $window	= 'full';
-	public $jsscript	= [];
-	public $script		= [];
+	public $jsscript	= array();
+	public $script		= array();
 	
 	function __construct()
 	{	
@@ -29,9 +29,17 @@ class template extends Smarty
 		$this->smartySettings();
 	}
 
-	private function smartySettings(): void
+	private function smartySettings()
 	{
-		//$this->php_handling = 2;//Smarty::PHP_REMOVE;
+
+		require_once './includes/libs/Smarty/libs/plugins/modifier.number_format.php';
+		require_once './includes/libs/Smarty/libs/plugins/modifier.json.php';
+		require_once './includes/libs/Smarty/libs/plugins/modifier.time.php';
+
+		//$this->registerPlugin("modifier","htmlspecialchars", "smarty_modifier_htmlspecialchars");
+		$this->registerPlugin("modifier","number", "smarty_modifier_number_format");
+		$this->registerPlugin("modifier","json", "smarty_modifier_json");
+		$this->registerPlugin("modifier","time", "smarty_modifier_time");
 
 		$this->setForceCompile(false);
 		$this->setMergeCompiledIncludes(true);
@@ -41,6 +49,7 @@ class template extends Smarty
 		$this->setCompileDir(is_writable(CACHE_PATH) ? CACHE_PATH : $this->getTempPath());
 		$this->setCacheDir($this->getCompileDir().'templates');
 		$this->setTemplateDir('styles/templates/');
+		
 	}
 
 	private function getTempPath()
@@ -52,22 +61,22 @@ class template extends Smarty
 		return BasicFileUtil::getTempFolder();
 	}
 		
-	public function assign_vars($var, $nocache = true): void 
+	public function assign_vars($var, $nocache = true) 
 	{		
 		parent::assign($var, NULL, $nocache);
 	}
 
-	public function loadscript($script): void
+	public function loadscript($script)
 	{
-		$this->jsscript[]			= substr((string) $script, 0, -3);
+		$this->jsscript[]			= substr($script, 0, -3);
 	}
 
-	public function execscript($script): void
+	public function execscript($script)
 	{
 		$this->script[]				= $script;
 	}
 	
-	private function adm_main(): void
+	private function adm_main()
 	{
 		global $LNG, $USER;
 		
@@ -75,7 +84,7 @@ class template extends Smarty
 		if(isset($USER['timezone'])) {
 			try {
 				$dateTimeUser	= new DateTime("now", new DateTimeZone($USER['timezone']));
-			} catch (Exception) {
+			} catch (Exception $e) {
 				$dateTimeUser	= $dateTimeServer;
 			}
 		} else {
@@ -84,10 +93,21 @@ class template extends Smarty
 
 		$config	= Config::get();
 
-		$this->assign_vars(['scripts'			=> $this->script, 'title'				=> $config->game_name.' - '.$LNG['adm_cp_title'], 'fcm_info'			=> $LNG['fcm_info'], 'lang'    			=> $LNG->getLanguage(), 'REV'				=> substr($config->VERSION, -4), 'date'				=> explode("|", date('Y\|n\|j\|G\|i\|s\|Z', TIMESTAMP)), 'Offset'			=> $dateTimeUser->getOffset() - $dateTimeServer->getOffset(), 'VERSION'			=> $config->VERSION, 'dpath'				=> 'styles/theme/gow/', 'bodyclass'			=> 'full']);
+		$this->assign_vars(array(
+			'scripts'			=> $this->script,
+			'title'				=> $config->game_name.' - '.$LNG['adm_cp_title'],
+			'fcm_info'			=> $LNG['fcm_info'],
+            'lang'    			=> $LNG->getLanguage(),
+			'REV'				=> substr($config->VERSION, -4),
+			'date'				=> explode("|", date('Y\|n\|j\|G\|i\|s\|Z', TIMESTAMP)),
+			'Offset'			=> $dateTimeUser->getOffset() - $dateTimeServer->getOffset(),
+			'VERSION'			=> $config->VERSION,
+			'dpath'				=> 'styles/theme/gow/',
+			'bodyclass'			=> 'full'
+		));
 	}
 	
-	public function show($file): void
+	public function show($file)
 	{		
 		global $LNG, $THEME;
 
@@ -105,41 +125,54 @@ class template extends Smarty
 			$this->adm_main();
 		}
 
-		$this->assign_vars(['scripts'		=> $this->jsscript, 'execscript'	=> implode("\n", $this->script)]);
+		$this->assign_vars(array(
+			'scripts'		=> $this->jsscript,
+			'execscript'	=> implode("\n", $this->script),
+		));
 
-		$this->assign_vars(['LNG'			=> $LNG], false);
+		$this->assign_vars(array(
+			'LNG'			=> $LNG,
+		), false);
 		
 		$this->compile_id	= $LNG->getLanguage();
 		
 		parent::display($file);
 	}
 	
-	public function display($file = NULL, $cache_id = NULL, $compile_id = NULL, $parent = NULL): void
+	public function display($file = NULL, $cache_id = NULL, $compile_id = NULL, $parent = NULL)
 	{
 		global $LNG;
 		$this->compile_id	= $LNG->getLanguage();
 		parent::display($file);
 	}
 	
-	public function gotoside($dest, $time = 3): void
+	public function gotoside($dest, $time = 3)
 	{
-		$this->assign_vars(['gotoinsec'	=> $time, 'goto'		=> $dest]);
+		$this->assign_vars(array(
+			'gotoinsec'	=> $time,
+			'goto'		=> $dest,
+		));
 	}
 	
-	public function message($mes, $dest = false, $time = 3, $Fatal = false): void
+	public function message($mes, $dest = false, $time = 3, $Fatal = false)
 	{
 		global $LNG, $THEME;
 	
-		$this->assign_vars(['mes'		=> $mes, 'fcm_info'	=> $LNG['fcm_info'], 'Fatal'		=> $Fatal, 'dpath'		=> $THEME->getTheme()]);
+		$this->assign_vars(array(
+			'mes'		=> $mes,
+			'fcm_info'	=> $LNG['fcm_info'],
+			'Fatal'		=> $Fatal,
+            'dpath'		=> $THEME->getTheme(),
+		));
 		
 		$this->gotoside($dest, $time);
 		$this->show('error_message_body.tpl');
 	}
 	
-	public static function printMessage($Message, $fullSide = true, $redirect = NULL): void {
+	public static function printMessage($Message, $fullSide = true, $redirect = NULL) {
 		$template	= new self;
 		if(!isset($redirect)) {
-			$redirect	= [false, 0];
+			$redirect	= array(false, 0);
 		}
 		
 		$template->message($Message, $redirect[0], $redirect[1], !$fullSide);
@@ -152,7 +185,13 @@ class template extends Smarty
 
     public function __get($name)
     {
-        $allowed = ['template_dir' => 'getTemplateDir', 'config_dir' => 'getConfigDir', 'plugins_dir' => 'getPluginsDir', 'compile_dir' => 'getCompileDir', 'cache_dir' => 'getCacheDir'];
+        $allowed = array(
+			'template_dir' => 'getTemplateDir',
+			'config_dir' => 'getConfigDir',
+			'plugins_dir' => 'getPluginsDir',
+			'compile_dir' => 'getCompileDir',
+			'cache_dir' => 'getCacheDir',
+        );
 
         if (isset($allowed[$name])) {
             return $this->{$allowed[$name]}();
@@ -163,7 +202,13 @@ class template extends Smarty
 	
     public function __set($name, $value)
     {
-        $allowed = ['template_dir' => 'setTemplateDir', 'config_dir' => 'setConfigDir', 'plugins_dir' => 'setPluginsDir', 'compile_dir' => 'setCompileDir', 'cache_dir' => 'setCacheDir'];
+        $allowed = array(
+			'template_dir' => 'setTemplateDir',
+			'config_dir' => 'setConfigDir',
+			'plugins_dir' => 'setPluginsDir',
+			'compile_dir' => 'setCompileDir',
+			'cache_dir' => 'setCacheDir',
+        );
 
         if (isset($allowed[$name])) {
             $this->{$allowed[$name]}($value);
