@@ -16,7 +16,7 @@
  */
 
 define('MODE', 'INSTALL');
-define('ROOT_PATH', str_replace('\\', '/', dirname(__FILE__, 2)) . '/');
+define('ROOT_PATH', str_replace('\\', '/', dirname(dirname(__FILE__))) . '/');
 set_include_path(ROOT_PATH);
 chdir(ROOT_PATH);
 
@@ -24,13 +24,19 @@ require 'includes/common.php';
 $THEME->setUserTheme('gow');
 $LNG = new Language;
 $LNG->getUserAgentLanguage();
-$LNG->includeData(['L18N', 'INGAME', 'INSTALL', 'CUSTOM']);
+$LNG->includeData(array('L18N', 'INGAME', 'INSTALL', 'CUSTOM'));
 
 $mode = HTTP::_GP('mode', '');
 
 $template = new template();
 $template->setCaching(false);
-$template->assign(['lang'       => $LNG->getLanguage(), 'Selector'   => $LNG->getAllowedLangs(false), 'title'      => $LNG['title_install'] . ' &bull; 2Moons', 'header'     => $LNG['menu_install'], 'canUpgrade' => file_exists('includes/config.php') && filesize('includes/config.php') !== 0]);
+$template->assign(array(
+	'lang'       => $LNG->getLanguage(),
+	'Selector'   => $LNG->getAllowedLangs(false),
+	'title'      => $LNG['title_install'] . ' &bull; 2Moons',
+	'header'     => $LNG['menu_install'],
+	'canUpgrade' => file_exists('includes/config.php') && filesize('includes/config.php') !== 0
+));
 
 $enableInstallToolFile = 'includes/ENABLE_INSTALL_TOOL';
 $quickStartFile        = 'includes/FIRST_INSTALL';
@@ -49,31 +55,40 @@ if (is_file($enableInstallToolFile) && (time() - filemtime($enableInstallToolFil
 }
 if (!is_file($enableInstallToolFile)) {
 
-    $message = match ($mode) {
-        'upgrade' => $LNG->getTemplate('locked_upgrade'),
-        default => $LNG->getTemplate('locked_install'),
-    };
+    switch ($mode) {
+        case 'upgrade':
+            $message = $LNG->getTemplate('locked_upgrade');
+        break;
+        default:
+            $message = $LNG->getTemplate('locked_install');
+        break;
+    }
     $template->message($message, false, 0, true);
 	exit;
 }
 $language = HTTP::_GP('lang', '');
 
 if (!empty($language) && in_array($language, $LNG->getAllowedLangs())) {
-	setcookie('lang', (string) $language);
+	setcookie('lang', $language);
 }
 
 switch ($mode) {
 	case 'ajax':
 		require 'includes/libs/ftp/ftp.class.php';
 		require 'includes/libs/ftp/ftpexception.class.php';
-		$LNG->includeData(['ADMIN']);
-		$connectionConfig = ["host"     => $_GET['host'], "username" => $_GET['user'], "password" => $_GET['pass'], "port"     => 21];
+		$LNG->includeData(array('ADMIN'));
+		$connectionConfig = array(
+			"host"     => $_GET['host'],
+			"username" => $_GET['user'],
+			"password" => $_GET['pass'],
+			"port"     => 21
+		);
 
 		try {
 			$ftp = FTP::getInstance();
 			$ftp->connect($connectionConfig);
 		}
-		catch (FTPException) {
+		catch (FTPException $error) {
 			exit($LNG['req_ftp_error_data']);
 		}
 		if (!$ftp->changeDir($_GET['path'])) {
@@ -91,12 +106,12 @@ switch ($mode) {
         try {
             $sql    = "SELECT dbVersion FROM %%SYSTEM%%;";
 
-            $dbVersion  = Database::get()->selectSingle($sql, [], 'dbVersion');
-        } catch (Exception) {
+            $dbVersion  = Database::get()->selectSingle($sql, array(), 'dbVersion');
+        } catch (Exception $e) {
             $dbVersion  = 0;
         }
 
-        $updates = [];
+        $updates = array();
 
         $fileRevision = 0;
 
@@ -116,7 +131,12 @@ switch ($mode) {
             $updates[$fileInfo->getPathname()] = makebr(str_replace('%PREFIX%', DB_PREFIX, file_get_contents($fileInfo->getPathname())));
 		}
 
-		$template->assign_vars(['file_revision' => min(DB_VERSION_REQUIRED, $fileRevision), 'sql_revision'  => $dbVersion, 'updates'       => $updates, 'header'        => $LNG['menu_upgrade']]);
+		$template->assign_vars(array(
+			'file_revision' => min(DB_VERSION_REQUIRED, $fileRevision),
+			'sql_revision'  => $dbVersion,
+            'updates'       => $updates,
+			'header'        => $LNG['menu_upgrade']
+		));
 
 		$template->show('ins_update.tpl');
 		break;
@@ -126,11 +146,11 @@ switch ($mode) {
 
 		// Create a Backup
         $sqlTableRaw  = Database::get()->nativeQuery("SHOW TABLE STATUS FROM `" . DB_NAME . "`;");
-		$prefixCounts = strlen((string) DB_PREFIX);
-		$dbTables     = [];
+		$prefixCounts = strlen(DB_PREFIX);
+		$dbTables     = array();
 		foreach($sqlTableRaw as $table)
 		{
-			if (DB_PREFIX == substr((string) $table['Name'], 0, $prefixCounts)) {
+			if (DB_PREFIX == substr($table['Name'], 0, $prefixCounts)) {
 				$dbTables[] = $table['Name'];
 			}
 		}
@@ -151,14 +171,14 @@ switch ($mode) {
         try {
             $sql	= "SELECT dbVersion FROM %%SYSTEM%%;";
 
-            $dbVersion	= Database::get()->selectSingle($sql, [], 'dbVersion');
+            $dbVersion	= Database::get()->selectSingle($sql, array(), 'dbVersion');
         } catch (Exception $e) {
             $dbVersion  = 0;
         }
 
-		$httpRoot = PROTOCOL . HTTP_HOST . str_replace(['\\', '//'], '/', dirname((string) $_SERVER['SCRIPT_NAME'], 2) . '/');
+		$httpRoot = PROTOCOL . HTTP_HOST . str_replace(array('\\', '//'), '/', dirname(dirname($_SERVER['SCRIPT_NAME'])) . '/');
 		$revision = $dbVersion;
-		$fileList = [];
+		$fileList = array();
 		$directoryIterator = new DirectoryIterator(ROOT_PATH . 'install/migrations/');
 		/** @var $fileInfo DirectoryIterator */
 		foreach ($directoryIterator as $fileInfo) {
@@ -168,8 +188,12 @@ switch ($mode) {
 			$fileRevision = substr($fileInfo->getFilename(), 10, -4);
 			if ($fileRevision > $revision && $fileRevision <= DB_VERSION_REQUIRED) {
 				$fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
-				$key           = $fileRevision . ((int)$fileExtension === 0);
-				$fileList[$key] = ['fileName'      => $fileInfo->getFilename(), 'fileRevision'  => $fileRevision, 'fileExtension' => $fileExtension];
+				$key           = $fileRevision . ((int)$fileExtension === 'php');
+				$fileList[$key] = array(
+					'fileName'      => $fileInfo->getFilename(),
+					'fileRevision'  => $fileRevision,
+					'fileExtension' => $fileExtension
+				);
 			}
 		}
 		ksort($fileList);
@@ -227,7 +251,11 @@ switch ($mode) {
 
         ClearCache();
 
-		$template->assign_vars(['update'   => !empty($fileList), 'revision' => $revision, 'header'   => $LNG['menu_upgrade']]);
+		$template->assign_vars(array(
+			'update'   => !empty($fileList),
+			'revision' => $revision,
+			'header'   => $LNG['menu_upgrade'],
+        ));
 		$template->show('ins_doupdate.tpl');
         unlink($enableInstallToolFile);
 		break;
@@ -240,7 +268,9 @@ switch ($mode) {
 						HTTP::redirectTo('index.php?mode=install&step=2');
 					}
 					else {
-						$template->assign(['accept' => false]);
+						$template->assign(array(
+							'accept' => false
+                        ));
 					}
 				}
 				$template->show('ins_license.tpl');
@@ -248,7 +278,7 @@ switch ($mode) {
 			case 2:
 				$error = false;
 				$ftp   = false;
-				if (version_compare(PHP_VERSION, "5.3.0", ">=")) {
+				if (version_compare(PHP_VERSION, "8.0.0", ">=")) {
 					$PHP = "<span class=\"yes\">" . $LNG['reg_yes'] . ", v" . PHP_VERSION . "</span>";
 				}
 				else {
@@ -291,8 +321,8 @@ switch ($mode) {
 					$gdVerion = '0.0.0';
 					if (function_exists('gd_info')) {
 						$temp  = gd_info();
-						$match = [];
-						if (preg_match('!([0-9]+\.[0-9]+(?:\.[0-9]+)?)!', (string) $temp['GD Version'], $match)) {
+						$match = array();
+						if (preg_match('!([0-9]+\.[0-9]+(?:\.[0-9]+)?)!', $temp['GD Version'], $match)) {
 							if (preg_match('/^[0-9]+\.[0-9]+$/', $match[1])) {
 								$match[1] .= '.0';
 							}
@@ -318,7 +348,7 @@ switch ($mode) {
 					$error  = true;
 					$ftp    = true;
 				}
-				$directories = ['cache/', 'cache/templates/', 'cache/sessions/', 'includes/'];
+				$directories = array('cache/', 'cache/templates/', 'cache/sessions/', 'includes/');
 				$dirs        = "";
 				foreach ($directories as $dir) {
 					if (file_exists(ROOT_PATH . $dir) || @mkdir(ROOT_PATH . $dir)) {
@@ -341,11 +371,26 @@ switch ($mode) {
 				else {
 					$done = '';
 				}
-				$template->assign(['dir'    => $dirs, 'json'   => $json, 'done'   => $done, 'config' => $config, 'gdlib'  => $gdlib, 'PHP'    => $PHP, 'pdo'    => $pdo, 'ftp'    => $ftp, 'iniset' => $iniset, 'global' => $global]);
+				$template->assign(array(
+					'dir'    => $dirs,
+					'json'   => $json,
+					'done'   => $done,
+					'config' => $config,
+					'gdlib'  => $gdlib,
+					'PHP'    => $PHP,
+					'pdo'    => $pdo,
+					'ftp'    => $ftp,
+					'iniset' => $iniset,
+					'global' => $global));
 				$template->show('ins_req.tpl');
 				break;
 			case 3:
-                $template->assign(['host'     => getenv('DB_HOST'), 'user'     => getenv('DB_USER'), 'password' => getenv('DB_PASSWORD'), 'dbname'   => getenv('DB_NAME')]);
+                $template->assign(array(
+                    'host'     => getenv('DB_HOST'),
+                    'user'     => getenv('DB_USER'),
+                    'password' => getenv('DB_PASSWORD'),
+                    'dbname'   => getenv('DB_NAME'),
+                ));
 				$template->show('ins_form.tpl');
 				break;
 			case 4:
@@ -355,39 +400,56 @@ switch ($mode) {
 				$userpw = HTTP::_GP('passwort', '', true);
 				$dbname = HTTP::_GP('dbname', '', true);
 				$prefix = HTTP::_GP('prefix', 'uni1_');
-				$template->assign(['host'   => $host, 'port'   => $port, 'user'   => $user, 'dbname' => $dbname, 'prefix' => $prefix]);
+				$template->assign(array(
+					'host'   => $host,
+					'port'   => $port,
+					'user'   => $user,
+					'dbname' => $dbname,
+					'prefix' => $prefix,));
 				if (empty($dbname)) {
-					$template->assign(['class'   => 'fatalerror', 'message' => $LNG['step2_db_no_dbname']]);
+					$template->assign(array(
+						'class'   => 'fatalerror',
+						'message' => $LNG['step2_db_no_dbname'],));
 					$template->show('ins_step4.tpl');
 					exit;
 				}
-				if (strlen((string) $prefix) > 36) {
-					$template->assign(['class'   => 'fatalerror', 'message' => $LNG['step2_db_too_long']]);
+				if (strlen($prefix) > 36) {
+					$template->assign(array(
+						'class'   => 'fatalerror',
+						'message' => $LNG['step2_db_too_long'],));
 					$template->show('ins_step4.tpl');
 					exit;
 				}
-				if (strspn((string) $prefix, '-./\\') !== 0) {
-					$template->assign(['class'   => 'fatalerror', 'message' => $LNG['step2_prefix_invalid']]);
+				if (strspn($prefix, '-./\\') !== 0) {
+					$template->assign(array(
+						'class'   => 'fatalerror',
+						'message' => $LNG['step2_prefix_invalid'],));
 					$template->show('ins_step4.tpl');
 					exit;
 				}
-				if (preg_match('!^[0-9]!', (string) $prefix) !== 0) {
-					$template->assign(['class'   => 'fatalerror', 'message' => $LNG['step2_prefix_invalid']]);
+				if (preg_match('!^[0-9]!', $prefix) !== 0) {
+					$template->assign(array(
+						'class'   => 'fatalerror',
+						'message' => $LNG['step2_prefix_invalid'],));
 					$template->show('ins_step4.tpl');
 					exit;
 				}
 				if (is_file(ROOT_PATH . "includes/config.php") && filesize(ROOT_PATH . "includes/config.php") != 0) {
-					$template->assign(['class'   => 'fatalerror', 'message' => $LNG['step2_config_exists']]);
+					$template->assign(array(
+						'class'   => 'fatalerror',
+						'message' => $LNG['step2_config_exists'],));
 					$template->show('ins_step4.tpl');
 					exit;
 				}
 				@touch(ROOT_PATH . "includes/config.php");
 				if (!is_writable(ROOT_PATH . "includes/config.php")) {
-					$template->assign(['class'   => 'fatalerror', 'message' => $LNG['step2_conf_op_fail']]);
+					$template->assign(array(
+						'class'   => 'fatalerror',
+						'message' => $LNG['step2_conf_op_fail'],));
 					$template->show('ins_step4.tpl');
 					exit;
 				}
-				$database                 = [];
+				$database                 = array();
 				$database['host']         = $host;
 				$database['port']         = $port;
 				$database['user']         = $user;
@@ -400,14 +462,18 @@ switch ($mode) {
 					Database::get();
 				}
 				catch (Exception $e) {
-					$template->assign(['class'   => 'fatalerror', 'message' => $LNG['step2_db_con_fail'] . '</p><p>' . $e->getMessage()]);
+					$template->assign(array(
+						'class'   => 'fatalerror',
+						'message' => $LNG['step2_db_con_fail'] . '</p><p>' . $e->getMessage(),));
 					$template->show('ins_step4.tpl');
 
 					unlink(ROOT_PATH . 'includes/config.php');
 					exit;
 				}
 				@touch(ROOT_PATH . "includes/error.log");
-				$template->assign(['class'   => 'noerror', 'message' => $LNG['step2_db_done']]);
+				$template->assign(array(
+					'class'   => 'noerror',
+					'message' => $LNG['step2_db_done'],));
 				$template->show('ins_step4.tpl');
 				exit;
 				break;
@@ -433,8 +499,19 @@ switch ($mode) {
 				}
 
 				$installVersion = implode('.', $installVersion);
+				
 				try {
-					$db->query(str_replace(['%PREFIX%', '%VERSION%', '%REVISION%', '%DB_VERSION%'], [DB_PREFIX, $installVersion, $installRevision, DB_VERSION_REQUIRED], $installSQL));
+					$db->query(str_replace(array(
+						'%PREFIX%',
+						'%VERSION%',
+						'%REVISION%',
+                        '%DB_VERSION%'
+					), array(
+						DB_PREFIX,
+						$installVersion,
+						$installRevision,
+                        DB_VERSION_REQUIRED
+					), $installSQL));
 
 					$config = Config::get(Universe::current());
 					$config->timezone			= @date_default_timezone_get();
@@ -454,13 +531,25 @@ switch ($mode) {
 					require 'includes/config.php';
 					@unlink('includes/config.php');
 					$error = $e->getMessage();
-					$template->assign(['host'    => $database['host'], 'port'    => $database['port'], 'user'    => $database['user'], 'dbname'  => $database['databasename'], 'prefix'  => $database['tableprefix'], 'class'   => 'fatalerror', 'message' => $LNG['step3_db_error'] . '</p><p>' . $error]);
+					$template->assign(array(
+						'host'    => $database['host'],
+						'port'    => $database['port'],
+						'user'    => $database['user'],
+						'dbname'  => $database['databasename'],
+						'prefix'  => $database['tableprefix'],
+						'class'   => 'fatalerror',
+						'message' => $LNG['step3_db_error'] . '</p><p>' . $error,
+					));
 					$template->show('ins_step4.tpl');
 					exit;
 				}
 				break;
 			case 7:
-                $template->assign(['name'     => getenv('ADMIN_NAME'), 'password' => getenv('ADMIN_PASSWORD'), 'mail'     => getenv('ADMIN_MAIL')]);
+                $template->assign(array(
+                    'name'     => getenv('ADMIN_NAME'),
+                    'password' => getenv('ADMIN_PASSWORD'),
+                    'mail'     => getenv('ADMIN_MAIL'),
+                ));
 				$template->show('ins_acc.tpl');
 				break;
 			case 8:
@@ -474,12 +563,16 @@ switch ($mode) {
 				$hashPassword = PlayerUtil::cryptPassword($password);
 
 				if (empty($username) || empty($password) || empty($mail)) {
-					$template->assign(['message' 	=> $LNG['step8_need_fields'], 'username'	=> $username, 'mail'		=> $mail]);
+					$template->assign(array(
+						'message' 	=> $LNG['step8_need_fields'],
+						'username'	=> $username,
+						'mail'		=> $mail,
+					));
 					$template->show('ins_step8error.tpl');
 					exit;
 				}
 
-				[$userId, $planetId] = PlayerUtil::createPlayer(Universe::current(), $username, $hashPassword, $mail, $LNG->getLanguage(), 1, 1, 2, NULL, AUTH_ADM);
+				list($userId, $planetId) = PlayerUtil::createPlayer(Universe::current(), $username, $hashPassword, $mail, $LNG->getLanguage(), 1, 1, 2, NULL, AUTH_ADM);
 
 				$session	= Session::create();
 				$session->userId		= $userId;
@@ -491,7 +584,10 @@ switch ($mode) {
 		}
 		break;
 	default:
-		$template->assign(['intro_text'    => $LNG['intro_text'], 'intro_welcome' => $LNG['intro_welcome'], 'intro_install' => $LNG['intro_install']]);
+		$template->assign(array(
+			'intro_text'    => $LNG['intro_text'],
+			'intro_welcome' => $LNG['intro_welcome'],
+			'intro_install' => $LNG['intro_install'],));
 		$template->show('ins_intro.tpl');
 		break;
 }

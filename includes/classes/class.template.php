@@ -15,7 +15,7 @@
  * @link https://github.com/jkroepke/2Moons
  */
 
-require('includes/libs/Smarty/libs/Smarty.class.php');
+require_once('includes/libs/Smarty/libs/Smarty.class.php');
 		
 class template extends Smarty
 {

@@ -22,7 +22,7 @@ if (isset($_POST['GLOBALS']) || isset($_GET['GLOBALS'])) {
 $composerAutoloader = __DIR__.'/../vendor/autoload.php';
 
 if (file_exists($composerAutoloader)) {
-    require $composerAutoloader;
+    #require_once $composerAutoloader;
 }
 
 if (function_exists('mb_internal_encoding')) {

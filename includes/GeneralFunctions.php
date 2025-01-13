@@ -639,3 +639,11 @@ if (!function_exists('array_replace_recursive'))
         return $array;
     }
 }
+
+function unserialize_B($to_unserialize){
+	if($to_unserialize == null){
+	  return [];
+	}else{
+	  return unserialize($to_unserialize);
+	}
+  }

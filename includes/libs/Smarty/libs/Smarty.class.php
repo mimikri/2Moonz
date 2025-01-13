@@ -65,14 +65,14 @@ if (!defined('SMARTY_MBSTRING')) {
  * Load helper functions
  */
 if (!defined('SMARTY_HELPER_FUNCTIONS_LOADED')) {
-    include __DIR__ . '/functions.php';
+    include_once  __DIR__ . '/functions.php';
 }
 
 /**
  * Load Smarty_Autoloader
  */
 if (!class_exists('Smarty_Autoloader')) {
-    include __DIR__ . '/bootstrap.php';
+    include_once __DIR__ . '/bootstrap.php';
 }
 
 /**
