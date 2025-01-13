@@ -225,7 +225,19 @@ class PlayerUtil
 
 		if(empty($name))
 		{
-			$name	= $isHome ? $LNG['fcm_mainplanet'] : $LNG['fcp_colony'];
+			$Names		= file(ROOT_PATH.'botnames.txt');
+			$NamesCount	= count($Names);
+			$countUsername = 1;
+			while($countUsername != 0) {
+				$Rand		= mt_rand(0, $NamesCount);
+				    $name 	= trim($Names[$Rand]);
+								if(!PlayerUtil::isNameValid($name)){
+						$countUsername = 1;
+					}else{
+						$countUsername = 0;
+					}
+				}
+			//$name	= $isHome ? $LNG['fcm_mainplanet'] : $LNG['fcp_colony'];
 		}
 
 		$params	= [':name'				=> $name, ':universe'			=> $universe, ':userId'			=> $userId, ':galaxy'			=> $galaxy, ':system'			=> $system, ':position'			=> $position, ':updateTimestamp'	=> TIMESTAMP, ':type'				=> 1, ':imageName'		=> $imageName, ':diameter'			=> $diameter, ':maxFields'		=> $maxFields, ':minTemperature'	=> $minTemperature, ':maxTemperature'	=> $maxTemperature, ':metal_start'		=> $config->metal_start, ':crystal_start'	=> $config->crystal_start, ':deuterium_start'	=> $config->deuterium_start];
@@ -285,7 +297,11 @@ class PlayerUtil
 
 		if(empty($moonName))
 		{
-			$moonName		= $LNG['type_planet_3'];
+			$Names		= file(ROOT_PATH.'botnames.txt');
+			$NamesCount	= count($Names);
+			$Rand		= mt_rand(0, $NamesCount);
+			$name 	= trim($Names[$Rand]);
+			$moonName = strlen($name) > 20 ? substr($name,20) : $name ;
 		}
 
 		$sql	= "INSERT INTO %%PLANETS%% SET
