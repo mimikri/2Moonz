@@ -124,9 +124,10 @@ class statbuilder
 		}
 		$Return['fleetress'] 	= $fleetress;
 		$Return['Fleets'] 	= $FlyingFleets;
+
 		//fertigungstechnik, buildqueues hinzugefügt um in resspunkte mit einzurechnen
-		$Return['Planets']	= $database->select('SELECT ' . $select_buildings . 'p.b_building_id, p.b_hangar_id, p.metal,p.destruyed, p.crystal, p.deuterium,  p.id, p.universe, p.id_owner, u.authlevel, u.bana, u.username, u.is_bot FROM %%PLANETS%% as p LEFT JOIN %%USERS%% as u ON u.id = p.id_owner;');
-		$Return['Users']	= $database->select('SELECT ' . $selected_tech . $select_fleets . $select_defenses . 'u.b_tech_queue,p.is_bot,  u.id, u.ally_id, u.authlevel, u.bana, u.universe, u.username, s.tech_rank AS tech_rank, s.build_rank AS build_rank, s.defs_rank AS defs_rank, s.fleet_rank AS fleet_rank,  s.ress_rank AS ress_rank, s.total_rank AS total_rank, s.tech_old_rank AS old_tech_rank, s.build_old_rank AS old_build_rank, s.defs_old_rank AS old_defs_rank, s.fleet_old_rank AS old_fleet_rank, s.total_old_rank AS old_total_rank, s.tech_old AS old_tech, s.build_old AS old_build, s.defs_old AS old_defs, s.fleet_old AS old_fleet, s.ress_old AS old_ress, s.total_old AS old_total  FROM %%USERS%% as u LEFT JOIN %%STATPOINTS%% as s ON s.stat_type = 1 AND s.id_owner = u.id LEFT JOIN %%PLANETS%% as p ON u.id = p.id_owner GROUP BY s.id_owner, u.id, u.authlevel;');
+		$Return['Planets']	= $database->select('SELECT ' . $select_buildings . 'p.b_building_id, p.b_hangar_id, p.metal,p.destruyed, p.crystal, p.deuterium,  p.id, p.universe, p.id_owner, u.authlevel, u.bana, u.username, u.is_bot FROM %%PLANETS%% as p LEFT JOIN %%USERS%% as u ON u.id = p.id_owner WHERE p.is_bot = 0;');
+		$Return['Users']	= $database->select('SELECT ' . $selected_tech . $select_fleets . $select_defenses . 'u.b_tech_queue,p.is_bot,  u.id, u.ally_id, u.authlevel, u.bana, u.universe, u.username, s.tech_rank AS tech_rank, s.build_rank AS build_rank, s.defs_rank AS defs_rank, s.fleet_rank AS fleet_rank,  s.ress_rank AS ress_rank, s.total_rank AS total_rank, s.tech_old_rank AS old_tech_rank, s.build_old_rank AS old_build_rank, s.defs_old_rank AS old_defs_rank, s.fleet_old_rank AS old_fleet_rank, s.total_old_rank AS old_total_rank, s.tech_old AS old_tech, s.build_old AS old_build, s.defs_old AS old_defs, s.fleet_old AS old_fleet, s.ress_old AS old_ress, s.total_old AS old_total  FROM %%USERS%% as u LEFT JOIN %%STATPOINTS%% as s ON s.stat_type = 1 AND s.id_owner = u.id LEFT JOIN %%PLANETS%% as p ON u.id = p.id_owner WHERE u.is_bot = 0  GROUP BY s.id_owner, u.id, u.authlevel;');
 		$Return['Alliance']	= $database->select('SELECT  a.id, a.ally_universe, s.tech_rank AS old_tech_rank, s.build_rank AS old_build_rank, s.defs_rank AS old_defs_rank, s.fleet_rank AS old_fleet_rank, s.ress_rank AS old_ress_rank, s.total_rank AS old_total_rank FROM %%ALLIANCE%% as a LEFT JOIN %%STATPOINTS%% as s ON s.stat_type = 2 AND s.id_owner = a.id;');
 		return $Return;
 	}
@@ -358,7 +359,7 @@ class statbuilder
 		$FinalSQL	.= $tableHeader;
 
 		foreach ($TotalData['Planets'] as $PlanetData) {
-			if ($PlanetData['destruyed'] != 0 || $PlanetData['is_bot'] != 0) {
+			if ($PlanetData['destruyed'] != 0 ) {
 				continue;
 			}
 			if ((in_array(Config::get()->stat, array(1, 2)) && $PlanetData['authlevel'] >= Config::get()->stat_level) || !empty($PlanetData['bana'])) continue;
@@ -389,9 +390,7 @@ class statbuilder
 			//	echo date('d-m-Y| H:i:s', $neuezeit);
 		}
 		foreach ($TotalData['Users'] as $UserData) {
-			if ($UserData['is_bot'] != 0) {
-				continue;
-			}
+
 			$i++;
 			if (!isset($UniData[$UserData['universe']]))
 				$UniData[$UserData['universe']] = 0;
@@ -441,7 +440,7 @@ class statbuilder
 
 			$boostfaktor = number_format(max((0.7 - (($UserPoints[$UserData['id']]['total']['points'] + $UserPoints[$UserData['id']]['ress']['points']) / max(1, $maxpoints[0]['maxpoints']))) * 100, 0), 1);
 			$boostfaktor = $boostfaktor * 1.4;
-		
+
 			#Database::get()->update('update '. DB_PREFIX .'users set noobboost = '.$boostfaktor . ' where id = '. $UserData['id']);
 			if ($UserData['ally_id'] != 0) {
 				if (!isset($AllyPoints[$UserData['ally_id']])) {
@@ -573,7 +572,7 @@ class statbuilder
 		$newarray = [];
 		$sqlstring = '';
 		foreach ($FinalSQLArray as $UserPoints) {
-			
+
 			$sqlstring .= "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?), ";
 			foreach ($UserPoints as $key => $value) {
 				$newarray[] = $value;
@@ -590,8 +589,8 @@ class statbuilder
 		Database::get()->insert($FinalSQL_start_jo . substr($sqlstring, 0, -2) . ' ' . $FinalSQL_onduplicate_update_array, $newarray);
 		}
 		//	Database::get()->insert($FinalarraySQL,$newarray);
-		
-	
+
+
 		/*if (!empty($FinalSQL) && $FinalSQL != $tableHeader) {
 		    $FinalSQL = substr($FinalSQL, 0, -2).' '. $FinalSQL_onduplicate_update;
             $this->DataIntoDB($FinalSQL);
@@ -637,3 +636,4 @@ class statbuilder
 		return $this->SomeStatsInfos();
 	}
 }
+

@@ -1,0 +1,76 @@
+.botheader {
+    background: #555;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.botheader button {
+    margin-right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    border: 3px solid #aaa;
+    padding: 5px;
+}
+#botedit_wrapper a {
+    color: #5ef !important;
+}
+#botedit_wrapper td {
+    text-align: right;
+    padding: 0px 10px;
+}
+#botedit_wrapper table {
+    background: #333;
+    display: inline-block;
+    vertical-align: top;
+}
+.bot_type {
+    display: inline-block;
+    background: #333;
+    border: 1px solid #aaa;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+}
+body {
+    color: #fff;
+    background: #111;
+}
+#botedit_wrapper input {
+    text-align: right;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 10px;
+    padding-right: 10px;
+    width: 100px;
+}
+#botedit_wrapper button {
+    margin-left: 21px;
+    border: 1px solid #fff;
+    margin-top: 5px;
+    border-radius: 10px;
+}
+#botedit_wrapper button:hover {
+    cursor: pointer;
+    background: #000;
+    color: #fff;
+}
+#botedit_wrapper table button {
+    margin-left: 0px;
+}
+#botedit_wrapper form {
+    display: inline;
+}
+#botedit_wrapper .alert {
+    background: #922;
+    font-weight: bold;
+    color: #fff;
+    padding: 10px;
+    font-size: 14px;
+}
+#botshead th:hover {
+    cursor: pointer;
+    background: #666;
+
+}
+#botedit_wrapper table input {
+    width: auto;
+}

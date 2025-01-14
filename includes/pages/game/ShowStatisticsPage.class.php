@@ -92,14 +92,14 @@ class ShowStatisticsPage extends AbstractGamePage
 					$sql = "SELECT DISTINCT s.*, u.id, u.username, u.ally_id, a.ally_name FROM %%STATPOINTS%% as s
 					INNER JOIN %%USERS%% as u ON u.id = s.id_owner
 					LEFT JOIN %%ALLIANCE%% as a ON a.id = s.id_ally
-					WHERE s.universe = :universe AND s.stat_type = 1 AND u.authlevel < :authLevel
+					WHERE s.universe = :universe AND s.stat_type = 1 AND u.authlevel < :authLevel AND u.is_bot = 0
 					ORDER BY ".$Order." ASC LIMIT :offset, :limit;";
 					$query = $db->select($sql, [':universe'	=> Universe::current(), ':authLevel'=> $config->stat_level, ':offset'	=> $start, ':limit'	=> 100]);
 				} else {
 					$sql = "SELECT DISTINCT s.*, u.id, u.username, u.ally_id, a.ally_name FROM %%STATPOINTS%% as s
 					INNER JOIN %%USERS%% as u ON u.id = s.id_owner
 					LEFT JOIN %%ALLIANCE%% as a ON a.id = s.id_ally
-					WHERE s.universe = :universe AND s.stat_type = 1
+					WHERE s.universe = :universe AND s.stat_type = 1 AND u.is_bot = 0
 					ORDER BY ".$Order." ASC LIMIT :offset, :limit;";
 					$query = $db->select($sql, [':universe'	=> Universe::current(), ':offset'	=> $start, ':limit'	=> 100]);
 				}
