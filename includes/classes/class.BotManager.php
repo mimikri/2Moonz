@@ -194,14 +194,21 @@ public function change_bot_type($userid, $bot_type) {
 }
     // Make a user a bot and add bot capabilities
     public function createBot($number_of_bots = 1, $number_of_planets = 0) {
-        global $config;
+        global $config,$USER;
+
             // Add the 'is_bot' column if it doesn't exist and create an index on it for the 'users' table
-            $this->db->query('ALTER TABLE `' . DB_PREFIX . 'users` ADD COLUMN IF NOT EXISTS `is_bot` INT DEFAULT 0;');
-            $this->db->query('CREATE INDEX IF NOT EXISTS idx_users_is_bot ON `' . DB_PREFIX . 'users` (`is_bot`);');
+            if(!isset($USER['is_bot'])) {
+            $this->db->query('ALTER TABLE `' . DB_PREFIX . 'users` ADD COLUMN `is_bot` INT DEFAULT 0;');
+            $this->db->query('CREATE INDEX idx_users_is_bot ON `' . DB_PREFIX . 'users` (`is_bot`);');
+            }
+            
+            $planetcheck = $this->db->select('select * FROM %%PLANETS%% WHERE id_owner = :id_owner', [':id_owner' => $USER['id']]); 
 
             // Add the 'is_bot' column if it doesn't exist and create an index on it for the 'planets' table
-            $this->db->query('ALTER TABLE `' . DB_PREFIX . 'planets` ADD COLUMN IF NOT EXISTS `is_bot` INT DEFAULT 0;');
-            $this->db->query('CREATE INDEX IF NOT EXISTS idx_planets_is_bot ON `' . DB_PREFIX . 'planets` (`is_bot`);');
+            if(!isset($planetcheck[0]['is_bot'])){
+                $this->db->query('ALTER TABLE `' . DB_PREFIX . 'planets` ADD COLUMN `is_bot` INT DEFAULT 0;');
+                $this->db->query('CREATE INDEX idx_planets_is_bot ON `' . DB_PREFIX . 'planets` (`is_bot`);');
+            }
         //set the bots tables if not set
         $this->db->query('
             CREATE TABLE IF NOT EXISTS `'. DB_PREFIX .'bots` (
